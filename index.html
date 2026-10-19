@@ -244,6 +244,8 @@ h1,h2,h3,p{margin:0}
 .payrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px 14px}
 .payrow b{display:block}.payrow small{color:var(--muted);font-size:13px}.payrow strong{font:700 18px/1 var(--display)}
 .okbtn{background:var(--good)!important;color:#04210d!important;display:flex;gap:8px;align-items:center;justify-content:center}
+.spin.lite{border-color:rgba(255,255,255,.2);border-top-color:#fff}
+.paybox{background:#1C1C1E;border-radius:20px;padding:8px;min-height:200px}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid rgba(0,0,0,.2);border-top-color:#0B0B0F;display:inline-block;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .upc{background:var(--card);border-radius:20px;padding:16px;display:grid;gap:10px;border:1.5px solid var(--hair)}
@@ -927,7 +929,7 @@ var X = {
   pw_t:'Дойди до цели за 4 недели', pw_s:function(now, goal){ return 'Сейчас ты звучишь на '+now+'%. С ежедневной практикой — до '+goal+'% и звание «'+XL('goalR')[profile.goal||0]+'».'; },
   pw_f:[['Все 6 миссий пути','и финальное звание'],['Подготовка к встречам','добавь встречу — подготовим к ней'],['Сценарии','собеседование, питч, апдейт'],['Прогресс по навыкам','темп, паузы, паразиты, интонация']],
   plans:[['week','Неделя','$4.99','7 дней, затем $17.99 в месяц',''],['month','Месяц','$17.99','Отмена в любой момент',''],['quarter','3 месяца','$29.99','$10 в месяц','−44%']],
-  pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
+  acc_t:'Создай аккаунт', acc_p:'На эту почту оформим подписку. Потом по ней войдёшь в приложение на любом устройстве — телефоне или компьютере.', acc_go:'Перейти к оплате', acc_bad:'Проверь адрес почты.', pay_h:'Оплата', pay_test:'Тестовый режим: деньги не списываются. Карта 4242 4242 4242 4242, любой будущий срок, CVC 100.', pay_secure:'Данные карты вводятся в защищённой форме Paddle и не попадают в Speakline.', pay_err:'Не удалось загрузить оплату. Проверь интернет и попробуй ещё раз.', paid_t:'Подписка оформлена', paid_p:function(e){ return 'Аккаунт: '+e+'. Входи по этой почте в приложении на любом устройстве.'; }, pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
   pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
   up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
   up_pro:['Pro','+$10 в месяц','Подробный ИИ-разбор каждой записи и твой текст, переписанный без паразитов.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
@@ -975,7 +977,7 @@ var X = {
   pw_t:'Reach your goal in 4 weeks', pw_s:function(now, goal){ return 'You sound '+now+'% professional now. With daily practice — up to '+goal+'% and the “'+XL('goalR')[profile.goal||0]+'” title.'; },
   pw_f:[['All 6 missions','and the final title'],['Meeting prep','add a meeting — we’ll prepare you'],['Scenarios','interview, pitch, status update'],['Skill progress','pace, pauses, fillers, intonation']],
   plans:[['week','1 week','$4.99','7 days, then $17.99 a month',''],['month','1 month','$17.99','Cancel anytime',''],['quarter','3 months','$29.99','$10 a month','−44%']],
-  pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms.html" target="_blank">terms</a>, <a href="privacy.html" target="_blank">privacy policy</a> and <a href="refund.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
+  acc_t:'Create your account', acc_p:'We’ll attach the subscription to this email. Use it to sign in on any device — phone or computer.', acc_go:'Continue to payment', acc_bad:'Check your email address.', pay_h:'Payment', pay_test:'Test mode: no money is charged. Card 4242 4242 4242 4242, any future expiry, CVC 100.', pay_secure:'Card details go into Paddle’s secure form and never reach Speakline.', pay_err:'Couldn’t load the payment form. Check your connection and try again.', paid_t:'You’re subscribed', paid_p:function(e){ return 'Account: '+e+'. Sign in with this email on any device.'; }, pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms.html" target="_blank">terms</a>, <a href="privacy.html" target="_blank">privacy policy</a> and <a href="refund.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
   pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
   up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
   up_pro:['Pro','+$10 a month','Detailed AI review of every recording and your text rewritten without fillers.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
@@ -1023,7 +1025,7 @@ var X = {
   pw_t:'Мақсатқа 4 аптада жет', pw_s:function(now, goal){ return 'Қазір сен '+now+'% кәсіби естілесің. Күнделікті жаттығумен — '+goal+'%-ға дейін және «'+XL('goalR')[profile.goal||0]+'» атағы.'; },
   pw_f:[['Жолдың 6 миссиясы','және соңғы атақ'],['Кездесуге дайындық','кездесуді қос — дайындаймыз'],['Сценарийлер','сұхбат, питч, есеп беру'],['Дағдылар прогресі','қарқын, үзіліс, арам сөз, интонация']],
   plans:[['week','Апта','$4.99','7 күн, кейін айына $17.99',''],['month','Ай','$17.99','Кез келген уақытта тоқтатуға болады',''],['quarter','3 ай','$29.99','айына $10','−44%']],
-  pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
+  acc_t:'Аккаунт жаса', acc_p:'Жазылымды осы поштаға рәсімдейміз. Кейін осы поштамен кез келген құрылғыда кіресің.', acc_go:'Төлемге өту', acc_bad:'Пошта мекенжайын тексер.', pay_h:'Төлем', pay_test:'Тест режимі: ақша алынбайды. Карта 4242 4242 4242 4242, кез келген болашақ мерзім, CVC 100.', pay_secure:'Карта деректері Paddle-дің қорғалған формасына енгізіледі және Speakline-ға түспейді.', pay_err:'Төлем формасы жүктелмеді. Интернетті тексеріп, қайталап көр.', paid_t:'Жазылым рәсімделді', paid_p:function(e){ return 'Аккаунт: '+e+'. Осы поштамен кез келген құрылғыда кір.'; }, pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
   pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
   up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
   up_pro:['Pro','айына +$10','Әр жазбаның толық ЖИ талдауы және арам сөзсіз қайта жазылған мәтінің.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
@@ -1373,7 +1375,7 @@ function paywall(why, onClose, score){
   }
   render(); window.scrollTo(0,0);
 }
-function checkout(id, onClose){
+function demoCheckout(id, onClose){
   var p = XL('plans').filter(function(x){ return x[0]===id; })[0];
   var sh = document.createElement('div'); sh.className = 'sheet-wrap';
   sh.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(XL('pay_t'))+'"><span class="grab"></span><b class="h2">'+XL('pay_t')+'</b>'+
@@ -1393,6 +1395,92 @@ function checkout(id, onClose){
     }, 900);
   };
 }
+/* ---------- real checkout (Paddle) ----------
+   Fill in after creating a Paddle sandbox account. The client-side token is public by design
+   (it can only open checkouts); never put an API key here. Sandbox and live use different
+   tokens and price IDs. While the token is empty the app falls back to the demo sheet. */
+var PAY = {
+  env: 'sandbox',                 // 'sandbox' for tests → 'production' for real money
+  token: '',                      // client-side token: test_… (sandbox) or live_…
+  prices: { week:'', month:'', quarter:'', pack:'', pro:'' }   // pri_… IDs from Paddle → Catalog
+};
+var account = store.get('account', null);   // {email}
+function payReady(key){ return !!(PAY.token && PAY.prices[key]); }
+var paddleBoot = null, paddleOn = null;
+function loadPaddle(){
+  if(paddleBoot) return paddleBoot;
+  paddleBoot = new Promise(function(res, rej){
+    var sc = document.createElement('script'); sc.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    sc.onload = function(){
+      try{
+        if(PAY.env === 'sandbox') Paddle.Environment.set('sandbox');
+        Paddle.Initialize({ token: PAY.token, eventCallback: function(ev){ if(paddleOn) paddleOn(ev); } });
+        res();
+      }catch(e){ rej(e); }
+    };
+    sc.onerror = function(){ paddleBoot = null; rej(new Error('paddle.js')); };
+    document.head.appendChild(sc);
+  });
+  return paddleBoot;
+}
+function checkout(id, onClose){
+  if(!payReady(id)){ demoCheckout(id, onClose); return; }
+  accountStep(id, onClose);
+}
+function accountStep(id, onClose){
+  var p = XL('plans').filter(function(x){ return x[0]===id; })[0];
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">1 / 2</span><span style="width:40px"></span></div>'+
+    '<h1 class="h1">'+XL('acc_t')+'</h1><p class="p">'+XL('acc_p')+'</p>'+
+    '<label class="label" for="em">Email</label><input class="input" id="em" type="email" inputmode="email" autocomplete="email" placeholder="name@mail.com" value="'+esc(account ? account.email : '')+'">'+
+    '<p class="small" id="emerr" role="alert" style="color:var(--bad)"></p>'+
+    '<div class="payrow"><span><b>Speakline Premium · '+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></div>'+
+    '<button class="btn heat" type="button" id="next">'+XL('acc_go')+'</button><p class="small center legal">'+XL('pw_legal')+'</p>';
+  var em = document.getElementById('em');
+  document.getElementById('bk').onclick = function(){ paywall('back', onClose); };
+  em.oninput = function(){ document.getElementById('emerr').textContent = ''; };
+  document.getElementById('next').onclick = function(){
+    var v = em.value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ document.getElementById('emerr').textContent = XL('acc_bad'); em.focus(); return; }
+    account = {email:v}; store.set('account', account);
+    payScreen(id, '2 / 2', function(tx){
+      plan = {id:id, ts:Date.now(), email:v, tx:tx, env:PAY.env}; store.set('plan', plan);
+      paidScreen(function(){ upsell(onClose); });
+    }, function(){ accountStep(id, onClose); });
+  };
+  em.focus();
+}
+/* inline checkout: Paddle draws the card form inside our page; card data never touches our code */
+function payScreen(key, stepLabel, onPaid, onBack){
+  var loc = {ru:'ru', en:'en', kk:'ru'}[profile.ui];
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">'+stepLabel+'</span><span style="width:40px"></span></div>'+
+    '<h1 class="h1">'+XL('pay_h')+'</h1>'+
+    (PAY.env === 'sandbox' ? '<p class="warnbox">'+XL('pay_test')+'</p>' : '')+
+    '<div class="paybox"><div class="checkout-frame"></div><p class="small center" id="pst"><span class="spin lite"></span></p></div>'+
+    '<p class="small center">'+XL('pay_secure')+'</p>';
+  document.getElementById('bk').onclick = function(){ paddleOn = null; try{ Paddle.Checkout.close(); }catch(e){} onBack(); };
+  paddleOn = function(ev){
+    if(ev.name === 'checkout.loaded'){ var ps = document.getElementById('pst'); if(ps) ps.textContent = ''; }
+    if(ev.name === 'checkout.completed'){ paddleOn = null; var d = ev.data || {}; setTimeout(function(){ try{ Paddle.Checkout.close(); }catch(e){} onPaid(d.transaction_id || d.id || ''); }, 1200); }
+  };
+  loadPaddle().then(function(){
+    Paddle.Checkout.open({
+      items: [{priceId: PAY.prices[key], quantity: 1}],
+      customer: account && account.email ? {email: account.email} : undefined,
+      customData: {app:'speakline', plan:key},
+      settings: {displayMode:'inline', frameTarget:'checkout-frame', frameInitialHeight:450,
+        frameStyle:'width:100%;min-width:300px;background-color:transparent;border:none;', theme:'dark', locale:loc, allowLogout:false}
+    });
+  }).catch(function(){ var ps = document.getElementById('pst'); if(ps) ps.textContent = XL('pay_err'); });
+  window.scrollTo(0,0);
+}
+function paidScreen(next){
+  app.innerHTML = '<div class="celebrate"><div class="medal">'+ICX.medal+'</div><p class="label" style="color:var(--good)">'+XL('pay_ok')+'</p>'+
+    '<h1 class="h1 center">'+XL('paid_t')+'</h1><p class="p center">'+esc(XL('paid_p')(account ? account.email : ''))+'</p>'+
+    '<button class="btn heat" type="button" id="pn">'+XL('cont')+'</button></div>';
+  confetti();
+  document.getElementById('pn').onclick = next;
+}
+
 function upsell(onDone, packOnly){
   function render(){
     var item = function(key, t){ var on = !!addons[key]; return '<div class="upc'+(on?' on':'')+'"><div class="mhead"><b>'+t[0]+'</b><strong>'+t[1]+'</strong></div><p class="p">'+t[2]+'</p><button class="btn '+(on?'ghost':'white')+'" type="button" data-add="'+key+'"'+(on?' disabled':'')+'>'+(on?ICX.check+' '+XL('up_added'):XL('up_add'))+'</button></div>'; };
@@ -1400,7 +1488,11 @@ function upsell(onDone, packOnly){
       '<h1 class="h1">'+XL('up_t')+'</h1><p class="p">'+(packOnly?XL('scen_p'):XL('up_s'))+'</p>'+
       item('pack', XL('up_pack'))+(packOnly?'':item('pro', XL('up_pro')))+
       '<button class="btn heat" type="button" id="udone">'+((addons.pack||addons.pro)?XL('up_done'):XL('up_skip'))+'</button><p class="small center">'+XL('pw_demo')+'</p>';
-    app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){ addons[b.getAttribute('data-add')] = true; store.set('addons', addons); render(); }; });
+    app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){
+      var k = b.getAttribute('data-add');
+      if(payReady(k)) payScreen(k, XL('up_t'), function(){ addons[k] = true; store.set('addons', addons); upsell(onDone, packOnly); }, function(){ upsell(onDone, packOnly); });
+      else { addons[k] = true; store.set('addons', addons); render(); }
+    }; });
     document.getElementById('x').onclick = onDone; document.getElementById('udone').onclick = onDone;
   }
   render(); window.scrollTo(0,0);
@@ -1411,7 +1503,7 @@ function settings(){
   var pn = plan ? XL('plans').filter(function(x){ return x[0]===plan.id; })[0] : null;
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
-    '<div class="card"><p class="label">'+XL('set_plan')+'</p><div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?pn[3]:XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
+    '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(plan && plan.env==='sandbox'?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?pn[3]:XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
       (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
       (plan ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '<button class="btn heat" type="button" id="buy">'+XL('plan_prem')+'</button>')+'</div>'+
     '<button class="btn ghost" type="button" id="goal">'+XL('set_goal')+'</button>'+
@@ -1425,7 +1517,7 @@ function settings(){
   var $ = function(id){ return document.getElementById(id); };
   $('bk').onclick = home;
   if($('buy')) $('buy').onclick = function(){ paywall('settings', settings); };
-  if($('unbuy')) $('unbuy').onclick = function(){ plan = null; addons = {}; store.set('plan', null); store.set('addons', {}); store.set('pwSeen', false); tours.prem = 0; store.set('tours', tours); settings(); };
+  if($('unbuy')) $('unbuy').onclick = function(){ plan = null; addons = {}; account = null; store.set('account', null); store.set('plan', null); store.set('addons', {}); store.set('pwSeen', false); tours.prem = 0; store.set('tours', tours); settings(); };
   $('goal').onclick = chooseGoal;
   $('lang').onclick = function(){ onboarding(); };
   $('intro').onclick = function(){ introUI = profile.ui; splash(intro); };
