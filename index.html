@@ -244,6 +244,13 @@ h1,h2,h3,p{margin:0}
 .payrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px 14px}
 .payrow b{display:block}.payrow small{color:var(--muted);font-size:13px}.payrow strong{font:700 18px/1 var(--display)}
 .okbtn{background:var(--good)!important;color:#04210d!important;display:flex;gap:8px;align-items:center;justify-content:center}
+.input.code{font:700 30px/1 var(--display);letter-spacing:.45em;text-align:center;min-height:64px}
+.consent{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom,0px));max-width:500px;margin:0 auto;z-index:35;background:#1C1C1E;border:1px solid var(--hair);border-radius:18px;padding:14px;display:grid;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,.5);font-size:14px;color:var(--soft)}
+.consent a{color:var(--ink)}
+.consent .btn{min-height:44px;font-size:15px}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:#F5F5F7;color:#0B0B0F;border-radius:14px;padding:12px 16px;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.4);transition:opacity .4s;max-width:calc(100% - 32px)}
+.toast.out{opacity:0}
+#acbox{justify-content:center}
 .spin.lite{border-color:rgba(255,255,255,.2);border-top-color:#fff}
 .paybox{background:#1C1C1E;border-radius:20px;padding:8px;min-height:200px}
 .spin{width:20px;height:20px;border-radius:50%;border:3px solid rgba(0,0,0,.2);border-top-color:#0B0B0F;display:inline-block;animation:sp .8s linear infinite}
@@ -476,7 +483,7 @@ function intro(){
     document.getElementById('inext').textContent = idx < 2 ? t.next : t.go;
     document.getElementById('iskip').style.visibility = idx < 2 ? 'visible' : 'hidden';
   }
-  function toLang(){ onboarding(introUI); }
+  function toLang(){ track('intro_done'); onboarding(introUI); }
   function slide(ill, txt){ return '<section class="slide"><div class="ill">'+ill+'</div><h1 class="h1">'+txt[0]+'</h1><p class="p">'+txt[1]+'</p></section>'; }
   function markF(s){ return s.replace(/(Ну|э-э|типа|um|like|Енді|ээ|әлгі)/g, '<mark>$1</mark>'); }
   function illRing(t){ return '<div style="display:grid;justify-items:center;gap:10px;position:relative"><div class="mini-ring"><svg viewBox="0 0 120 120" width="150" height="150" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#2C2C2E" stroke-width="10"/><circle cx="60" cy="60" r="52" fill="none" stroke="url(#ig)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="84.9"/></svg><b>74<small>%</small></b></div><p class="small">'+t.ring+' · +6</p></div>'; }
@@ -534,7 +541,7 @@ function onboarding(initUI){
       '<button class="btn heat" type="button" id="go">'+lt.start+'</button>';
     app.querySelectorAll('[data-kind]').forEach(function(b){ b.onclick = function(){ draft[b.getAttribute('data-kind')] = b.getAttribute('data-v'); render(); }; });
     app.querySelectorAll('[data-goal]').forEach(function(b){ b.onclick = function(){ draft.goal = +b.getAttribute('data-goal'); render(); }; });
-    document.getElementById('go').onclick = function(){ draft.pathStart = (profile && profile.pathStart && profile.goal === draft.goal) ? profile.pathStart : Date.now(); profile = draft; store.set('profile', profile); home(); window.scrollTo(0,0); };
+    document.getElementById('go').onclick = function(){ draft.pathStart = (profile && profile.pathStart && profile.goal === draft.goal) ? profile.pathStart : Date.now(); profile = draft; store.set('profile', profile); track('onboarding_done', {ui:draft.ui, train:draft.train, goal:draft.goal}); home(); window.scrollTo(0,0); };
   }
   function opt(kind, c, on){ return '<button type="button" class="opt" data-kind="'+kind+'" data-v="'+c+'" aria-pressed="'+on+'"><span><b>'+LANG_NAMES[c].n+'</b><small>'+LANG_NAMES[c].s+'</small></span><i aria-hidden="true"></i></button>'; }
   render();
@@ -611,7 +618,7 @@ function start(mode, text, maxSec){
     var frames = [], t0 = performance.now(), raf = 0;
     var cv = document.getElementById('wv'), g = cv.getContext('2d'), bars = new Array(64).fill(0);
     var recBtn = document.getElementById('rec'), st = document.getElementById('st'), tm = document.getElementById('tm'), live = document.getElementById('live'), srst = document.getElementById('srst');
-    recBtn.classList.add('on'); st.textContent = L('listening');
+    recBtn.classList.add('on'); st.textContent = L('listening'); track('session_start', {mode:mode, lang:lang});
 
     /* ---- speech recognition: auto-restarts, survives Chrome's silent stops ---- */
     var done = [], cur = [], interim = '', confs = [], recording = true, srErr = '', fatal = false, restarts = 0, onDone = null;
@@ -926,10 +933,10 @@ var X = {
   cont:'Продолжить', again:'Ещё раз', closeX:'Закрыть',
   m_done:'Миссия выполнена!', badge_got:function(b){ return 'Новый значок: «'+b+'»'; }, next_m:function(t){ return 'Дальше: '+t; }, to_home:'К цели',
   final_t:'Цель достигнута!', cert:'Звание',
-  pw_t:'Дойди до цели за 4 недели', pw_s:function(now, goal){ return 'Сейчас ты звучишь на '+now+'%. С ежедневной практикой — до '+goal+'% и звание «'+XL('goalR')[profile.goal||0]+'».'; },
+  pw_t:'Пройди весь путь к цели', pw_s:function(now, goal){ return 'Сейчас ты звучишь на '+now+'%. Для звания «'+XL('goalR')[profile.goal||0]+'» нужно '+goal+'% в боевой репетиции. 10 минут в день — и ты видишь, как растёт оценка.'; },
   pw_f:[['Все 6 миссий пути','и финальное звание'],['Подготовка к встречам','добавь встречу — подготовим к ней'],['Сценарии','собеседование, питч, апдейт'],['Прогресс по навыкам','темп, паузы, паразиты, интонация']],
   plans:[['week','Неделя','$4.99','7 дней, затем $17.99 в месяц',''],['month','Месяц','$17.99','Отмена в любой момент',''],['quarter','3 месяца','$29.99','$10 в месяц','−44%']],
-  acc_t:'Создай аккаунт', acc_p:'На эту почту оформим подписку. Потом по ней войдёшь в приложение на любом устройстве — телефоне или компьютере.', acc_go:'Перейти к оплате', acc_bad:'Проверь адрес почты.', pay_h:'Оплата', pay_test:'Тестовый режим: деньги не списываются. Карта 4242 4242 4242 4242, любой будущий срок, CVC 100.', pay_secure:'Данные карты вводятся в защищённой форме Paddle и не попадают в Speakline.', pay_err:'Не удалось загрузить оплату. Проверь интернет и попробуй ещё раз.', paid_t:'Подписка оформлена', paid_p:function(e){ return 'Аккаунт: '+e+'. Входи по этой почте в приложении на любом устройстве.'; }, pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
+  acc_t:'Создай аккаунт', acc_p:'На эту почту оформим подписку. Потом по ней войдёшь в приложение на любом устройстве — телефоне или компьютере.', acc_go:'Перейти к оплате', acc_bad:'Проверь адрес почты.', pay_h:'Оплата', pay_test:'Тестовый режим: деньги не списываются. Карта 4242 4242 4242 4242, любой будущий срок, CVC 100.', pay_secure:'Данные карты вводятся в защищённой форме Paddle и не попадают в Speakline.', pay_err:'Не удалось загрузить оплату. Проверь интернет и попробуй ещё раз.', paid_t:'Подписка оформлена', paid_p:function(e){ return 'Аккаунт: '+e+'. Входи по этой почте в приложении на любом устройстве.'; }, login_t:'Вход', login_p:'Введи почту, на которую оформлена подписка. Пришлём код для входа.', code_send:'Получить код', code_t:'Код из письма', code_p:function(e){ return 'Отправили 6 цифр на '+e+'. Письмо может прийти через минуту — проверь «Спам».'; }, code_ok:'Войти', code_again:'Отправить код ещё раз', err_wait:'Слишком много попыток. Подожди немного и попробуй снова.', err_net:'Нет связи с сервером. Проверь интернет и попробуй ещё раз.', err_code:'Неверный код.', err_expired:'Код устарел — запроси новый.', already:'У тебя уже есть подписка — всё открыто.', manage:'Управлять подпиской', cancel_sched:'Отменена, доступ до конца периода', login:'Войти по почте', logout:'Выйти', has_sub:'Уже есть подписка? Войти', del:'Удалить аккаунт и данные', del_warn:'Подписка будет отменена, аккаунт и история тренировок удалятся без возможности восстановления.', del_yes:'Удалить', ck_t:'Cookies', ck_p:'Мы используем cookies для работы приложения и, с твоего согласия, для оценки рекламы.', ck_more:'Подробнее', ck_no:'Только нужные', ck_yes:'Принять', pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Нужно для звания', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
   pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
   up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
   up_pro:['Pro','+$10 в месяц','Подробный ИИ-разбор каждой записи и твой текст, переписанный без паразитов.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
@@ -974,10 +981,10 @@ var X = {
   cont:'Continue', again:'Try again', closeX:'Close',
   m_done:'Mission complete!', badge_got:function(b){ return 'New badge: “'+b+'”'; }, next_m:function(t){ return 'Next: '+t; }, to_home:'Back to my goal',
   final_t:'Goal reached!', cert:'Title',
-  pw_t:'Reach your goal in 4 weeks', pw_s:function(now, goal){ return 'You sound '+now+'% professional now. With daily practice — up to '+goal+'% and the “'+XL('goalR')[profile.goal||0]+'” title.'; },
+  pw_t:'Complete your path', pw_s:function(now, goal){ return 'You sound '+now+'% professional now. The “'+XL('goalR')[profile.goal||0]+'” title needs '+goal+'% in the dress rehearsal. 10 minutes a day — and you watch your score grow.'; },
   pw_f:[['All 6 missions','and the final title'],['Meeting prep','add a meeting — we’ll prepare you'],['Scenarios','interview, pitch, status update'],['Skill progress','pace, pauses, fillers, intonation']],
   plans:[['week','1 week','$4.99','7 days, then $17.99 a month',''],['month','1 month','$17.99','Cancel anytime',''],['quarter','3 months','$29.99','$10 a month','−44%']],
-  acc_t:'Create your account', acc_p:'We’ll attach the subscription to this email. Use it to sign in on any device — phone or computer.', acc_go:'Continue to payment', acc_bad:'Check your email address.', pay_h:'Payment', pay_test:'Test mode: no money is charged. Card 4242 4242 4242 4242, any future expiry, CVC 100.', pay_secure:'Card details go into Paddle’s secure form and never reach Speakline.', pay_err:'Couldn’t load the payment form. Check your connection and try again.', paid_t:'You’re subscribed', paid_p:function(e){ return 'Account: '+e+'. Sign in with this email on any device.'; }, pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms.html" target="_blank">terms</a>, <a href="privacy.html" target="_blank">privacy policy</a> and <a href="refund.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
+  acc_t:'Create your account', acc_p:'We’ll attach the subscription to this email. Use it to sign in on any device — phone or computer.', acc_go:'Continue to payment', acc_bad:'Check your email address.', pay_h:'Payment', pay_test:'Test mode: no money is charged. Card 4242 4242 4242 4242, any future expiry, CVC 100.', pay_secure:'Card details go into Paddle’s secure form and never reach Speakline.', pay_err:'Couldn’t load the payment form. Check your connection and try again.', paid_t:'You’re subscribed', paid_p:function(e){ return 'Account: '+e+'. Sign in with this email on any device.'; }, login_t:'Sign in', login_p:'Enter the email your subscription is on. We’ll send you a sign-in code.', code_send:'Get a code', code_t:'Code from the email', code_p:function(e){ return 'We sent 6 digits to '+e+'. It may take a minute — check spam too.'; }, code_ok:'Sign in', code_again:'Send the code again', err_wait:'Too many attempts. Wait a little and try again.', err_net:'Can’t reach the server. Check your connection and try again.', err_code:'Wrong code.', err_expired:'The code has expired — request a new one.', already:'You already have a subscription — everything is unlocked.', manage:'Manage subscription', cancel_sched:'Cancelled, access until the period ends', login:'Sign in with email', logout:'Sign out', has_sub:'Already subscribed? Sign in', del:'Delete account and data', del_warn:'Your subscription will be cancelled and your account and practice history deleted permanently.', del_yes:'Delete', ck_t:'Cookies', ck_p:'We use cookies to run the app and, with your consent, to measure ads.', ck_more:'Learn more', ck_no:'Essential only', ck_yes:'Accept', pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms-en.html" target="_blank">terms</a>, <a href="privacy-en.html" target="_blank">privacy policy</a> and <a href="refund-en.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'Needed for the title', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
   pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
   up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
   up_pro:['Pro','+$10 a month','Detailed AI review of every recording and your text rewritten without fillers.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
@@ -1022,10 +1029,10 @@ var X = {
   cont:'Жалғастыру', again:'Қайталау', closeX:'Жабу',
   m_done:'Миссия орындалды!', badge_got:function(b){ return 'Жаңа белгі: «'+b+'»'; }, next_m:function(t){ return 'Келесі: '+t; }, to_home:'Мақсатқа',
   final_t:'Мақсатқа жеттің!', cert:'Атақ',
-  pw_t:'Мақсатқа 4 аптада жет', pw_s:function(now, goal){ return 'Қазір сен '+now+'% кәсіби естілесің. Күнделікті жаттығумен — '+goal+'%-ға дейін және «'+XL('goalR')[profile.goal||0]+'» атағы.'; },
+  pw_t:'Мақсатқа апаратын жолды өт', pw_s:function(now, goal){ return 'Қазір сен '+now+'% кәсіби естілесің. «'+XL('goalR')[profile.goal||0]+'» атағы үшін нақты дайындықта '+goal+'% керек. Күніне 10 минут — бағаң қалай өсетінін көресің.'; },
   pw_f:[['Жолдың 6 миссиясы','және соңғы атақ'],['Кездесуге дайындық','кездесуді қос — дайындаймыз'],['Сценарийлер','сұхбат, питч, есеп беру'],['Дағдылар прогресі','қарқын, үзіліс, арам сөз, интонация']],
   plans:[['week','Апта','$4.99','7 күн, кейін айына $17.99',''],['month','Ай','$17.99','Кез келген уақытта тоқтатуға болады',''],['quarter','3 ай','$29.99','айына $10','−44%']],
-  acc_t:'Аккаунт жаса', acc_p:'Жазылымды осы поштаға рәсімдейміз. Кейін осы поштамен кез келген құрылғыда кіресің.', acc_go:'Төлемге өту', acc_bad:'Пошта мекенжайын тексер.', pay_h:'Төлем', pay_test:'Тест режимі: ақша алынбайды. Карта 4242 4242 4242 4242, кез келген болашақ мерзім, CVC 100.', pay_secure:'Карта деректері Paddle-дің қорғалған формасына енгізіледі және Speakline-ға түспейді.', pay_err:'Төлем формасы жүктелмеді. Интернетті тексеріп, қайталап көр.', paid_t:'Жазылым рәсімделді', paid_p:function(e){ return 'Аккаунт: '+e+'. Осы поштамен кез келген құрылғыда кір.'; }, pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
+  acc_t:'Аккаунт жаса', acc_p:'Жазылымды осы поштаға рәсімдейміз. Кейін осы поштамен кез келген құрылғыда кіресің.', acc_go:'Төлемге өту', acc_bad:'Пошта мекенжайын тексер.', pay_h:'Төлем', pay_test:'Тест режимі: ақша алынбайды. Карта 4242 4242 4242 4242, кез келген болашақ мерзім, CVC 100.', pay_secure:'Карта деректері Paddle-дің қорғалған формасына енгізіледі және Speakline-ға түспейді.', pay_err:'Төлем формасы жүктелмеді. Интернетті тексеріп, қайталап көр.', paid_t:'Жазылым рәсімделді', paid_p:function(e){ return 'Аккаунт: '+e+'. Осы поштамен кез келген құрылғыда кір.'; }, login_t:'Кіру', login_p:'Жазылым рәсімделген поштаны енгіз. Кіру кодын жібереміз.', code_send:'Код алу', code_t:'Хаттағы код', code_p:function(e){ return '6 санды '+e+' мекенжайына жібердік. Хат бір минутта келуі мүмкін — «Спам»-ды да тексер.'; }, code_ok:'Кіру', code_again:'Кодты қайта жіберу', err_wait:'Әрекет тым көп. Сәл күтіп, қайталап көр.', err_net:'Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көр.', err_code:'Код қате.', err_expired:'Кодтың мерзімі өтті — жаңасын сұра.', already:'Сенде жазылым бар — бәрі ашық.', manage:'Жазылымды басқару', cancel_sched:'Тоқтатылды, кезең соңына дейін қолжетімді', login:'Поштамен кіру', logout:'Шығу', has_sub:'Жазылым бар ма? Кіру', del:'Аккаунт пен деректерді жою', del_warn:'Жазылым тоқтатылады, аккаунт пен жаттығу тарихы біржола жойылады.', del_yes:'Жою', ck_t:'Cookies', ck_p:'Біз cookies-ті қосымша жұмысы үшін және сенің келісіміңмен жарнаманы бағалау үшін қолданамыз.', ck_more:'Толығырақ', ck_no:'Тек қажеттілері', ck_yes:'Қабылдау', pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'Атақ үшін керек', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
   pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
   up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
   up_pro:['Pro','айына +$10','Әр жазбаның толық ЖИ талдауы және арам сөзсіз қайта жазылған мәтінің.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
@@ -1214,7 +1221,7 @@ function home(){
   $('msave').onclick = function(){
     var t = $('mt').value.trim(), w = new Date($('mw').value).getTime();
     if(!t || !w){ $('mt').focus(); return; }
-    meetings.push({id:Date.now(), title:t, ts:w}); store.set('meetings', meetings); home();
+    meetings.push({id:Date.now(), title:t, ts:w}); store.set('meetings', meetings); track('meeting_add'); home();
   };
   if(!tours.home){ tours.home = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_home')); }, 350); }
   else if(isPremium() && !tours.prem){ tours.prem = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_prem')); }, 350); }
@@ -1288,7 +1295,7 @@ function result(r){
     nF:r.nF, fill:r.nF ? uniqFillers(r) : '', pauses:r.pauses, longP:r.longP, avgP:+r.avgP.toFixed(2), sd:r.sd==null?null:+r.sd.toFixed(2), acc:r.acc, conf:r.conf, band:r.band,
     issues:r.issues.map(function(x){ return x.k; }), toks:r.toks.map(function(t){ return [t.w, t.f==='hes'?2:t.f?1:0]; }), prompt:r.prompt, ref:r.ref, refMarks:r.refMarks,
     mission: ctx0.mission!=null ? ctx0.mission : null};
-  history.push(rec);
+  history.push(rec); track('session_done', {mode:rec.mode, lang:rec.lang, score:rec.score, n:history.length, mission:rec.mission});
   history.forEach(function(h, i){ if(i < history.length-60){ delete h.toks; delete h.refMarks; } });   // keep storage small
   store.set('history', history);
   var after = pathState(), lvAfter = levelOf(totalXP()).i;
@@ -1329,6 +1336,7 @@ function afterResult(rec, newly, after){
 
 /* ---------- reward ---------- */
 function celebrate(m, ps, next){
+  track('mission_done', {m:m+1, goal:profile.goal||0});
   var fin = m === MISSIONS.length-1, g = profile.goal||0, nextM = m+1 < MISSIONS.length ? mTitle(m+1) : null;
   app.innerHTML = '<div class="celebrate">'+
     '<div class="medal">'+ICX.medal+'</div>'+
@@ -1361,18 +1369,20 @@ function confetti(){
 
 /* ---------- paywall → checkout (demo) → upsell ---------- */
 function paywall(why, onClose, score){
-  var last = score || (history.length ? history[history.length-1].score : 60), target = Math.min(95, Math.max(last+18, 80)), sel = 'quarter';
+  var last = score || (history.length ? history[history.length-1].score : 60), target = 80, sel = 'quarter';
   function render(){
     app.innerHTML = '<div class="top"><span></span><span></span><button class="icon-btn" type="button" id="x" aria-label="'+XL('closeX')+'"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#F5F5F7" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>'+
       '<div class="pw-hero"><div class="pw-bars" aria-hidden="true"><div><span>'+last+'%</span><i style="height:'+Math.round(last*0.9)+'px"></i><small>'+XL('pw_now')+'</small></div><div><span>'+target+'%</span><i class="t" style="height:'+Math.round(target*0.9)+'px"></i><small>'+XL('pw_4w')+'</small></div></div>'+
       '<h1 class="h1">'+XL('pw_t')+'</h1><p class="p">'+esc(XL('pw_s')(last, target))+'</p></div>'+
       '<ul class="feat">'+XL('pw_f').map(function(f){ return '<li><span class="fi">'+ICX.check+'</span><span><b>'+f[0]+'</b><small>'+f[1]+'</small></span></li>'; }).join('')+'</ul>'+
       '<div class="plans" role="radiogroup">'+XL('plans').map(function(p){ return '<button type="button" class="plan" role="radio" data-p="'+p[0]+'" aria-checked="'+(sel===p[0])+'">'+(p[4]?'<em>'+p[4]+'</em>':'')+'<span><b>'+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></button>'; }).join('')+'</div>'+
-      '<button class="btn heat" type="button" id="buy">'+XL('pw_go')+'</button><p class="small center legal">'+XL('pw_legal')+'</p><button class="link" type="button" id="later">'+XL('pw_later')+'</button><p class="small center">'+XL('pw_demo')+'</p>';
+      '<button class="btn heat" type="button" id="buy">'+XL('pw_go')+'</button><p class="small center legal">'+XL('pw_legal')+'</p><button class="link" type="button" id="later">'+XL('pw_later')+'</button>'+(PAY.api && !account ? '<button class="link" type="button" id="haslogin">'+XL('has_sub')+'</button>' : '')+'<p class="small center">'+XL('pw_demo')+'</p>';
     app.querySelectorAll('[data-p]').forEach(function(b){ b.onclick = function(){ sel = b.getAttribute('data-p'); render(); }; });
     document.getElementById('x').onclick = onClose; document.getElementById('later').onclick = onClose;
     document.getElementById('buy').onclick = function(){ checkout(sel, onClose); };
+    var hl = document.getElementById('haslogin'); if(hl) hl.onclick = function(){ signIn({}, onClose); };
   }
+  track('paywall_view', {why:why});
   render(); window.scrollTo(0,0);
 }
 function demoCheckout(id, onClose){
@@ -1395,17 +1405,71 @@ function demoCheckout(id, onClose){
     }, 900);
   };
 }
-/* ---------- real checkout (Paddle) ----------
-   Fill in after creating a Paddle sandbox account. The client-side token is public by design
-   (it can only open checkouts); never put an API key here. Sandbox and live use different
-   tokens and price IDs. While the token is empty the app falls back to the demo sheet. */
+/* ---------- accounts, payments, analytics ----------
+   All three switches below are public values and safe to commit. Secrets (Paddle API key,
+   webhook secret, SMTP password) live only on the server, in server/.env.
+   - PAY.api empty      → no server: email + plan are kept in this browser only (demo / case defence)
+   - PAY.token empty    → no Paddle: the demo payment sheet is shown instead of the card form
+   - PAY.pixel empty    → no Meta Pixel and no cookie banner */
 var PAY = {
   env: 'sandbox',                 // 'sandbox' for tests → 'production' for real money
-  token: '',                      // client-side token: test_… (sandbox) or live_…
-  prices: { week:'', month:'', quarter:'', pack:'', pro:'' }   // pri_… IDs from Paddle → Catalog
+  token: '',                      // Paddle client-side token: test_… (sandbox) or live_…
+  prices: { week:'', month:'', quarter:'', pack:'', pro:'' },   // pri_… IDs from Paddle → Catalog
+  api: '',                        // Speakline server, e.g. https://speakline.kz (empty = no server)
+  pixel: ''                       // Meta Pixel ID (empty = off)
 };
-var account = store.get('account', null);   // {email}
+var account = store.get('account', null);   // {email, uid}
+var API = {token: store.get('token', '')};
 function payReady(key){ return !!(PAY.token && PAY.prices[key]); }
+
+function api(method, p, body){
+  return fetch(PAY.api.replace(/\/$/, '') + p, {method:method, headers:Object.assign({'Content-Type':'application/json'}, API.token ? {Authorization:'Bearer '+API.token} : {}), body: body ? JSON.stringify(body) : undefined})
+    .then(function(r){
+      if(r.status === 204) return {};
+      return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok){ var e = new Error(j.error || ('http_'+r.status)); e.status = r.status; e.body = j; throw e; } return j; });
+    });
+}
+function applyMe(m){
+  account = {email:m.email, uid:m.uid}; store.set('account', account);
+  plan = m.plan ? {id:m.plan.id, status:m.plan.status, trial_ends_at:m.plan.trial_ends_at, next_billed_at:m.plan.next_billed_at, cancel_scheduled:m.plan.cancel_scheduled, server:true} : null;
+  store.set('plan', plan);
+  addons = {pack:!!m.addons.pack, pro:!!m.addons.pro}; store.set('addons', addons);
+  return m;
+}
+function syncMe(){
+  if(!PAY.api || !API.token) return Promise.resolve(null);
+  return api('GET', '/api/me').then(applyMe).catch(function(e){ if(e.status === 401){ signOutLocal(); } return null; });
+}
+function signOutLocal(){ API.token = ''; store.set('token', ''); account = null; store.set('account', null); if(PAY.api){ plan = null; store.set('plan', null); addons = {}; store.set('addons', {}); } }
+
+/* funnel analytics: anonymous id + event name, mirrors the metric tree; Pixel only after consent */
+var anonId = store.get('anon', '');
+if(!anonId){ anonId = 'a_' + Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('anon', anonId); }
+var consent = store.get('consent', null);   // 'all' | 'essential' | null
+var PIXEL_MAP = {paywall_view:'ViewContent', account_done:'CompleteRegistration', checkout_open:'InitiateCheckout'};
+function track(name, props){
+  try{
+    if(PAY.api) fetch(PAY.api.replace(/\/$/, '') + '/api/events', {method:'POST', keepalive:true, headers:Object.assign({'Content-Type':'application/json'}, API.token ? {Authorization:'Bearer '+API.token} : {}), body:JSON.stringify({anon_id:anonId, name:name, props:props||{}})}).catch(function(){});
+    if(window.fbq && consent === 'all'){
+      if(name === 'checkout_done') fbq('track', props && props.plan === 'week' ? 'StartTrial' : 'Subscribe', {value:props && props.value || 0, currency:'USD'});
+      else if(PIXEL_MAP[name]) fbq('track', PIXEL_MAP[name]);
+    }
+    if(/[?&]debug=1/.test(location.search)) console.log('[track]', name, props||{});
+  }catch(e){}
+}
+function loadPixel(){
+  if(!PAY.pixel || window.fbq || consent !== 'all') return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', PAY.pixel); fbq('track', 'PageView');
+}
+function consentBanner(){
+  if(!PAY.pixel || consent) { loadPixel(); return; }
+  var b = document.createElement('div'); b.className = 'consent'; b.setAttribute('role','dialog'); b.setAttribute('aria-label', XL('ck_t'));
+  b.innerHTML = '<p>'+XL('ck_p')+' <a href="'+(profile && profile.ui==='en'?'privacy-en.html':'privacy.html')+'" target="_blank">'+XL('ck_more')+'</a></p><div class="row"><button class="btn ghost" type="button" data-c="essential">'+XL('ck_no')+'</button><button class="btn" type="button" data-c="all">'+XL('ck_yes')+'</button></div>';
+  document.body.appendChild(b);
+  b.querySelectorAll('[data-c]').forEach(function(x){ x.onclick = function(){ consent = x.getAttribute('data-c'); store.set('consent', consent); b.remove(); loadPixel(); }; });
+}
+
 var paddleBoot = null, paddleOn = null;
 function loadPaddle(){
   if(paddleBoot) return paddleBoot;
@@ -1424,32 +1488,66 @@ function loadPaddle(){
   return paddleBoot;
 }
 function checkout(id, onClose){
+  track('plan_select', {plan:id});
   if(!payReady(id)){ demoCheckout(id, onClose); return; }
-  accountStep(id, onClose);
+  signIn({buy:id}, onClose);
 }
-function accountStep(id, onClose){
-  var p = XL('plans').filter(function(x){ return x[0]===id; })[0];
-  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">1 / 2</span><span style="width:40px"></span></div>'+
-    '<h1 class="h1">'+XL('acc_t')+'</h1><p class="p">'+XL('acc_p')+'</p>'+
-    '<label class="label" for="em">Email</label><input class="input" id="em" type="email" inputmode="email" autocomplete="email" placeholder="name@mail.com" value="'+esc(account ? account.email : '')+'">'+
-    '<p class="small" id="emerr" role="alert" style="color:var(--bad)"></p>'+
-    '<div class="payrow"><span><b>Speakline Premium · '+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></div>'+
-    '<button class="btn heat" type="button" id="next">'+XL('acc_go')+'</button><p class="small center legal">'+XL('pw_legal')+'</p>';
-  var em = document.getElementById('em');
-  document.getElementById('bk').onclick = function(){ paywall('back', onClose); };
-  em.oninput = function(){ document.getElementById('emerr').textContent = ''; };
-  document.getElementById('next').onclick = function(){
-    var v = em.value.trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ document.getElementById('emerr').textContent = XL('acc_bad'); em.focus(); return; }
-    account = {email:v}; store.set('account', account);
-    payScreen(id, '2 / 2', function(tx){
-      plan = {id:id, ts:Date.now(), email:v, tx:tx, env:PAY.env}; store.set('plan', plan);
-      paidScreen(function(){ upsell(onClose); });
-    }, function(){ accountStep(id, onClose); });
-  };
-  em.focus();
+
+/* sign in / sign up: email → (server mode) 6-digit code from the email → done */
+function signIn(o, onClose){
+  var buy = o.buy, p = buy ? XL('plans').filter(function(x){ return x[0]===buy; })[0] : null, steps = buy ? 2 : 1;
+  track('account_start', {buy:!!buy});
+  function emailScreen(err){
+    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">'+(buy?'1 / '+(PAY.api?3:2):'')+'</span><span style="width:40px"></span></div>'+
+      '<h1 class="h1">'+(buy ? XL('acc_t') : XL('login_t'))+'</h1><p class="p">'+(buy ? XL('acc_p') : XL('login_p'))+'</p>'+
+      '<label class="label" for="em">Email</label><input class="input" id="em" type="email" inputmode="email" autocomplete="email" placeholder="name@mail.com" value="'+esc(account ? account.email : '')+'">'+
+      '<p class="small" id="emerr" role="alert" style="color:var(--bad)">'+(err||'')+'</p>'+
+      (p ? '<div class="payrow"><span><b>Speakline Premium · '+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></div>' : '')+
+      '<button class="btn heat" type="button" id="next">'+(PAY.api ? XL('code_send') : XL('acc_go'))+'</button>'+(buy ? '<p class="small center legal">'+XL('pw_legal')+'</p>' : '');
+    var em = document.getElementById('em'), nb = document.getElementById('next');
+    em.oninput = function(){ document.getElementById('emerr').textContent = ''; };
+    document.getElementById('bk').onclick = function(){ if(buy) paywall('back', onClose); else onClose(); };
+    nb.onclick = function(){
+      var v = em.value.trim().toLowerCase();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ document.getElementById('emerr').textContent = XL('acc_bad'); em.focus(); return; }
+      if(!PAY.api){ account = {email:v}; store.set('account', account); track('account_done', {mode:'local'}); afterAuth(); return; }
+      nb.disabled = true; nb.innerHTML = '<span class="spin"></span>';
+      api('POST', '/api/auth/start', {email:v, lang:profile.ui}).then(function(r){ codeScreen(v, r.dev_code); })
+        .catch(function(e){ nb.disabled = false; nb.textContent = XL('code_send'); document.getElementById('emerr').textContent = XL(e.message === 'wait' || e.message === 'too_many' ? 'err_wait' : e.message === 'bad_email' ? 'acc_bad' : 'err_net'); });
+    };
+    em.focus();
+  }
+  function codeScreen(email, devCode){
+    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">'+(buy?'2 / 3':'')+'</span><span style="width:40px"></span></div>'+
+      '<h1 class="h1">'+XL('code_t')+'</h1><p class="p">'+esc(XL('code_p')(email))+'</p>'+
+      '<input class="input code" id="cd" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="'+esc(XL('code_t'))+'">'+
+      (devCode ? '<p class="small">dev: '+devCode+'</p>' : '')+
+      '<p class="small" id="cderr" role="alert" style="color:var(--bad)"></p>'+
+      '<button class="btn heat" type="button" id="ok">'+XL('code_ok')+'</button><button class="link" type="button" id="rs" disabled>'+XL('code_again')+' (30)</button>';
+    var cd = document.getElementById('cd'), ok = document.getElementById('ok'), rs = document.getElementById('rs'), left = 30;
+    var tm = setInterval(function(){ left--; if(left <= 0){ clearInterval(tm); rs.disabled = false; rs.textContent = XL('code_again'); } else rs.textContent = XL('code_again')+' ('+left+')'; }, 1000);
+    document.getElementById('bk').onclick = function(){ clearInterval(tm); emailScreen(); };
+    rs.onclick = function(){ clearInterval(tm); api('POST', '/api/auth/start', {email:email, lang:profile.ui}).then(function(r){ codeScreen(email, r.dev_code); }).catch(function(){ document.getElementById('cderr').textContent = XL('err_wait'); }); };
+    cd.oninput = function(){ cd.value = cd.value.replace(/\D/g, '').slice(0,6); document.getElementById('cderr').textContent = ''; if(cd.value.length === 6) ok.click(); };
+    ok.onclick = function(){
+      if(cd.value.length !== 6){ cd.focus(); return; }
+      ok.disabled = true; ok.innerHTML = '<span class="spin"></span>';
+      api('POST', '/api/auth/verify', {email:email, code:cd.value, lang:profile.ui, anon_id:anonId}).then(function(r){
+        clearInterval(tm); API.token = r.token; store.set('token', r.token); applyMe(r.me); track('account_done', {mode:'server'}); afterAuth();
+      }).catch(function(e){ ok.disabled = false; ok.textContent = XL('code_ok'); document.getElementById('cderr').textContent = XL(e.message === 'wrong_code' ? 'err_code' : e.message === 'expired' ? 'err_expired' : e.message === 'too_many' ? 'err_wait' : 'err_net'); cd.select(); });
+    };
+    cd.focus();
+  }
+  function afterAuth(){
+    if(!buy){ home(); window.scrollTo(0,0); return; }
+    if(PAY.api && isPremium()){ toast(XL('already')); home(); return; }
+    payScreen(buy, PAY.api ? '3 / 3' : '2 / 2', function(){ paidScreen(function(){ upsell(onClose); }); }, function(){ signIn(o, onClose); });
+  }
+  emailScreen();
 }
+
 /* inline checkout: Paddle draws the card form inside our page; card data never touches our code */
+var PRICE_USD = {week:4.99, month:17.99, quarter:29.99, pack:9.99, pro:10};
 function payScreen(key, stepLabel, onPaid, onBack){
   var loc = {ru:'ru', en:'en', kk:'ru'}[profile.ui];
   app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">'+stepLabel+'</span><span style="width:40px"></span></div>'+
@@ -1457,16 +1555,26 @@ function payScreen(key, stepLabel, onPaid, onBack){
     (PAY.env === 'sandbox' ? '<p class="warnbox">'+XL('pay_test')+'</p>' : '')+
     '<div class="paybox"><div class="checkout-frame"></div><p class="small center" id="pst"><span class="spin lite"></span></p></div>'+
     '<p class="small center">'+XL('pay_secure')+'</p>';
+  track('checkout_open', {plan:key});
   document.getElementById('bk').onclick = function(){ paddleOn = null; try{ Paddle.Checkout.close(); }catch(e){} onBack(); };
   paddleOn = function(ev){
     if(ev.name === 'checkout.loaded'){ var ps = document.getElementById('pst'); if(ps) ps.textContent = ''; }
-    if(ev.name === 'checkout.completed'){ paddleOn = null; var d = ev.data || {}; setTimeout(function(){ try{ Paddle.Checkout.close(); }catch(e){} onPaid(d.transaction_id || d.id || ''); }, 1200); }
+    if(ev.name === 'checkout.completed'){
+      paddleOn = null; var d = ev.data || {};
+      track('checkout_done', {plan:key, value:PRICE_USD[key]});
+      // optimistic unlock; the server confirms once Paddle's webhook arrives
+      if(key === 'pack' || key === 'pro'){ addons[key] = true; store.set('addons', addons); }
+      else { plan = {id:key, ts:Date.now(), email:account && account.email, tx:d.transaction_id || '', env:PAY.env, pending:!!PAY.api}; store.set('plan', plan); }
+      if(PAY.api){ setTimeout(syncMe, 4000); setTimeout(syncMe, 12000); }
+      setTimeout(function(){ try{ Paddle.Checkout.close(); }catch(e){} onPaid(d.transaction_id || ''); }, 1200);
+    }
   };
   loadPaddle().then(function(){
+    var cd = {app:'speakline', plan:key}; if(account && account.uid) cd.uid = account.uid;
     Paddle.Checkout.open({
       items: [{priceId: PAY.prices[key], quantity: 1}],
       customer: account && account.email ? {email: account.email} : undefined,
-      customData: {app:'speakline', plan:key},
+      customData: cd,
       settings: {displayMode:'inline', frameTarget:'checkout-frame', frameInitialHeight:450,
         frameStyle:'width:100%;min-width:300px;background-color:transparent;border:none;', theme:'dark', locale:loc, allowLogout:false}
     });
@@ -1480,6 +1588,24 @@ function paidScreen(next){
   confetti();
   document.getElementById('pn').onclick = next;
 }
+function manageSub(btn){
+  btn.disabled = true; btn.innerHTML = '<span class="spin lite"></span>';
+  api('POST', '/api/portal').then(function(r){ btn.disabled = false; btn.textContent = XL('manage'); window.open(r.url, '_blank', 'noopener'); })
+    .catch(function(){ btn.disabled = false; btn.textContent = XL('manage'); toast(XL('err_net')); });
+}
+function deleteAccount(box){
+  box.innerHTML = '<p class="warnbox">'+XL('del_warn')+'</p><div class="row"><button class="btn ghost" type="button" id="dno">✕</button><button class="btn heat" type="button" id="dyes">'+XL('del_yes')+'</button></div>';
+  document.getElementById('dno').onclick = settings;
+  document.getElementById('dyes').onclick = function(){
+    var wipe = function(){ try{ Object.keys(localStorage).filter(function(k){ return k.indexOf('speakline.') === 0; }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} location.reload(); };
+    if(PAY.api && API.token) api('DELETE', '/api/account').then(wipe).catch(function(){ toast(XL('err_net')); });
+    else wipe();
+  };
+}
+function toast(t){
+  var el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role','status'); el.textContent = t; document.body.appendChild(el);
+  setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 400); }, 2600);
+}
 
 function upsell(onDone, packOnly){
   function render(){
@@ -1489,7 +1615,7 @@ function upsell(onDone, packOnly){
       item('pack', XL('up_pack'))+(packOnly?'':item('pro', XL('up_pro')))+
       '<button class="btn heat" type="button" id="udone">'+((addons.pack||addons.pro)?XL('up_done'):XL('up_skip'))+'</button><p class="small center">'+XL('pw_demo')+'</p>';
     app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){
-      var k = b.getAttribute('data-add');
+      var k = b.getAttribute('data-add'); track('upsell_add', {item:k});
       if(payReady(k)) payScreen(k, XL('up_t'), function(){ addons[k] = true; store.set('addons', addons); upsell(onDone, packOnly); }, function(){ upsell(onDone, packOnly); });
       else { addons[k] = true; store.set('addons', addons); render(); }
     }; });
@@ -1503,9 +1629,12 @@ function settings(){
   var pn = plan ? XL('plans').filter(function(x){ return x[0]===plan.id; })[0] : null;
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
-    '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(plan && plan.env==='sandbox'?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?pn[3]:XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
+    '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(PAY.env==='sandbox' && PAY.token?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?(plan.cancel_scheduled?XL('cancel_sched'):pn[3]):XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
       (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
-      (plan ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '<button class="btn heat" type="button" id="buy">'+XL('plan_prem')+'</button>')+'</div>'+
+      (plan && PAY.api && API.token ? '<button class="btn ghost" type="button" id="manage">'+XL('manage')+'</button>' : '')+
+      (plan && !PAY.api ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '')+
+      (!plan ? '<button class="btn heat" type="button" id="buy">'+XL('plan_prem')+'</button>' : '')+
+      (PAY.api && !API.token ? '<button class="btn ghost" type="button" id="login">'+XL('login')+'</button>' : '')+'</div>'+
     '<button class="btn ghost" type="button" id="goal">'+XL('set_goal')+'</button>'+
     '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
     '<button class="btn ghost" type="button" id="intro">'+({ru:'Показать знакомство',en:'Show the intro',kk:'Танысуды көрсету'})[profile.ui]+'</button>'+
@@ -1513,10 +1642,15 @@ function settings(){
     '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
     '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
     '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>'+
-    '<p class="small center legal"><a href="terms.html" target="_blank">Оферта</a> · <a href="privacy.html" target="_blank">Конфиденциальность</a> · <a href="refund.html" target="_blank">Возврат</a></p>';
+    '<div id="acbox" class="row">'+(PAY.api && API.token ? '<button class="link" type="button" id="logout">'+XL('logout')+'</button>' : '')+'<button class="link" type="button" id="del" style="color:var(--bad)">'+XL('del')+'</button></div>'+
+    '<p class="small center legal">'+(profile.ui==='en' ? '<a href="terms-en.html" target="_blank">Terms</a> · <a href="privacy-en.html" target="_blank">Privacy</a> · <a href="refund-en.html" target="_blank">Refunds</a>' : '<a href="terms.html" target="_blank">Оферта</a> · <a href="privacy.html" target="_blank">Конфиденциальность</a> · <a href="refund.html" target="_blank">Возврат</a>')+'</p>';
   var $ = function(id){ return document.getElementById(id); };
   $('bk').onclick = home;
   if($('buy')) $('buy').onclick = function(){ paywall('settings', settings); };
+  if($('manage')) $('manage').onclick = function(){ manageSub($('manage')); };
+  if($('login')) $('login').onclick = function(){ signIn({}, settings); };
+  if($('logout')) $('logout').onclick = function(){ api('POST', '/api/logout').catch(function(){}).then(function(){ signOutLocal(); home(); }); };
+  $('del').onclick = function(){ deleteAccount($('acbox')); };
   if($('unbuy')) $('unbuy').onclick = function(){ plan = null; addons = {}; account = null; store.set('account', null); store.set('plan', null); store.set('addons', {}); store.set('pwSeen', false); tours.prem = 0; store.set('tours', tours); settings(); };
   $('goal').onclick = chooseGoal;
   $('lang').onclick = function(){ onboarding(); };
@@ -1575,7 +1709,9 @@ window.__tourEnd = function(){ var t = document.querySelector('.tour'); if(t) t.
 
 /* ================= boot ================= */
 document.documentElement.lang = (profile && profile.ui) || 'ru';
-splash(function(){ if(profile) home(); else intro(); });
+track('app_open', {returning:!!profile});
+syncMe();
+splash(function(){ if(profile) home(); else intro(); consentBanner(); });
 })();
 </script>
 </body>

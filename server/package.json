@@ -1,0 +1,15 @@
+{
+  "name": "speakline-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Speakline API: email-code accounts, Paddle subscriptions, funnel events",
+  "main": "server.js",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "test": "node --test test/api.test.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16"
+  }
+}

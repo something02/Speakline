@@ -1,0 +1,19 @@
+[Unit]
+Description=Speakline API
+After=network.target
+
+[Service]
+User=speakline
+WorkingDirectory=/srv/speakline/server
+ExecStart=/usr/bin/node --env-file=/srv/speakline/server/.env server.js
+Restart=always
+RestartSec=3
+# hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/speakline
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
