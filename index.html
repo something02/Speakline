@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Speakline Coach</title>
+<meta name="theme-color" content="#0B0B0F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: one centred phone-width column, dark iOS-style app. Screens: onboarding → home (progress) → session (live mic) → result (score, transcript, advice). */
+:root{
+  --bg:#0B0B0F; --card:#1C1C1E; --card2:#2C2C2E; --ink:#F5F5F7; --muted:#8E8E93; --soft:#AEAEB2; --hair:rgba(255,255,255,.08);
+  --a:#FF5A36; --b:#FF9F0A; --good:#30D158; --bad:#FF6961; --blue:#0A84FF;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Figtree","Helvetica Neue",Arial,sans-serif;
+  --text:-apple-system,BlinkMacSystemFont,"SF Pro Text","Figtree","Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.45 var(--text);letter-spacing:-.015em;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+:focus-visible{outline:3px solid rgba(255,159,10,.6);outline-offset:2px;border-radius:12px}
+h1,h2,h3,p{margin:0}
+[hidden]{display:none!important}
+.app{max-width:520px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:16px;
+  padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(24px,env(safe-area-inset-bottom,0px));
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px}
+.logo{display:flex;gap:8px;align-items:center;font:700 18px/1 var(--display);letter-spacing:-.02em}
+.logo i{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:0;background:var(--card);display:grid;place-items:center;cursor:pointer}
+.h1{font:700 32px/1.1 var(--display);letter-spacing:-.04em;text-wrap:balance}
+.h2{font:700 22px/1.2 var(--display);letter-spacing:-.03em}
+.p{color:var(--soft);font-size:15px}
+.small{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border-radius:20px;padding:16px;display:grid;gap:10px}
+.label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.btn{min-height:54px;border:0;border-radius:16px;background:var(--ink);color:#0B0B0F;font:600 17px/1 var(--text);cursor:pointer;padding:0 18px;width:100%}
+.btn.heat{background:linear-gradient(135deg,var(--a),var(--b));color:#fff}
+.btn.ghost{background:var(--card);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.link{background:none;border:0;color:var(--muted);cursor:pointer;padding:8px;font-size:14px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;min-height:54px;padding:10px 16px;border-radius:16px;border:1.5px solid transparent;background:var(--card);cursor:pointer}
+.opt b{display:block;font-weight:600}
+.opt small{font-size:12px;color:var(--muted)}
+.opt i{width:22px;height:22px;border-radius:50%;border:2px solid #48484A;flex:none;display:grid;place-items:center}
+.opt[aria-pressed="true"]{border-color:var(--b);background:#221a10}
+.opt[aria-pressed="true"] i{border-color:var(--b);background:var(--b)}
+.opt[aria-pressed="true"] i::after{content:"";width:8px;height:8px;border-radius:50%;background:#0B0B0F}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:0;border-radius:999px;padding:9px 14px;background:var(--card2);cursor:pointer;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:#0B0B0F;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border-radius:18px;padding:14px;display:grid;gap:2px;min-width:0}
+.stat span{font-size:12px;color:var(--muted)}
+.stat b{font:700 24px/1.15 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat em{font-style:normal;font-size:12px;color:var(--soft)}
+.stat em.bad{color:var(--bad)}.stat em.good{color:var(--good)}.stat em.warn{color:var(--b)}
+.streak{display:flex;align-items:center;gap:12px}
+.xp{height:8px;border-radius:4px;background:var(--card2);overflow:hidden}
+.xp i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--a),var(--b))}
+.modes{display:grid;gap:10px}
+.mode{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;width:100%;border:0;border-radius:20px;background:var(--card);padding:14px 16px;cursor:pointer}
+.mode .ic{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center}
+.mode b{display:block;font-weight:600;font-size:16px}
+.mode small{color:var(--muted);font-size:13px}
+.chev{width:9px;height:9px;border-top:2px solid #636366;border-right:2px solid #636366;transform:rotate(45deg)}
+.prompt{font:600 22px/1.35 var(--display);letter-spacing:-.025em}
+.wave{width:100%;height:110px;display:block}
+.recwrap{display:grid;justify-items:center;gap:10px}
+.rec{width:84px;height:84px;border-radius:50%;border:4px solid #fff;background:transparent;position:relative;cursor:pointer}
+.rec::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#FF3B30;transition:all .25s}
+.rec.on::after{inset:22px;border-radius:7px}
+.timer{font:600 20px/1 var(--display);font-variant-numeric:tabular-nums}
+.live{min-height:72px;font-size:16px;line-height:1.55;color:var(--ink)}
+.live .interim{color:var(--muted)}
+.tx{font-size:16px;line-height:1.65;background:var(--card);border-radius:18px;padding:14px 16px}
+.tx mark{background:rgba(255,69,58,.22);color:var(--bad);border-radius:5px;padding:0 4px;font-weight:600}
+.tx .miss{color:var(--b);text-decoration:underline wavy;text-underline-offset:3px}
+.tx .ok{color:var(--ink)}
+.ringbox{display:grid;place-items:center;position:relative;width:180px;height:180px;margin:0 auto}
+.ringbox svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ringbox .num{font:700 50px/1 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.ringbox .num small{font-size:24px}
+.center{text-align:center}
+.tip{display:grid;grid-template-columns:36px 1fr;gap:12px;background:var(--card);border-radius:18px;padding:14px}
+.tip .n{width:36px;height:36px;border-radius:11px;background:var(--card2);display:grid;place-items:center;font-weight:700;color:var(--b)}
+.tip b{display:block;margin-bottom:2px}
+.tip p{color:var(--soft);font-size:14px}
+.tip .drill{margin-top:6px;font-size:13px;color:var(--ink);background:var(--card2);border-radius:10px;padding:8px 10px}
+.badge{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(255,90,54,.18),rgba(255,159,10,.18));border:1px solid rgba(255,159,10,.4);border-radius:14px;padding:10px 12px;font-size:14px}
+.chart svg{display:block;width:100%;height:auto}
+.hist{display:grid;gap:6px}
+.hrow{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:10px 12px;background:var(--card);border-radius:14px}
+.hrow span{color:var(--muted)}
+.warnbox{background:rgba(255,159,10,.12);border:1px solid rgba(255,159,10,.35);color:#FFD9A0;border-radius:14px;padding:12px 14px;font-size:14px}
+.input{width:100%;min-height:48px;border-radius:14px;border:0;background:var(--card2);padding:0 14px;font-size:15px}
+.ai{white-space:pre-wrap;font-size:15px;line-height:1.55;color:var(--ink)}
+.row{display:flex;gap:10px}
+.row > *{flex:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app" id="app" aria-live="polite"></main>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= storage (per device) ================= */
+var store = {
+  get: function(k, d){ try{ var v = localStorage.getItem('speakline.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set: function(k, v){ try{ localStorage.setItem('speakline.'+k, JSON.stringify(v)); }catch(e){} }
+};
+var profile = store.get('profile', null);   // {ui, train, goal}
+var history = store.get('history', []);     // [{ts, mode, lang, score, wpm, fpm, ...}]
+var aiKey = store.get('aiKey', '');
+
+/* ================= interface text ================= */
+var T = {
+ ru:{ hello:'Говори так, чтобы тебя слышали.', hello_p:'Speakline слушает твою речь и показывает темп, паузы, интонацию и слова-паразиты. Всё считается на твоём устройстве.',
+  ui_lang:'Язык приложения', train_lang:'На каком языке тренироваться?', goal:'Где важно звучать уверенно?', goals:['Встречи и созвоны','Собеседования','Презентации','Small talk'], start:'Начать',
+  hi:'Привет', streak:function(n){ return 'Серия '+n+' '+plural(n,'день','дня','дней'); }, streak0:'Начни серию сегодня', level:'Уровень', xp:'опыта',
+  lv:['Новичок','Чёткий','Уверенный','Убедительный','Спикер'], last:'Последняя оценка', sessions:'Сессий', avg_f:'Паразитов в мин',
+  m_read:'Прочитать фразу', m_read_s:'20 секунд · точность, темп, паузы', m_free:'Свободная речь', m_free_s:'60 секунд · паразиты, структура, интонация',
+  progress:'Прогресс', no_hist:'Здесь появится график после первой сессии.', history:'История',
+  read_this:'Прочитай вслух', speak_on:'Ответь вслух', tap:'Нажми, чтобы начать запись', listening:'Слушаю… нажми, чтобы закончить', analysing:'Анализирую…',
+  no_sr:'Этот браузер не распознаёт речь. Открой приложение в Google Chrome (компьютер или Android) или Safari на iPhone.',
+  no_mic:'Нет доступа к микрофону. Разреши его в настройках браузера и попробуй снова.', too_short:'Слишком мало речи, чтобы оценить. Попробуй ещё раз и говори хотя бы 5 секунд.',
+  sound:function(x){ return 'Ты звучишь профессионально на '+x+'%'; }, vs:function(d){ return (d>=0?'+':'')+d+' к прошлой сессии'; }, first:'Первая оценка — дальше будем сравнивать',
+  pace:'Темп', wpm:'сл/мин', fillers:'Паразиты', per_min:'в минуту', pauses:'Паузы', avg:'средняя', inton:'Интонация', st:'полутонов', acc:'Точность', clar:'Разборчивость',
+  target:'цель', fast:'быстро', slow:'медленно', ok:'в норме', mono:'монотонно', lively:'живо', none:'нет', long_p:function(n){ return n+' '+plural(n,'долгая','долгие','долгих'); },
+  tips:'Что улучшить', transcript:'Что я услышал', ref_hint:'Оранжевым — слова из фразы, которые не распознались', got_xp:function(x){ return '+'+x+' опыта'; },
+  again:'Ещё раз', home:'Домой', ai_btn:'Подробный разбор от ИИ', ai_wait:'ИИ разбирает твою речь…', ai_err:'Не получилось получить разбор. Проверь ключ API в настройках.',
+  settings:'Настройки', key_l:'Ключ Claude API (необязательно)', key_p:'Нужен только для подробного разбора от ИИ. Хранится только на этом устройстве.', save:'Сохранить', reset:'Сбросить прогресс',
+  hint_um:'«Эм» и «ээ» распознаются не всегда — паузы и колебания считаю по звуку.', minutes:'мин', badge:'Новый значок' },
+ en:{ hello:'Speak so people listen.', hello_p:'Speakline listens to you and shows your pace, pauses, intonation and filler words. Everything is computed on your device.',
+  ui_lang:'App language', train_lang:'Which language do you want to train?', goal:'Where do you need to sound confident?', goals:['Meetings and calls','Job interviews','Presentations','Small talk'], start:'Start',
+  hi:'Hi', streak:function(n){ return n+'-day streak'; }, streak0:'Start your streak today', level:'Level', xp:'XP',
+  lv:['Starter','Clear','Confident','Persuasive','Speaker'], last:'Last score', sessions:'Sessions', avg_f:'Fillers per min',
+  m_read:'Read a sentence', m_read_s:'20 seconds · accuracy, pace, pauses', m_free:'Free talk', m_free_s:'60 seconds · fillers, structure, intonation',
+  progress:'Progress', no_hist:'Your chart appears after the first session.', history:'History',
+  read_this:'Read this out loud', speak_on:'Answer out loud', tap:'Tap to start recording', listening:'Listening… tap to finish', analysing:'Analysing…',
+  no_sr:'This browser can’t recognise speech. Open the app in Google Chrome (desktop or Android) or Safari on iPhone.',
+  no_mic:'No microphone access. Allow it in your browser settings and try again.', too_short:'Not enough speech to score. Try again and speak for at least 5 seconds.',
+  sound:function(x){ return 'You sound '+x+'% professional'; }, vs:function(d){ return (d>=0?'+':'')+d+' vs last session'; }, first:'First score — next time we’ll compare',
+  pace:'Pace', wpm:'wpm', fillers:'Fillers', per_min:'per minute', pauses:'Pauses', avg:'average', inton:'Intonation', st:'semitones', acc:'Accuracy', clar:'Clarity',
+  target:'goal', fast:'fast', slow:'slow', ok:'on target', mono:'flat', lively:'lively', none:'none', long_p:function(n){ return n+' long'; },
+  tips:'What to improve', transcript:'What I heard', ref_hint:'Orange — words from the sentence that weren’t recognised', got_xp:function(x){ return '+'+x+' XP'; },
+  again:'Try again', home:'Home', ai_btn:'Detailed AI review', ai_wait:'The AI is reviewing your speech…', ai_err:'Couldn’t get the review. Check the API key in settings.',
+  settings:'Settings', key_l:'Claude API key (optional)', key_p:'Only needed for the detailed AI review. Stored on this device only.', save:'Save', reset:'Reset progress',
+  hint_um:'“Um” and “uh” aren’t always transcribed — pauses and hesitations are measured from the audio.', minutes:'min', badge:'New badge' },
+ kk:{ hello:'Сені тыңдайтындай сөйле.', hello_p:'Speakline сөйлеуіңді тыңдап, қарқынды, үзілістерді, интонацияны және арам сөздерді көрсетеді. Бәрі құрылғыңда есептеледі.',
+  ui_lang:'Қосымша тілі', train_lang:'Қай тілде жаттығасың?', goal:'Қай жерде сенімді сөйлеу маңызды?', goals:['Жиналыстар мен қоңыраулар','Жұмыс сұхбаттары','Презентациялар','Small talk'], start:'Бастау',
+  hi:'Сәлем', streak:function(n){ return n+' күндік серия'; }, streak0:'Серияны бүгін баста', level:'Деңгей', xp:'тәжірибе',
+  lv:['Бастаушы','Анық','Сенімді','Сендіргіш','Шешен'], last:'Соңғы баға', sessions:'Сессиялар', avg_f:'Минутына арам сөз',
+  m_read:'Сөйлемді оқу', m_read_s:'20 секунд · дәлдік, қарқын, үзіліс', m_free:'Еркін сөйлеу', m_free_s:'60 секунд · арам сөздер, құрылым, интонация',
+  progress:'Прогресс', no_hist:'Алғашқы сессиядан кейін график шығады.', history:'Тарих',
+  read_this:'Дауыстап оқы', speak_on:'Дауыстап жауап бер', tap:'Жазуды бастау үшін бас', listening:'Тыңдап тұрмын… аяқтау үшін бас', analysing:'Талдап жатырмын…',
+  no_sr:'Бұл браузер сөйлеуді танымайды. Қосымшаны Google Chrome-да (компьютер не Android) немесе iPhone-дағы Safari-де аш.',
+  no_mic:'Микрофонға рұқсат жоқ. Браузер баптауларында рұқсат беріп, қайталап көр.', too_short:'Бағалауға сөйлеу аз. Қайталап, кемінде 5 секунд сөйле.',
+  sound:function(x){ return 'Сен '+x+'% кәсіби естілесің'; }, vs:function(d){ return 'өткен сессиядан '+(d>=0?'+':'')+d; }, first:'Алғашқы баға — келесіде салыстырамыз',
+  pace:'Қарқын', wpm:'сөз/мин', fillers:'Арам сөздер', per_min:'минутына', pauses:'Үзілістер', avg:'орташа', inton:'Интонация', st:'жартылай тон', acc:'Дәлдік', clar:'Анықтық',
+  target:'мақсат', fast:'жылдам', slow:'баяу', ok:'қалыпты', mono:'бірсарынды', lively:'жанды', none:'жоқ', long_p:function(n){ return n+' ұзақ'; },
+  tips:'Нені жақсарту керек', transcript:'Мен не естідім', ref_hint:'Қызғылт сарымен — танылмаған сөздер', got_xp:function(x){ return '+'+x+' тәжірибе'; },
+  again:'Қайталау', home:'Басты бет', ai_btn:'ЖИ-дан толық талдау', ai_wait:'ЖИ сөйлеуіңді талдап жатыр…', ai_err:'Талдау алынбады. Баптаулардағы API кілтін тексер.',
+  settings:'Баптаулар', key_l:'Claude API кілті (міндетті емес)', key_p:'Тек ЖИ талдауы үшін керек. Тек осы құрылғыда сақталады.', save:'Сақтау', reset:'Прогресті тазалау',
+  hint_um:'«Ээ», «мм» әрдайым танылмайды — үзілістер мен кідірістерді дыбыс бойынша есептеймін.', minutes:'мин', badge:'Жаңа белгі' }
+};
+var LANG_NAMES = {ru:{n:'Русский',s:'Russian · Орыс тілі'}, en:{n:'English',s:'Английский · Ағылшын тілі'}, kk:{n:'Қазақша',s:'Kazakh · Казахский'}};
+var SR_LANG = {ru:'ru-RU', en:'en-US', kk:'kk-KZ'};
+var PACE = {en:[130,165], ru:[110,150], kk:[100,140]};   // comfortable presentation pace, words per minute
+
+/* ================= training content ================= */
+var PHRASES = {
+ en:['I’d like to walk you through three ideas that can save our team about five hours a week.','Our results this quarter were strong, and the next step is to double down on what worked.','Thank you for your time today. Let me summarise the key points and the decision we need.'],
+ ru:['Я хочу показать три идеи, которые сэкономят команде около пяти часов в неделю.','Результаты квартала хорошие, и следующий шаг — усилить то, что сработало.','Спасибо за время. Давайте я подведу итоги и назову решение, которое нам нужно.'],
+ kk:['Командаға аптасына бес сағатқа жуық уақыт үнемдейтін үш идеяны көрсеткім келеді.','Тоқсан нәтижелері жақсы, келесі қадам — жұмыс істеген нәрсені күшейту.','Уақыт бөлгеніңізге рахмет. Негізгі ойларды қорытып, бізге қажет шешімді айтайын.']
+};
+var TOPICS = {
+ en:['Tell me about yourself in 60 seconds, as if at a job interview.','Explain your current project to someone outside your field.','Pitch an idea you believe in: the problem, the solution, why now.'],
+ ru:['Расскажи о себе за 60 секунд, как на собеседовании.','Объясни свой текущий проект человеку не из твоей сферы.','Продай идею, в которую веришь: проблема, решение, почему сейчас.'],
+ kk:['Өзің туралы 60 секундта айтып бер, сұхбаттағыдай.','Қазіргі жобаңды басқа саладағы адамға түсіндір.','Сенетін идеяңды ұсын: мәселе, шешім, неге дәл қазір.']
+};
+var FILLERS = {
+ en:['um','uh','er','erm','hmm','like','you know','i mean','basically','literally','actually','sort of','kind of','you see'],
+ ru:['э','ээ','эээ','эм','мм','ну','типа','как бы','короче','в общем','это самое','собственно','так сказать','вот','получается','в принципе','значит','блин'],
+ kk:['ээ','эм','мм','енді','әлгі','яғни','мынау','анау','сосын','сонымен','негізі','жаңағы']
+};
+
+/* ================= advice library ================= */
+var ADVICE = {
+ fillers:{ ru:['Меньше слов-паразитов','Паразиты появляются, когда мозг ищет следующую мысль. Пауза звучит увереннее любого «ну».','Повтори фразу ещё раз и каждый раз, когда хочется сказать паразит, просто закрой рот на полсекунды.'],
+           en:['Fewer filler words','Fillers appear while your brain searches for the next thought. A silent pause sounds more confident than any “um”.','Say it again, and every time you feel a filler coming, close your mouth for half a second instead.'],
+           kk:['Арам сөздерді азайт','Арам сөз ми келесі ойды іздегенде шығады. Үнсіз үзіліс кез келген «енді»-ден сенімдірек естіледі.','Қайта айт: арам сөз айтқың келген сайын жарты секунд аузыңды жауып тұр.'] },
+ fast:{ ru:['Говори медленнее','Быстрый темп звучит как волнение, и слушатель не успевает за мыслью.','Поставь мысленную точку после каждой фразы и сделай вдох. Цель — {lo}–{hi} слов в минуту.'],
+        en:['Slow down','A fast pace sounds nervous, and listeners can’t keep up with your point.','Put a mental full stop after every sentence and take a breath. Aim for {lo}–{hi} words per minute.'],
+        kk:['Баяуырақ сөйле','Жылдам қарқын толқу сияқты естіледі, тыңдаушы ойыңа ілеспейді.','Әр сөйлемнен кейін ойша нүкте қойып, дем ал. Мақсат — минутына {lo}–{hi} сөз.'] },
+ slow:{ ru:['Добавь энергии','Слишком медленная речь теряет внимание слушателя.','Перескажи то же самое за 20% меньшее время, не теряя пауз между мыслями.'],
+        en:['Add some energy','Speech that’s too slow loses the listener’s attention.','Retell the same thing in 20% less time while keeping the pauses between ideas.'],
+        kk:['Қуат қос','Тым баяу сөйлеу тыңдаушының назарын жоғалтады.','Сол ойды 20% аз уақытта қайта айт, ойлар арасындағы үзілістерді сақта.'] },
+ nopause:{ ru:['Делай паузы','Без пауз речь сливается в поток, и главное теряется.','Перед каждой ключевой цифрой или выводом сделай паузу на секунду.'],
+           en:['Use pauses','Without pauses your speech blurs into one stream and the key point gets lost.','Pause for one second before every key number or conclusion.'],
+           kk:['Үзіліс жаса','Үзіліссіз сөйлеу бір ағынға айналып, негізгі ой жоғалады.','Әр маңызды сан не қорытынды алдында бір секунд кідір.'] },
+ longpause:{ ru:['Меньше долгих зависаний','Паузы дольше 2 секунд звучат как потеря мысли.','Держи структуру «тезис → пример → вывод»: следующая мысль всегда понятна заранее.'],
+             en:['Fewer long freezes','Pauses over 2 seconds sound like you’ve lost your thread.','Use “point → example → conclusion”: you always know what comes next.'],
+             kk:['Ұзақ кідірісті азайт','2 секундтан ұзақ үзіліс ойдан адасқандай естіледі.','«Тезис → мысал → қорытынды» құрылымын ұста: келесі ой алдын ала белгілі.'] },
+ mono:{ ru:['Оживи интонацию','Голос звучит ровно — слушателю сложно понять, что главное.','В каждой фразе выдели одно ключевое слово голосом: чуть выше и чуть громче.'],
+        en:['Bring your intonation to life','Your voice sounds flat, so it’s hard to tell what matters most.','In every sentence, lift one key word: a little higher and a little louder.'],
+        kk:['Интонацияны жандандыр','Дауысың бірсарынды — тыңдаушыға ең маңыздысы түсініксіз.','Әр сөйлемде бір негізгі сөзді дауыспен ерекшеле: сәл жоғары, сәл қаттырақ.'] },
+ acc:{ ru:['Чётче проговаривай слова','Часть слов не распозналась — скорее всего, окончания «съедаются».','Прочитай фразу медленно, чётко договаривая последний слог каждого слова, затем в обычном темпе.'],
+       en:['Articulate more clearly','Some words weren’t recognised — endings are probably getting swallowed.','Read the sentence slowly, finishing the last sound of every word, then repeat at normal speed.'],
+       kk:['Сөздерді анығырақ айт','Кейбір сөздер танылмады — жалғаулар жұтылып кетуі мүмкін.','Сөйлемді әр сөздің соңғы буынын анық айтып, баяу оқы, сосын қалыпты қарқынмен.'] },
+ quiet:{ ru:['Говори громче','Голос тихий — на встрече тебя будут переспрашивать.','Представь, что говоришь человеку в дальнем конце комнаты, и сохрани эту громкость.'],
+         en:['Speak up','Your voice is quiet — people will ask you to repeat yourself.','Imagine talking to someone at the far end of the room and keep that volume.'],
+         kk:['Қаттырақ сөйле','Дауысың ақырын — жиналыста қайта сұрайды.','Бөлменің ар жағындағы адамға сөйлеп тұрғандай елестет те, сол дауысты сақта.'] },
+ great:{ ru:['Отличный результат','Все показатели в норме.','Следующий шаг — свободная речь на 60 секунд по теме своей ближайшей встречи.'],
+         en:['Great result','Every metric is on target.','Next step: a 60-second free talk on the topic of your next meeting.'],
+         kk:['Тамаша нәтиже','Барлық көрсеткіш қалыпты.','Келесі қадам — жақын кездесуің тақырыбына 60 секунд еркін сөйлеу.'] }
+};
+
+/* ================= helpers ================= */
+function plural(n, a, b, c){ var m10 = n%10, m100 = n%100; return (m10===1 && m100!==11) ? a : (m10>=2 && m10<=4 && (m100<10||m100>=20)) ? b : c; }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function L(k){ return T[(profile && profile.ui) || 'ru'][k]; }
+function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+function fmt1(x){ return (Math.round(x*10)/10).toString().replace('.', ','); }
+function norm(w){ return w.toLowerCase().replace(/ё/g,'е').replace(/[^\p{L}\p{N}'’-]/gu,'').replace(/’/g,"'"); }
+function words(text){ return text.split(/\s+/).map(norm).filter(Boolean); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+var app = document.getElementById('app');
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+/* ================= gamification ================= */
+function totalXP(){ return history.reduce(function(s,h){ return s + (h.xp||0); }, 0); }
+var LV = [0, 200, 500, 900, 1400];
+function levelOf(xp){ var i = 0; while(i < LV.length-1 && xp >= LV[i+1]) i++; var next = LV[i+1] || LV[i]; return {i:i, cur:xp-LV[i], need: next-LV[i] || 1, max: i===LV.length-1}; }
+function dayKey(ts){ var d = new Date(ts); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function streak(){
+  if(!history.length) return 0;
+  var days = {}; history.forEach(function(h){ days[dayKey(h.ts)] = 1; });
+  var n = 0, d = new Date();
+  if(!days[dayKey(d)]) d.setDate(d.getDate()-1);
+  while(days[dayKey(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+
+/* ================= screens ================= */
+var IC = {
+  read:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M4 5h14M4 9.5h14M4 14h9" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  free:'<svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 11h2M7 7v8M11 4v14M15 8v6M19 10v2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="#F5F5F7" stroke-width="2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="#F5F5F7" stroke-width="2" stroke-linecap="round"/></svg>',
+  back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="#F5F5F7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  flame:'<svg width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9F0A"/><stop offset="1" stop-color="#FF5A36"/></linearGradient></defs><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 2.8 2 3.2C11 8 11.5 5 12 2z" fill="url(#fl)"/></svg>'
+};
+var LOGO = '<span class="logo"><i>'+IC.free.replace('width="22" height="22"','width="14" height="14"')+'</i>Speakline</span>';
+
+function onboarding(){
+  var p = profile || {ui:'ru', train:'en', goal:0};
+  var draft = {ui:p.ui, train:p.train, goal:p.goal};
+  function render(){
+    var lt = T[draft.ui];
+    app.innerHTML =
+      '<div class="top">'+LOGO+'<span class="small">Язык · Language · Тіл</span></div>'+
+      '<h1 class="h1">'+lt.hello+'</h1><p class="p">'+lt.hello_p+'</p>'+
+      '<p class="label">'+lt.ui_lang+'</p><div class="opts">'+['ru','en','kk'].map(function(c){ return opt('ui', c, draft.ui===c); }).join('')+'</div>'+
+      '<p class="label">'+lt.train_lang+'</p><div class="opts">'+['ru','en','kk'].map(function(c){ return opt('train', c, draft.train===c); }).join('')+'</div>'+
+      '<p class="label">'+lt.goal+'</p><div class="chips">'+lt.goals.map(function(g,i){ return '<button class="chip" type="button" data-goal="'+i+'" aria-pressed="'+(draft.goal===i)+'">'+esc(g)+'</button>'; }).join('')+'</div>'+
+      '<button class="btn heat" type="button" id="go">'+lt.start+'</button>';
+    app.querySelectorAll('[data-kind]').forEach(function(b){ b.onclick = function(){ draft[b.getAttribute('data-kind')] = b.getAttribute('data-v'); render(); }; });
+    app.querySelectorAll('[data-goal]').forEach(function(b){ b.onclick = function(){ draft.goal = +b.getAttribute('data-goal'); render(); }; });
+    document.getElementById('go').onclick = function(){ profile = draft; store.set('profile', profile); home(); };
+  }
+  function opt(kind, c, on){ return '<button type="button" class="opt" data-kind="'+kind+'" data-v="'+c+'" aria-pressed="'+on+'"><span><b>'+LANG_NAMES[c].n+'</b><small>'+LANG_NAMES[c].s+'</small></span><i aria-hidden="true"></i></button>'; }
+  render();
+}
+
+function home(){
+  var xp = totalXP(), lv = levelOf(xp), st = streak(), mine = history.filter(function(h){ return h.lang===profile.train; });
+  var last = mine[mine.length-1];
+  var avgF = mine.length ? mine.slice(-5).reduce(function(s,h){ return s+h.fpm; },0)/Math.min(5,mine.length) : null;
+  app.innerHTML =
+    '<div class="top">'+LOGO+'<button class="icon-btn" type="button" id="set" aria-label="'+L('settings')+'">'+IC.gear+'</button></div>'+
+    '<h1 class="h1">'+L('hi')+'</h1>'+
+    '<div class="card"><div class="streak">'+IC.flame+'<div><b class="h2">'+(st ? L('streak')(st) : L('streak0'))+'</b><p class="small">'+LANG_NAMES[profile.train].n+' · '+esc(L('goals')[profile.goal||0])+'</p></div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:14px"><b>'+L('level')+' '+(lv.i+1)+' · '+L('lv')[lv.i]+'</b><span class="small">'+(lv.max ? xp : lv.cur+' / '+lv.need)+' '+L('xp')+'</span></div>'+
+    '<div class="xp"><i style="width:'+(lv.max?100:Math.round(lv.cur/lv.need*100))+'%"></i></div></div>'+
+    '<div class="grid2">'+
+      '<div class="stat"><span>'+L('last')+'</span><b>'+(last ? last.score+'%' : '—')+'</b></div>'+
+      '<div class="stat"><span>'+L('avg_f')+'</span><b>'+(avgF==null ? '—' : fmt1(avgF))+'</b></div></div>'+
+    '<div class="modes">'+
+      '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
+      '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
+    '<div class="card"><p class="label">'+L('progress')+'</p>'+(mine.length ? chart(mine.slice(-12)) : '<p class="small">'+L('no_hist')+'</p>')+'</div>'+
+    (mine.length ? '<p class="label">'+L('history')+'</p><div class="hist">'+mine.slice(-5).reverse().map(function(h){ var d = new Date(h.ts); return '<div class="hrow"><span>'+d.toLocaleDateString()+' · '+(h.mode==='read'?L('m_read'):L('m_free'))+'</span><b>'+h.score+'%</b></div>'; }).join('')+'</div>' : '');
+  document.getElementById('set').onclick = settings;
+  app.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ session(b.getAttribute('data-mode')); }; });
+}
+
+function chart(list){
+  var W = 320, H = 120, P = 18, n = list.length;
+  var x = function(i){ return n===1 ? W/2 : P + (W-2*P)*i/(n-1); }, y = function(v){ return H-P - (H-2*P)*v/100; };
+  var d = list.map(function(h,i){ return (i?'L':'M')+x(i).toFixed(1)+' '+y(h.score).toFixed(1); }).join(' ');
+  var s = '<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Оценки по сессиям"><defs><linearGradient id="cl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs>';
+  [0,50,100].forEach(function(t){ s += '<line x1="'+P+'" x2="'+(W-P)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="rgba(255,255,255,.08)"/><text x="2" y="'+(y(t)+4)+'" font-size="9" fill="#8E8E93">'+t+'</text>'; });
+  s += '<path d="'+d+'" fill="none" stroke="url(#cl)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  list.forEach(function(h,i){ s += '<circle cx="'+x(i)+'" cy="'+y(h.score)+'" r="'+(i===n-1?5:3)+'" fill="#FF9F0A"/>'; });
+  s += '<text x="'+(x(n-1)-6)+'" y="'+(y(list[n-1].score)-10)+'" text-anchor="end" font-size="12" font-weight="700" fill="#F5F5F7">'+list[n-1].score+'%</text></svg></div>';
+  return s;
+}
+
+function settings(){
+  app.innerHTML =
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
+    '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
+    '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
+    '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
+    '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>';
+  document.getElementById('bk').onclick = home;
+  document.getElementById('lang').onclick = onboarding;
+  document.getElementById('sv').onclick = function(){ aiKey = document.getElementById('key').value.trim(); store.set('aiKey', aiKey); home(); };
+  document.getElementById('rs').onclick = function(){
+    document.getElementById('rsbox').innerHTML = '<div class="row"><button class="btn ghost" type="button" id="no">✕</button><button class="btn heat" type="button" id="yes">'+L('reset')+'</button></div>';
+    document.getElementById('no').onclick = settings;
+    document.getElementById('yes').onclick = function(){ history = []; store.set('history', history); home(); };
+  };
+}
+
+/* ================= recording session ================= */
+var ctx = null, media = null;
+function session(mode){
+  var lang = profile.train, text = mode==='read' ? pick(PHRASES[lang]) : pick(TOPICS[lang]), maxSec = mode==='read' ? 20 : 60;
+  app.innerHTML =
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[lang].n+'</span><span class="timer" id="tm">0:00</span></div>'+
+    '<p class="label">'+(mode==='read' ? L('read_this') : L('speak_on'))+'</p>'+
+    '<p class="prompt">'+(mode==='read' ? '«'+esc(text)+'»' : esc(text))+'</p>'+
+    '<canvas class="wave" id="wv" width="900" height="220" aria-hidden="true"></canvas>'+
+    '<div class="recwrap"><button class="rec" type="button" id="rec" aria-label="'+L('tap')+'"></button><p class="small" id="st">'+L('tap')+'</p></div>'+
+    '<div class="card"><p class="label">'+L('transcript')+'</p><p class="live" id="live"></p></div>'+
+    '<p class="small">'+L('hint_um')+'</p>'+
+    (SR ? '' : '<p class="warnbox">'+L('no_sr')+'</p>');
+  var stopFn = null;
+  document.getElementById('bk').onclick = function(){ if(stopFn) stopFn(true); home(); };
+  var recBtn = document.getElementById('rec');
+  recBtn.onclick = function(){
+    if(stopFn){ stopFn(false); return; }
+    start(mode, text, maxSec).then(function(fn){ stopFn = fn; }).catch(function(e){
+      document.getElementById('st').innerHTML = '<span class="warnbox" style="display:block">'+L('no_mic')+'</span>';
+    });
+  };
+}
+
+function start(mode, text, maxSec){
+  var lang = profile.train;
+  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:false}}).then(function(stream){
+    media = stream;
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if(ctx.state === 'suspended') ctx.resume();
+    var src = ctx.createMediaStreamSource(stream), an = ctx.createAnalyser();
+    an.fftSize = 2048; src.connect(an);
+    var buf = new Float32Array(an.fftSize), sr = ctx.sampleRate;
+    var frames = [], t0 = performance.now(), raf = 0, fi = 0;
+    var cv = document.getElementById('wv'), g = cv.getContext('2d'), bars = new Array(64).fill(0);
+    var finals = [], interim = '', confs = [], recog = null, recording = true;
+    var recBtn = document.getElementById('rec'), st = document.getElementById('st'), tm = document.getElementById('tm'), live = document.getElementById('live');
+    recBtn.classList.add('on'); st.textContent = L('listening');
+
+    if(SR){
+      recog = new SR(); recog.lang = SR_LANG[lang]; recog.continuous = true; recog.interimResults = true; recog.maxAlternatives = 1;
+      recog.onresult = function(e){
+        interim = '';
+        for(var i = e.resultIndex; i < e.results.length; i++){
+          var r = e.results[i];
+          if(r.isFinal){ finals.push(r[0].transcript.trim()); if(r[0].confidence > 0) confs.push(r[0].confidence); }
+          else interim += r[0].transcript;
+        }
+        live.innerHTML = esc(finals.join(' ')) + ' <span class="interim">'+esc(interim)+'</span>';
+      };
+      recog.onerror = function(){};
+      recog.onend = function(){ if(recording){ try{ recog.start(); }catch(e){} } };
+      try{ recog.start(); }catch(e){}
+    }
+
+    function loop(){
+      an.getFloatTimeDomainData(buf);
+      var s = 0; for(var i = 0; i < buf.length; i++) s += buf[i]*buf[i];
+      var rms = Math.sqrt(s/buf.length), t = (performance.now()-t0)/1000;
+      var f0 = (fi++ % 2 === 0) ? pitch(buf, sr) : 0;
+      frames.push({t:t, rms:rms, f0:f0});
+      bars.push(rms); bars.shift();
+      draw(g, cv, bars);
+      var sec = Math.floor(t); tm.textContent = Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+      if(t >= maxSec){ stop(false); return; }
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+
+    function stop(abort){
+      if(!recording) return; recording = false;
+      cancelAnimationFrame(raf);
+      try{ stream.getTracks().forEach(function(tr){ tr.stop(); }); }catch(e){}
+      recBtn.classList.remove('on'); recBtn.disabled = true;
+      if(abort){ try{ recog && recog.abort(); }catch(e){} return; }
+      st.textContent = L('analysing');
+      var done = false;
+      var finish = function(){ if(done) return; done = true;
+        var transcript = (finals.join(' ') + ' ' + interim).trim();
+        result(analyse({mode:mode, lang:lang, ref:mode==='read'?text:null, prompt:text, frames:frames, transcript:transcript, confs:confs}));
+      };
+      if(recog){ recog.onend = finish; try{ recog.stop(); }catch(e){ finish(); } setTimeout(finish, 2500); } else finish();
+    }
+    return stop;
+  });
+}
+
+function draw(g, cv, bars){
+  var W = cv.width, H = cv.height, n = bars.length, bw = W/n;
+  g.clearRect(0,0,W,H);
+  var grad = g.createLinearGradient(0,0,0,H); grad.addColorStop(0,'#FF9F0A'); grad.addColorStop(1,'#FF5A36');
+  g.fillStyle = grad;
+  for(var i = 0; i < n; i++){
+    var h = Math.max(6, Math.min(H, Math.sqrt(bars[i])*H*2.2));
+    var x = i*bw + bw*0.25, w = bw*0.5, yv = (H-h)/2;
+    g.beginPath(); if(g.roundRect) g.roundRect(x, yv, w, h, w/2); else g.rect(x, yv, w, h); g.fill();
+  }
+}
+
+/* autocorrelation pitch on a 2x-downsampled window; returns Hz or 0 */
+function pitch(buf, sr){
+  var N = buf.length >> 1, x = new Float32Array(N), e = 0;
+  for(var i = 0; i < N; i++){ x[i] = buf[2*i]; e += x[i]*x[i]; }
+  if(Math.sqrt(e/N) < 0.01) return 0;
+  var fs = sr/2, minLag = Math.floor(fs/400), maxLag = Math.floor(fs/70), best = 0, bestLag = 0;
+  for(var lag = minLag; lag <= maxLag; lag++){
+    var c = 0; for(var j = 0; j < N-lag; j++) c += x[j]*x[j+lag];
+    if(c > best){ best = c; bestLag = lag; }
+  }
+  if(!bestLag || best/e < 0.45) return 0;
+  return fs/bestLag;
+}
+
+/* ================= analysis ================= */
+function pct(arr, p){ if(!arr.length) return 0; var a = arr.slice().sort(function(x,y){return x-y;}); return a[Math.min(a.length-1, Math.floor(p*a.length))]; }
+function analyse(o){
+  var fr = o.frames, rms = fr.map(function(f){ return f.rms; });
+  var floor = pct(rms, .15), loud = pct(rms, .9), thr = Math.max(0.006, floor + (loud-floor)*0.18);
+  // voiced segments with 120 ms gap smoothing
+  var segs = [], cur = null;
+  fr.forEach(function(f){
+    if(f.rms > thr){ if(cur && f.t - cur.e < 0.12){ cur.e = f.t; } else { cur = {s:f.t, e:f.t}; segs.push(cur); } }
+  });
+  segs = segs.filter(function(s){ return s.e - s.s > 0.06; });
+  var speech = segs.length ? segs[segs.length-1].e - segs[0].s : 0;
+  var pauses = [];
+  for(var i = 1; i < segs.length; i++){ var g = segs[i].s - segs[i-1].e; if(g >= 0.25) pauses.push(g); }
+  var longP = pauses.filter(function(p){ return p > 2; }).length;
+  var avgP = pauses.length ? pauses.reduce(function(a,b){return a+b;},0)/pauses.length : 0;
+  // pitch variability in semitones
+  var st = fr.filter(function(f){ return f.f0 > 0 && f.rms > thr; }).map(function(f){ return 12*Math.log2(f.f0/100); });
+  var med = pct(st, .5); st = st.filter(function(v){ return Math.abs(v-med) < 10; });
+  var mean = st.reduce(function(a,b){return a+b;},0)/(st.length||1);
+  var sd = st.length > 10 ? Math.sqrt(st.reduce(function(a,b){ return a+(b-mean)*(b-mean); },0)/st.length) : null;
+  var voicedDb = 20*Math.log10(Math.max(1e-6, pct(fr.filter(function(f){ return f.rms > thr; }).map(function(f){ return f.rms; }), .5)));
+  // words and fillers
+  var raw = o.transcript.split(/\s+/).filter(Boolean), ws = raw.map(norm);
+  var fill = FILLERS[o.lang], marks = new Array(ws.length).fill(false), nF = 0;
+  for(var k = 0; k < ws.length; k++){
+    for(var m = 0; m < fill.length; m++){
+      var parts = fill[m].split(' ');
+      if(parts.every(function(p, j){ return ws[k+j] === p; })){ for(var j2 = 0; j2 < parts.length; j2++) marks[k+j2] = true; nF++; k += parts.length-1; break; }
+    }
+  }
+  // repeated words ("the the")
+  var reps = 0; for(var r = 1; r < ws.length; r++) if(ws[r] && ws[r] === ws[r-1] && !marks[r]) reps++;
+  var minutes = Math.max(speech, 1)/60;
+  var nW = ws.length, wpm = nW/minutes, fpm = nF/minutes;
+  // read-aloud accuracy by word alignment
+  var acc = null, refMarks = null;
+  if(o.ref){
+    var ref = words(o.ref), hyp = ws.filter(function(w,i){ return !marks[i]; });
+    var D = [], n = ref.length, mm = hyp.length;
+    for(var a = 0; a <= n; a++){ D[a] = [a]; }
+    for(var b = 1; b <= mm; b++) D[0][b] = b;
+    for(a = 1; a <= n; a++) for(b = 1; b <= mm; b++) D[a][b] = Math.min(D[a-1][b]+1, D[a][b-1]+1, D[a-1][b-1] + (ref[a-1]===hyp[b-1] ? 0 : 1));
+    refMarks = new Array(n).fill(false); a = n; b = mm; var match = 0;
+    while(a > 0 && b > 0){
+      if(ref[a-1]===hyp[b-1] && D[a][b]===D[a-1][b-1]){ refMarks[a-1] = true; match++; a--; b--; }
+      else if(D[a][b]===D[a-1][b-1]+1){ a--; b--; }
+      else if(D[a][b]===D[a-1][b]+1){ a--; }
+      else b--;
+    }
+    acc = n ? match/n : null;
+  }
+  var conf = o.confs.length ? o.confs.reduce(function(x,y){return x+y;},0)/o.confs.length : null;
+
+  // component scores 0..100
+  var band = PACE[o.lang], sPace = wpm < band[0] ? 100 - (band[0]-wpm)*2 : wpm > band[1] ? 100 - (wpm-band[1])*2.2 : 100;
+  var sFill = 100 - fpm*12 - reps*4;
+  var ppm = pauses.length/minutes;
+  var sPause = 100 - Math.max(0, 4-ppm)*12 - longP*12 - (avgP > 1.4 ? (avgP-1.4)*30 : 0);
+  var sInt = sd==null ? null : sd >= 3 ? 100 : sd <= .8 ? 20 : 20 + (sd-.8)/(3-.8)*80;
+  var sAcc = acc==null ? null : acc*100, sConf = conf==null ? null : clamp((conf-.55)/.4*100, 0, 100);
+  var W = o.mode==='read' ? {pace:.25, fill:.15, pause:.15, int:.15, acc:.30} : {pace:.25, fill:.30, pause:.15, int:.15, conf:.15};
+  var parts2 = {pace:sPace, fill:sFill, pause:sPause, int:sInt, acc:sAcc, conf:sConf}, sum = 0, wsum = 0;
+  Object.keys(W).forEach(function(key){ var v = parts2[key]; if(v!=null){ sum += clamp(v,0,100)*W[key]; wsum += W[key]; } });
+  var score = Math.round(clamp(sum/(wsum||1), 0, 100));
+  if(voicedDb < -42) score = Math.max(0, score-5);
+
+  // advice: weakest areas first
+  var issues = [];
+  if(sFill < 85 && nF > 0) issues.push({k:'fillers', v:sFill});
+  if(wpm > band[1]) issues.push({k:'fast', v:sPace}); else if(wpm < band[0]) issues.push({k:'slow', v:sPace});
+  if(longP > 0) issues.push({k:'longpause', v:100-longP*12});
+  else if(ppm < 4 && speech > 8) issues.push({k:'nopause', v:sPause});
+  if(sInt!=null && sInt < 70) issues.push({k:'mono', v:sInt});
+  if(sAcc!=null && sAcc < 85) issues.push({k:'acc', v:sAcc});
+  if(voicedDb < -42) issues.push({k:'quiet', v:60});
+  issues.sort(function(x,y){ return x.v - y.v; });
+  if(!issues.length) issues.push({k:'great', v:100});
+
+  return {mode:o.mode, lang:o.lang, prompt:o.prompt, ref:o.ref, refMarks:refMarks, raw:raw, marks:marks, nW:nW, nF:nF, reps:reps, speech:speech,
+    wpm:wpm, fpm:fpm, pauses:pauses.length, avgP:avgP, longP:longP, sd:sd, acc:acc, conf:conf, db:voicedDb, score:score, band:band, issues:issues.slice(0,3), tooShort: speech < 3 || nW < 4};
+}
+window.__analyse = analyse; window.__pitch = pitch;
+
+/* ================= result ================= */
+function result(r){
+  if(r.tooShort){
+    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk">'+IC.back+'</button><span></span><span></span></div><p class="warnbox">'+L('too_short')+'</p><button class="btn heat" type="button" id="ag">'+L('again')+'</button>';
+    document.getElementById('bk').onclick = home; document.getElementById('ag').onclick = function(){ session(r.mode); }; return;
+  }
+  var mine = history.filter(function(h){ return h.lang===r.lang; }), prev = mine[mine.length-1];
+  var xp = Math.round(r.score/2) + 10 + (prev && r.score > prev.score ? 10 : 0);
+  var lvBefore = levelOf(totalXP()).i;
+  var stBefore = streak();
+  history.push({ts:Date.now(), mode:r.mode, lang:r.lang, score:r.score, wpm:Math.round(r.wpm), fpm:r.fpm, xp:xp});
+  store.set('history', history);
+  var lvAfter = levelOf(totalXP()).i, stAfter = streak();
+  var badge = lvAfter > lvBefore ? L('level')+' '+(lvAfter+1)+' · '+L('lv')[lvAfter] : (stAfter > stBefore && stAfter > 1 ? L('streak')(stAfter) : (r.nF===0 ? (profile.ui==='ru'?'Ни одного паразита':profile.ui==='kk'?'Бірде-бір арам сөз жоқ':'Zero filler words') : null));
+  var band = r.band;
+  var paceTag = r.wpm > band[1] ? ['bad', L('fast')] : r.wpm < band[0] ? ['warn', L('slow')] : ['good', L('ok')];
+  var tx = r.raw.map(function(w,i){ return r.marks[i] ? '<mark>'+esc(w)+'</mark>' : esc(w); }).join(' ');
+  var refHtml = r.ref ? r.ref.split(/\s+/).filter(function(t){ return norm(t); }).map(function(t,i){ return '<span class="'+(r.refMarks[i]?'ok':'miss')+'">'+esc(t)+'</span>'; }).join(' ') : '';
+  var tips = r.issues.map(function(is, i){ var a = ADVICE[is.k][profile.ui]; return '<div class="tip"><span class="n">'+(i+1)+'</span><div><b>'+a[0]+'</b><p>'+a[1]+'</p><p class="drill">'+a[2].replace('{lo}', band[0]).replace('{hi}', band[1])+'</p></div></div>'; }).join('');
+  app.innerHTML =
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[r.lang].n+' · '+(r.mode==='read'?L('m_read'):L('m_free'))+'</span><span style="width:40px"></span></div>'+
+    '<div class="ringbox"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#2C2C2E" stroke-width="10"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><span class="num"><span id="num">0</span><small>%</small></span></div>'+
+    '<div class="center"><p class="h2">'+L('sound')(r.score)+'</p><p class="small" style="margin-top:4px;color:'+(prev && r.score>=prev.score?'#30D158':'#8E8E93')+'">'+(prev ? L('vs')(r.score-prev.score) : L('first'))+' · '+L('got_xp')(xp)+'</p></div>'+
+    (badge ? '<div class="badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="10" r="6" stroke="#FF9F0A" stroke-width="2"/><path d="M8.5 15l-1.5 6 5-2.5 5 2.5-1.5-6" stroke="#FF9F0A" stroke-width="2" stroke-linejoin="round"/></svg><span><b>'+L('badge')+':</b> '+esc(badge)+'</span></div>' : '')+
+    '<div class="grid2">'+
+      stat(L('pace'), Math.round(r.wpm)+' '+L('wpm'), L('target')+' '+band[0]+'–'+band[1]+' · '+paceTag[1], paceTag[0])+
+      stat(L('fillers'), fmt1(r.fpm)+' '+L('per_min'), r.nF ? r.nF+' × '+uniqFillers(r) : L('none'), r.fpm > 3 ? 'bad' : r.fpm > 1 ? 'warn' : 'good')+
+      stat(L('pauses'), String(r.pauses), r.longP ? L('long_p')(r.longP) : L('avg')+' '+fmt1(r.avgP)+' '+(profile.ui==='en'?'s':'с'), r.longP ? 'warn' : 'good')+
+      (r.sd==null ? stat(L('inton'), '—', '', '') : stat(L('inton'), fmt1(r.sd)+' '+L('st'), r.sd < 1.5 ? L('mono') : L('lively'), r.sd < 1.5 ? 'warn' : 'good'))+
+      (r.acc!=null ? stat(L('acc'), Math.round(r.acc*100)+'%', '', r.acc < .85 ? 'warn' : 'good') : '')+
+      (r.conf!=null ? stat(L('clar'), Math.round(r.conf*100)+'%', '', r.conf < .75 ? 'warn' : 'good') : '')+
+    '</div>'+
+    '<p class="label">'+L('tips')+'</p>'+tips+
+    '<p class="label">'+L('transcript')+'</p><p class="tx">'+(tx || '—')+'</p>'+
+    (r.ref ? '<p class="tx">'+refHtml+'</p><p class="small">'+L('ref_hint')+'</p>' : '')+
+    (aiKey ? '<button class="btn ghost" type="button" id="ai">'+L('ai_btn')+'</button><div class="card" id="aibox" hidden><p class="ai" id="aitx"></p></div>' : '')+
+    '<div class="row"><button class="btn ghost" type="button" id="hm">'+L('home')+'</button><button class="btn heat" type="button" id="ag">'+L('again')+'</button></div>';
+  // score animation
+  var arc = document.getElementById('arc'), num = document.getElementById('num'), C = 326.7, to = r.score;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var setv = function(v){ num.textContent = Math.round(v); arc.setAttribute('stroke-dashoffset', (C*(1-v/100)).toFixed(1)); };
+  if(reduce) setv(to); else { var t0 = null; var tick = function(ts){ if(!t0) t0 = ts; var k = Math.min(1,(ts-t0)/1200); setv(to*(1-Math.pow(1-k,3))); if(k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  document.getElementById('bk').onclick = home; document.getElementById('hm').onclick = home;
+  document.getElementById('ag').onclick = function(){ session(r.mode); };
+  var aiBtn = document.getElementById('ai'); if(aiBtn) aiBtn.onclick = function(){ aiReview(r, aiBtn); };
+}
+function stat(k, v, e, cls){ return '<div class="stat"><span>'+k+'</span><b>'+v+'</b>'+(e?'<em class="'+cls+'">'+esc(e)+'</em>':'')+'</div>'; }
+function uniqFillers(r){ var u = {}; r.raw.forEach(function(w,i){ if(r.marks[i]) u[norm(w)] = 1; }); return Object.keys(u).slice(0,3).map(function(w){ return '«'+w+'»'; }).join(', '); }
+
+/* ================= optional AI coach (user’s own Claude API key) ================= */
+function aiReview(r, btn){
+  var box = document.getElementById('aibox'), out = document.getElementById('aitx');
+  box.hidden = false; out.textContent = L('ai_wait'); btn.disabled = true;
+  var uiName = {ru:'Russian', en:'English', kk:'Kazakh'}[profile.ui], trName = {ru:'Russian', en:'English', kk:'Kazakh'}[r.lang];
+  var metrics = {mode:r.mode, task:r.prompt, words:r.nW, seconds:Math.round(r.speech), wpm:Math.round(r.wpm), target_wpm:r.band, fillers:r.nF, fillers_per_min:+r.fpm.toFixed(1),
+    pauses:r.pauses, avg_pause_s:+r.avgP.toFixed(2), long_pauses:r.longP, pitch_sd_semitones:r.sd==null?null:+r.sd.toFixed(1), read_accuracy:r.acc, score:r.score};
+  var prompt = 'You are a speaking coach. The user spoke in '+trName+'. Transcript from speech recognition (filler sounds like "um" may be missing): """'+r.raw.join(' ')+'"""\nMeasured metrics: '+JSON.stringify(metrics)+
+    '\nReply in '+uiName+', plain text, no markdown headings. Give: 1) one sentence on what already works; 2) three specific, actionable tips tied to the metrics and the actual words used; 3) a rewritten version of what they said — clearer, without fillers, same meaning, in '+trName+'. Keep it under 180 words.';
+  fetch('https://api.anthropic.com/v1/messages', {method:'POST', headers:{'content-type':'application/json','x-api-key':aiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body: JSON.stringify({model:'claude-sonnet-5-5', max_tokens:700, messages:[{role:'user', content:prompt}]})})
+  .then(function(res){ if(!res.ok) throw new Error(res.status); return res.json(); })
+  .then(function(j){ out.textContent = (j.content||[]).map(function(c){ return c.text||''; }).join('').trim() || L('ai_err'); })
+  .catch(function(){ out.textContent = L('ai_err'); })
+  .then(function(){ btn.disabled = false; });
+}
+
+/* ================= boot ================= */
+document.documentElement.lang = (profile && profile.ui) || 'ru';
+if(profile) home(); else onboarding();
+})();
+</script>
+</body>
+</html>
