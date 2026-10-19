@@ -248,6 +248,7 @@ h1,h2,h3,p{margin:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 .upc{background:var(--card);border-radius:20px;padding:16px;display:grid;gap:10px;border:1.5px solid var(--hair)}
 .upc.on{border-color:var(--good)}
+.legal a{color:var(--soft)}
 .upc strong{color:var(--b)}
 .btn svg{vertical-align:-3px}
 /* tour */
@@ -926,7 +927,7 @@ var X = {
   pw_t:'Дойди до цели за 4 недели', pw_s:function(now, goal){ return 'Сейчас ты звучишь на '+now+'%. С ежедневной практикой — до '+goal+'% и звание «'+XL('goalR')[profile.goal||0]+'».'; },
   pw_f:[['Все 6 миссий пути','и финальное звание'],['Подготовка к встречам','добавь встречу — подготовим к ней'],['Сценарии','собеседование, питч, апдейт'],['Прогресс по навыкам','темп, паузы, паразиты, интонация']],
   plans:[['week','Неделя','$4.99','7 дней, затем $17.99 в месяц',''],['month','Месяц','$17.99','Отмена в любой момент',''],['quarter','3 месяца','$29.99','$10 в месяц','−44%']],
-  pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
+  pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
   pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
   up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
   up_pro:['Pro','+$10 в месяц','Подробный ИИ-разбор каждой записи и твой текст, переписанный без паразитов.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
@@ -974,7 +975,7 @@ var X = {
   pw_t:'Reach your goal in 4 weeks', pw_s:function(now, goal){ return 'You sound '+now+'% professional now. With daily practice — up to '+goal+'% and the “'+XL('goalR')[profile.goal||0]+'” title.'; },
   pw_f:[['All 6 missions','and the final title'],['Meeting prep','add a meeting — we’ll prepare you'],['Scenarios','interview, pitch, status update'],['Skill progress','pace, pauses, fillers, intonation']],
   plans:[['week','1 week','$4.99','7 days, then $17.99 a month',''],['month','1 month','$17.99','Cancel anytime',''],['quarter','3 months','$29.99','$10 a month','−44%']],
-  pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
+  pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms.html" target="_blank">terms</a>, <a href="privacy.html" target="_blank">privacy policy</a> and <a href="refund.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
   pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
   up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
   up_pro:['Pro','+$10 a month','Detailed AI review of every recording and your text rewritten without fillers.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
@@ -1022,7 +1023,7 @@ var X = {
   pw_t:'Мақсатқа 4 аптада жет', pw_s:function(now, goal){ return 'Қазір сен '+now+'% кәсіби естілесің. Күнделікті жаттығумен — '+goal+'%-ға дейін және «'+XL('goalR')[profile.goal||0]+'» атағы.'; },
   pw_f:[['Жолдың 6 миссиясы','және соңғы атақ'],['Кездесуге дайындық','кездесуді қос — дайындаймыз'],['Сценарийлер','сұхбат, питч, есеп беру'],['Дағдылар прогресі','қарқын, үзіліс, арам сөз, интонация']],
   plans:[['week','Апта','$4.99','7 күн, кейін айына $17.99',''],['month','Ай','$17.99','Кез келген уақытта тоқтатуға болады',''],['quarter','3 ай','$29.99','айына $10','−44%']],
-  pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
+  pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
   pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
   up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
   up_pro:['Pro','айына +$10','Әр жазбаның толық ЖИ талдауы және арам сөзсіз қайта жазылған мәтінің.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
@@ -1365,7 +1366,7 @@ function paywall(why, onClose, score){
       '<h1 class="h1">'+XL('pw_t')+'</h1><p class="p">'+esc(XL('pw_s')(last, target))+'</p></div>'+
       '<ul class="feat">'+XL('pw_f').map(function(f){ return '<li><span class="fi">'+ICX.check+'</span><span><b>'+f[0]+'</b><small>'+f[1]+'</small></span></li>'; }).join('')+'</ul>'+
       '<div class="plans" role="radiogroup">'+XL('plans').map(function(p){ return '<button type="button" class="plan" role="radio" data-p="'+p[0]+'" aria-checked="'+(sel===p[0])+'">'+(p[4]?'<em>'+p[4]+'</em>':'')+'<span><b>'+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></button>'; }).join('')+'</div>'+
-      '<button class="btn heat" type="button" id="buy">'+XL('pw_go')+'</button><button class="link" type="button" id="later">'+XL('pw_later')+'</button><p class="small center">'+XL('pw_demo')+'</p>';
+      '<button class="btn heat" type="button" id="buy">'+XL('pw_go')+'</button><p class="small center legal">'+XL('pw_legal')+'</p><button class="link" type="button" id="later">'+XL('pw_later')+'</button><p class="small center">'+XL('pw_demo')+'</p>';
     app.querySelectorAll('[data-p]').forEach(function(b){ b.onclick = function(){ sel = b.getAttribute('data-p'); render(); }; });
     document.getElementById('x').onclick = onClose; document.getElementById('later').onclick = onClose;
     document.getElementById('buy').onclick = function(){ checkout(sel, onClose); };
@@ -1419,7 +1420,8 @@ function settings(){
     '<button class="btn ghost" type="button" id="tr">'+XL('set_tour')+'</button>'+
     '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
     '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
-    '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>';
+    '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>'+
+    '<p class="small center legal"><a href="terms.html" target="_blank">Оферта</a> · <a href="privacy.html" target="_blank">Конфиденциальность</a> · <a href="refund.html" target="_blank">Возврат</a></p>';
   var $ = function(id){ return document.getElementById(id); };
   $('bk').onclick = home;
   if($('buy')) $('buy').onclick = function(){ paywall('settings', settings); };
