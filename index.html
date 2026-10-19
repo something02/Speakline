@@ -77,6 +77,10 @@ h1,h2,h3,p{margin:0}
 .timer{font:600 20px/1 var(--display);font-variant-numeric:tabular-nums}
 .live{min-height:72px;font-size:16px;line-height:1.55;color:var(--ink)}
 .live .interim{color:var(--muted)}
+.srst{min-height:0;color:#FF9F0A;text-align:center}
+.srst.on{min-height:18px}
+.tx mark.hes{background:rgba(255,69,58,.12);border:1px dashed rgba(255,69,58,.6);font-style:italic}
+.dbg{font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--muted);white-space:pre-wrap}
 .tx{font-size:16px;line-height:1.65;background:var(--card);border-radius:18px;padding:14px 16px}
 .tx mark{background:rgba(255,69,58,.22);color:var(--bad);border-radius:5px;padding:0 4px;font-weight:600}
 .tx .miss{color:var(--b);text-decoration:underline wavy;text-underline-offset:3px}
@@ -175,7 +179,7 @@ var T = {
   tips:'Что улучшить', transcript:'Что я услышал', ref_hint:'Оранжевым — слова из фразы, которые не распознались', got_xp:function(x){ return '+'+x+' опыта'; },
   again:'Ещё раз', home:'Домой', ai_btn:'Подробный разбор от ИИ', ai_wait:'ИИ разбирает твою речь…', ai_err:'Не получилось получить разбор. Проверь ключ API в настройках.',
   settings:'Настройки', key_l:'Ключ Claude API (необязательно)', key_p:'Нужен только для подробного разбора от ИИ. Хранится только на этом устройстве.', save:'Сохранить', reset:'Сбросить прогресс',
-  hint_um:'«Эм» и «ээ» распознаются не всегда — паузы и колебания считаю по звуку.', minutes:'мин', badge:'Новый значок' },
+  hint_um:'Распознавание речи выкидывает «э-э» и «м-м» из текста, поэтому такие заминки я ловлю по звуку: ровный протяжный звук дольше 0,35 с.', minutes:'мин', badge:'Новый значок' },
  en:{ hello:'Let’s set you up', hello_p:'Pick the app language, the language you want to train and your goal — it takes 10 seconds.',
   ui_lang:'App language', train_lang:'Which language do you want to train?', goal:'Where do you need to sound confident?', goals:['Meetings and calls','Job interviews','Presentations','Small talk'], start:'Start',
   hi:'Hi', streak:function(n){ return n+'-day streak'; }, streak0:'Start your streak today', level:'Level', xp:'XP',
@@ -191,7 +195,7 @@ var T = {
   tips:'What to improve', transcript:'What I heard', ref_hint:'Orange — words from the sentence that weren’t recognised', got_xp:function(x){ return '+'+x+' XP'; },
   again:'Try again', home:'Home', ai_btn:'Detailed AI review', ai_wait:'The AI is reviewing your speech…', ai_err:'Couldn’t get the review. Check the API key in settings.',
   settings:'Settings', key_l:'Claude API key (optional)', key_p:'Only needed for the detailed AI review. Stored on this device only.', save:'Save', reset:'Reset progress',
-  hint_um:'“Um” and “uh” aren’t always transcribed — pauses and hesitations are measured from the audio.', minutes:'min', badge:'New badge' },
+  hint_um:'Speech recognition drops “um” and “uh” from the text, so I catch them from the sound: a flat, drawn-out sound longer than 0.35 s.', minutes:'min', badge:'New badge' },
  kk:{ hello:'Өзіңе бейімдейік', hello_p:'Қосымша тілін, жаттығу тілін және мақсатыңды таңда — 10 секунд қана.',
   ui_lang:'Қосымша тілі', train_lang:'Қай тілде жаттығасың?', goal:'Қай жерде сенімді сөйлеу маңызды?', goals:['Жиналыстар мен қоңыраулар','Жұмыс сұхбаттары','Презентациялар','Small talk'], start:'Бастау',
   hi:'Сәлем', streak:function(n){ return n+' күндік серия'; }, streak0:'Серияны бүгін баста', level:'Деңгей', xp:'тәжірибе',
@@ -207,7 +211,7 @@ var T = {
   tips:'Нені жақсарту керек', transcript:'Мен не естідім', ref_hint:'Қызғылт сарымен — танылмаған сөздер', got_xp:function(x){ return '+'+x+' тәжірибе'; },
   again:'Қайталау', home:'Басты бет', ai_btn:'ЖИ-дан толық талдау', ai_wait:'ЖИ сөйлеуіңді талдап жатыр…', ai_err:'Талдау алынбады. Баптаулардағы API кілтін тексер.',
   settings:'Баптаулар', key_l:'Claude API кілті (міндетті емес)', key_p:'Тек ЖИ талдауы үшін керек. Тек осы құрылғыда сақталады.', save:'Сақтау', reset:'Прогресті тазалау',
-  hint_um:'«Ээ», «мм» әрдайым танылмайды — үзілістер мен кідірістерді дыбыс бойынша есептеймін.', minutes:'мин', badge:'Жаңа белгі' }
+  hint_um:'Тану «ээ» мен «мм»-ді мәтіннен алып тастайды, сондықтан оларды дыбыс бойынша ұстаймын: 0,35 с-тан ұзақ біркелкі созылған дыбыс.', minutes:'мин', badge:'Жаңа белгі' }
 };
 var LANG_NAMES = {ru:{n:'Русский',s:'Russian · Орыс тілі'}, en:{n:'English',s:'Английский · Ағылшын тілі'}, kk:{n:'Қазақша',s:'Kazakh · Казахский'}};
 var SR_LANG = {ru:'ru-RU', en:'en-US', kk:'kk-KZ'};
@@ -225,12 +229,28 @@ var TOPICS = {
  kk:['Өзің туралы 60 секундта айтып бер, сұхбаттағыдай.','Қазіргі жобаңды басқа саладағы адамға түсіндір.','Сенетін идеяңды ұсын: мәселе, шешім, неге дәл қазір.']
 };
 var FILLERS = {
- en:['um','uh','er','erm','hmm','like','you know','i mean','basically','literally','actually','sort of','kind of','you see'],
- ru:['э','ээ','эээ','эм','мм','ну','типа','как бы','короче','в общем','это самое','собственно','так сказать','вот','получается','в принципе','значит','блин'],
- kk:['ээ','эм','мм','енді','әлгі','яғни','мынау','анау','сосын','сонымен','негізі','жаңағы']
+ en:['um','uh','er','erm','hmm','ah','mm','like','you know','i mean','basically','literally','actually','sort of','kind of','you see','so yeah'],
+ ru:['э','эм','ам','мм','ну','ну вот','типа','типо','как бы','короче','в общем','это самое','собственно','так сказать','скажем так','как его','по сути','вот','получается','в принципе','значит','блин','слушай'],
+ kk:['э','эм','мм','енді','әлгі','яғни','мынау','анау','сосын','сонымен','негізі','жаңағы','ой']
 };
 
 /* ================= advice library ================= */
+/* "э-э", "Эээ", "у-м" → one canonical form, so spelling variants of the same sound match */
+function canon(w){ return norm(w).replace(/-/g,'').replace(/(.)\1+/g,'$1'); }
+var SOUNDS = {e:1,'э':1,'эм':1,'ам':1,'м':1,'а':1,um:1,uh:1,er:1,erm:1,hm:1,ah:1,m:1};
+var HES = {ru:'э-э', en:'uh', kk:'ээ'};
+var HESTIP = {ru:'Пунктиром — заминки «э-э/м-м», найденные по звуку. Место в тексте примерное.', en:'Dashed — “uh/um” hesitations found in the audio. Position in the text is approximate.', kk:'Пунктирмен — дыбыс бойынша табылған «ээ/мм» кідірістері. Мәтіндегі орны шамамен.'};
+var SRMSG = {
+ ru:{network:'Нет связи с сервером распознавания — проверь интернет.', 'not-allowed':'Браузер запретил распознавание речи. Разреши микрофон для сайта и обнови страницу.', 'service-not-allowed':'Браузер запретил распознавание речи. Открой сайт в Google Chrome.', 'audio-capture':'Микрофон занят другим приложением. Закрой его и попробуй снова.', 'language-not-supported':'Этот браузер не распознаёт выбранный язык.', restart:'Перезапускаю распознавание…', error:'Сбой распознавания, пробую снова…'},
+ en:{network:'Can’t reach the speech server — check your internet.', 'not-allowed':'The browser blocked speech recognition. Allow the microphone for this site and reload.', 'service-not-allowed':'The browser blocked speech recognition. Open the site in Google Chrome.', 'audio-capture':'The microphone is busy in another app. Close it and try again.', 'language-not-supported':'This browser can’t recognise the selected language.', restart:'Restarting recognition…', error:'Recognition glitch, retrying…'},
+ kk:{network:'Тану серверімен байланыс жоқ — интернетті тексер.', 'not-allowed':'Браузер сөйлеуді тануға тыйым салды. Сайтқа микрофонға рұқсат беріп, бетті жаңарт.', 'service-not-allowed':'Браузер сөйлеуді тануға тыйым салды. Сайтты Google Chrome-да аш.', 'audio-capture':'Микрофон басқа қосымшада бос емес. Оны жауып, қайталап көр.', 'language-not-supported':'Бұл браузер таңдалған тілді танымайды.', restart:'Тануды қайта іске қосып жатырмын…', error:'Тану қатесі, қайталап жатырмын…'}
+};
+var NOTEXT = {
+ ru:function(sec, ln, err){ return 'Я слышал голос '+sec+' с, но распознавание речи не вернуло текст. Проверь: язык тренировки сейчас — '+ln+'; есть интернет; сайт открыт в Google Chrome.'+(err?' Код: '+err+'.':''); },
+ en:function(sec, ln, err){ return 'I heard your voice for '+sec+' s, but speech recognition returned no text. Check: the training language is '+ln+'; you’re online; the site is open in Google Chrome.'+(err?' Code: '+err+'.':''); },
+ kk:function(sec, ln, err){ return 'Дауысыңды '+sec+' с естідім, бірақ тану мәтін қайтармады. Тексер: жаттығу тілі — '+ln+'; интернет бар; сайт Google Chrome-да ашық.'+(err?' Код: '+err+'.':''); }
+};
+
 var ADVICE = {
  fillers:{ ru:['Меньше слов-паразитов','Паразиты появляются, когда мозг ищет следующую мысль. Пауза звучит увереннее любого «ну».','Повтори фразу ещё раз и каждый раз, когда хочется сказать паразит, просто закрой рот на полсекунды.'],
            en:['Fewer filler words','Fillers appear while your brain searches for the next thought. A silent pause sounds more confident than any “um”.','Say it again, and every time you feel a filler coming, close your mouth for half a second instead.'],
@@ -458,59 +478,116 @@ function session(mode){
     '<p class="prompt">'+(mode==='read' ? '«'+esc(text)+'»' : esc(text))+'</p>'+
     '<canvas class="wave" id="wv" width="900" height="220" aria-hidden="true"></canvas>'+
     '<div class="recwrap"><button class="rec" type="button" id="rec" aria-label="'+L('tap')+'"></button><p class="small" id="st">'+L('tap')+'</p></div>'+
+    '<p class="small srst" id="srst" role="status"></p>'+
     '<div class="card"><p class="label">'+L('transcript')+'</p><p class="live" id="live"></p></div>'+
     '<p class="small">'+L('hint_um')+'</p>'+
     (SR ? '' : '<p class="warnbox">'+L('no_sr')+'</p>');
-  var stopFn = null;
-  document.getElementById('bk').onclick = function(){ if(stopFn) stopFn(true); home(); };
+  var stopFn = null, busy = false;
+  document.getElementById('bk').onclick = function(){ if(stopFn) stopFn(true); else { releaseRecog(); releaseMic(); } home(); };
   var recBtn = document.getElementById('rec');
   recBtn.onclick = function(){
     if(stopFn){ stopFn(false); return; }
-    start(mode, text, maxSec).then(function(fn){ stopFn = fn; }).catch(function(e){
+    if(busy) return; busy = true;
+    start(mode, text, maxSec).then(function(fn){ stopFn = fn; busy = false; }).catch(function(e){ busy = false;
       document.getElementById('st').innerHTML = '<span class="warnbox" style="display:block">'+L('no_mic')+'</span>';
     });
   };
 }
 
+/* only one SpeechRecognition may run at a time in Chrome — always release the previous one first */
+var liveRecog = null;
+function releaseRecog(){
+  return new Promise(function(res){
+    var r = liveRecog; liveRecog = null;
+    if(!r) return res();
+    var done = false, fin = function(){ if(!done){ done = true; setTimeout(res, 150); } };
+    r.onresult = null; r.onerror = null; r.onend = fin;
+    try{ r.abort(); }catch(e){ fin(); }
+    setTimeout(fin, 900);
+  });
+}
+function releaseMic(){ if(media){ try{ media.getTracks().forEach(function(tr){ tr.stop(); }); }catch(e){} media = null; } }
+
 function start(mode, text, maxSec){
   var lang = profile.train;
-  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:false}}).then(function(stream){
+  return releaseRecog().then(function(){
+    releaseMic();
+    return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:false}});
+  }).then(function(stream){
     media = stream;
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
     if(ctx.state === 'suspended') ctx.resume();
     var src = ctx.createMediaStreamSource(stream), an = ctx.createAnalyser();
-    an.fftSize = 2048; src.connect(an);
-    var buf = new Float32Array(an.fftSize), sr = ctx.sampleRate;
-    var frames = [], t0 = performance.now(), raf = 0, fi = 0;
+    an.fftSize = 2048; an.smoothingTimeConstant = 0.4; src.connect(an);
+    var buf = new Float32Array(an.fftSize), fb = new Float32Array(an.frequencyBinCount), sr = ctx.sampleRate;
+    var BANDS = bandEdges(sr, an.fftSize), spec = [];
+    var frames = [], t0 = performance.now(), raf = 0;
     var cv = document.getElementById('wv'), g = cv.getContext('2d'), bars = new Array(64).fill(0);
-    var finals = [], interim = '', confs = [], recog = null, recording = true;
-    var recBtn = document.getElementById('rec'), st = document.getElementById('st'), tm = document.getElementById('tm'), live = document.getElementById('live');
+    var recBtn = document.getElementById('rec'), st = document.getElementById('st'), tm = document.getElementById('tm'), live = document.getElementById('live'), srst = document.getElementById('srst');
     recBtn.classList.add('on'); st.textContent = L('listening');
 
-    if(SR){
-      recog = new SR(); recog.lang = SR_LANG[lang]; recog.continuous = true; recog.interimResults = true; recog.maxAlternatives = 1;
-      recog.onresult = function(e){
+    /* ---- speech recognition: auto-restarts, survives Chrome's silent stops ---- */
+    var done = [], cur = [], interim = '', confs = [], recording = true, srErr = '', fatal = false, restarts = 0, onDone = null;
+    var lastHeard = performance.now(), loudSince = 0, wordLog = [];
+    function allText(){ return done.concat(cur.filter(Boolean)).join(' ').replace(/\s+/g,' ').trim(); }
+    function setSr(code){ if(!srst) return; var m = SRMSG[profile.ui][code]; srst.textContent = m || ''; srst.className = 'small srst' + (m ? ' on' : ''); }
+    function spawn(){
+      if(!SR || !recording || fatal) return;
+      var r = new SR(), fin = []; liveRecog = r; cur = fin;
+      r.lang = SR_LANG[lang]; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+      r.onresult = function(e){
+        if(liveRecog !== r) return;
         interim = '';
         for(var i = e.resultIndex; i < e.results.length; i++){
-          var r = e.results[i];
-          if(r.isFinal){ finals.push(r[0].transcript.trim()); if(r[0].confidence > 0) confs.push(r[0].confidence); }
-          else interim += r[0].transcript;
+          var x = e.results[i], tr = (x[0].transcript || '').trim();
+          if(x.isFinal){ fin[i] = tr; if(x[0].confidence > 0) confs.push(x[0].confidence); }
+          else interim += ' ' + tr;
         }
-        live.innerHTML = esc(finals.join(' ')) + ' <span class="interim">'+esc(interim)+'</span>';
+        for(var k = 1; k < fin.length; k++){ if(fin[k] && fin[k-1] && fin[k].indexOf(fin[k-1]) === 0) fin[k-1] = ''; }  // Android repeats earlier text
+        interim = interim.trim(); lastHeard = performance.now(); loudSince = 0; srErr = ''; setSr('');
+        wordLog.push({t:(performance.now()-t0)/1000, n:words(allText()+' '+interim).length});
+        live.innerHTML = esc(allText()) + ' <span class="interim">'+esc(interim)+'</span>';
       };
-      recog.onerror = function(){};
-      recog.onend = function(){ if(recording){ try{ recog.start(); }catch(e){} } };
-      try{ recog.start(); }catch(e){}
+      r.onerror = function(e){
+        if(liveRecog !== r) return;
+        srErr = e.error || 'error';
+        if(srErr === 'not-allowed' || srErr === 'service-not-allowed' || srErr === 'language-not-supported') fatal = true;
+        if(srErr !== 'no-speech' && srErr !== 'aborted') setSr(srErr);
+      };
+      r.onend = function(){
+        if(liveRecog !== r) return;
+        var txt = fin.filter(Boolean).join(' ') + (interim ? ' ' + interim : '');
+        if(txt.trim()) done.push(txt.trim());
+        cur = []; interim = ''; liveRecog = null;
+        if(recording && !fatal){ restarts++; setTimeout(spawn, restarts > 15 ? 900 : 200); }
+        else if(onDone) onDone();
+      };
+      try{ r.start(); }catch(e){ liveRecog = null; if(recording) setTimeout(spawn, 500); }
     }
+    spawn();
 
+    var nf = 1, lastT = 0;
     function loop(){
       an.getFloatTimeDomainData(buf);
       var s = 0; for(var i = 0; i < buf.length; i++) s += buf[i]*buf[i];
-      var rms = Math.sqrt(s/buf.length), t = (performance.now()-t0)/1000;
-      var f0 = (fi++ % 2 === 0) ? pitch(buf, sr) : 0;
-      frames.push({t:t, rms:rms, f0:f0});
+      var rms = Math.sqrt(s/buf.length), t = (performance.now()-t0)/1000, dt = t - lastT; lastT = t;
+      var f0 = pitch(buf, sr), fx = 1;
+      if(rms > 0.004){
+        an.getFloatFrequencyData(fb);
+        var v = bandVec(fb, BANDS); spec.push(v);
+        if(spec.length > 3) fx = 1 - corr(v, spec[spec.length-4]);
+      } else spec.push(null);
+      if(spec.length > 6) spec.shift();
+      frames.push({t:t, rms:rms, f0:f0, fx:fx});
       bars.push(rms); bars.shift();
       draw(g, cv, bars);
+      // watchdog: we hear a voice but recognition returns nothing → restart it
+      nf = rms < nf ? rms : nf*1.002;
+      if(rms > Math.max(0.006, nf*4)) loudSince += dt;
+      if(SR && recording && !fatal && loudSince > 3 && performance.now() - lastHeard > 4500){
+        loudSince = 0; lastHeard = performance.now(); setSr('restart');
+        var lr = liveRecog; if(lr){ try{ lr.abort(); }catch(e){} } else spawn();
+      }
       var sec = Math.floor(t); tm.textContent = Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
       if(t >= maxSec){ stop(false); return; }
       raf = requestAnimationFrame(loop);
@@ -520,19 +597,38 @@ function start(mode, text, maxSec){
     function stop(abort){
       if(!recording) return; recording = false;
       cancelAnimationFrame(raf);
-      try{ stream.getTracks().forEach(function(tr){ tr.stop(); }); }catch(e){}
+      releaseMic();
       recBtn.classList.remove('on'); recBtn.disabled = true;
-      if(abort){ try{ recog && recog.abort(); }catch(e){} return; }
-      st.textContent = L('analysing');
-      var done = false;
-      var finish = function(){ if(done) return; done = true;
-        var transcript = (finals.join(' ') + ' ' + interim).trim();
-        result(analyse({mode:mode, lang:lang, ref:mode==='read'?text:null, prompt:text, frames:frames, transcript:transcript, confs:confs}));
+      if(abort){ releaseRecog(); return; }
+      st.textContent = L('analysing'); setSr('');
+      var finished = false;
+      var finish = function(){ if(finished) return; finished = true;
+        var transcript = (allText() + ' ' + interim).trim();
+        releaseRecog();
+        result(analyse({mode:mode, lang:lang, ref:mode==='read'?text:null, prompt:text, frames:frames, transcript:transcript, confs:confs, wordLog:wordLog, srErr:srErr, restarts:restarts}));
       };
-      if(recog){ recog.onend = finish; try{ recog.stop(); }catch(e){ finish(); } setTimeout(finish, 2500); } else finish();
+      if(liveRecog){ onDone = finish; try{ liveRecog.stop(); }catch(e){ finish(); } setTimeout(finish, 2500); } else finish();
     }
     return stop;
   });
+}
+
+/* spectrum helpers: ~20 log-spaced bands between 200 and 4000 Hz */
+function bandEdges(sr, n){
+  var hz = sr/n, e = [], lo = 200, hi = 4000, k = 20;
+  for(var i = 0; i <= k; i++) e.push(Math.max(1, Math.round(lo*Math.pow(hi/lo, i/k)/hz)));
+  return e;
+}
+function bandVec(fb, E){
+  var v = [];
+  for(var i = 0; i < E.length-1; i++){ var s = 0, c = 0; for(var j = E[i]; j < Math.max(E[i+1], E[i]+1); j++){ s += Math.max(fb[j], -140); c++; } v.push(s/c); }
+  return v;
+}
+function corr(a, b){
+  if(!a || !b) return 0;
+  var n = a.length, ma = 0, mb = 0; for(var i = 0; i < n; i++){ ma += a[i]; mb += b[i]; } ma /= n; mb /= n;
+  var sab = 0, saa = 0, sbb = 0; for(i = 0; i < n; i++){ var x = a[i]-ma, y = b[i]-mb; sab += x*y; saa += x*x; sbb += y*y; }
+  return saa && sbb ? sab/Math.sqrt(saa*sbb) : 0;
 }
 
 function draw(g, cv, bars){
@@ -563,6 +659,36 @@ function pitch(buf, sr){
 
 /* ================= analysis ================= */
 function pct(arr, p){ if(!arr.length) return 0; var a = arr.slice().sort(function(x,y){return x-y;}); return a[Math.min(a.length-1, Math.floor(p*a.length))]; }
+/* A hesitation ("э-э", "м-м", "uh") is a voiced sound that holds the same pitch and the same
+   vowel shape for longer than ~0.3 s. Real words change pitch and spectrum every 80–200 ms. */
+function hesitations(fr, thr, P){
+  P = P || {}; var FX = P.fx || 0.06, PT = P.pt || 0.8, MIN = P.min || 0.35;
+  var out = [], n = fr.length, i = 0;
+  function semi(f){ return 12*Math.log2(f/100); }
+  while(i < n){
+    var f = fr[i];
+    if(!(f.rms > thr && f.f0 > 0 && f.fx < FX)){ i++; continue; }
+    var ref = semi(f.f0), last = i, miss = 0, good = 1, j;
+    for(j = i+1; j < n; j++){
+      var g = fr[j], ok = false;
+      if(g.rms > thr*0.7 && g.f0 > 0){
+        var sv = semi(g.f0); if(sv - ref > 9) sv -= 12; else if(ref - sv > 9) sv += 12;   // tolerate octave slips
+        ok = Math.abs(sv - ref) < PT && g.fx < FX;
+        if(ok) ref = ref*0.85 + sv*0.15;
+      }
+      if(ok){ last = j; miss = 0; good++; } else if(++miss > 4) break;
+    }
+    var dur = fr[last].t - f.t, span = last - i + 1;
+    if(dur >= MIN && good/span > 0.7){
+      if(out.length && f.t - out[out.length-1].e < 0.15) out[out.length-1].e = fr[last].t;
+      else out.push({s:f.t, e:fr[last].t});
+      i = last + 1;
+    } else i++;
+  }
+  return out;
+}
+window.__hes = hesitations;
+
 function analyse(o){
   var fr = o.frames, rms = fr.map(function(f){ return f.rms; });
   var floor = pct(rms, .15), loud = pct(rms, .9), thr = Math.max(0.006, floor + (loud-floor)*0.18);
@@ -583,15 +709,31 @@ function analyse(o){
   var mean = st.reduce(function(a,b){return a+b;},0)/(st.length||1);
   var sd = st.length > 10 ? Math.sqrt(st.reduce(function(a,b){ return a+(b-mean)*(b-mean); },0)/st.length) : null;
   var voicedDb = 20*Math.log10(Math.max(1e-6, pct(fr.filter(function(f){ return f.rms > thr; }).map(function(f){ return f.rms; }), .5)));
-  // words and fillers
-  var raw = o.transcript.split(/\s+/).filter(Boolean), ws = raw.map(norm);
-  var fill = FILLERS[o.lang], marks = new Array(ws.length).fill(false), nF = 0;
-  for(var k = 0; k < ws.length; k++){
+  // words and fillers (spelling-insensitive: "Э-э", "ээ", "эээ" are one filler)
+  var raw = o.transcript.split(/\s+/).filter(function(w){ return norm(w); }), ws = raw.map(norm), wc = raw.map(canon);
+  var fill = FILLERS[o.lang].map(function(f){ return f.split(' ').map(canon); }), marks = new Array(ws.length).fill(false), lexAt = {}, nLex = 0;
+  for(var k = 0; k < wc.length; k++){
     for(var m = 0; m < fill.length; m++){
-      var parts = fill[m].split(' ');
-      if(parts.every(function(p, j){ return ws[k+j] === p; })){ for(var j2 = 0; j2 < parts.length; j2++) marks[k+j2] = true; nF++; k += parts.length-1; break; }
+      var parts = fill[m];
+      if(parts.every(function(p, j){ return wc[k+j] === p; })){ lexAt[k] = SOUNDS[parts.join(' ')] ? HES[o.lang] : FILLERS[o.lang][m]; for(var j2 = 0; j2 < parts.length; j2++) marks[k+j2] = true; nLex++; k += parts.length-1; break; }
     }
   }
+  // hesitation sounds ("э-э", "м-м") found in the audio, placed into the text by timing
+  window.__lastFrames = fr; window.__lastThr = thr;
+  var hes = hesitations(fr, thr), ins = [], log = o.wordLog || [];
+  hes.forEach(function(h){
+    var pos = 0; for(var q = 0; q < log.length; q++){ if(log[q].t <= h.s + 0.7) pos = log[q].n; else break; }
+    pos = Math.min(pos, raw.length);
+    while(pos > 0 && pos < raw.length && marks[pos] && marks[pos-1] && lexAt[pos] === undefined) pos++;   // never split «как бы»
+    var dup = false; for(var d = Math.max(0, pos-2); d <= Math.min(raw.length-1, pos+1); d++){ if(marks[d] && SOUNDS[wc[d]]) dup = true; }
+    if(!dup) ins.push({pos:pos, h:h});
+  });
+  var toks = [];
+  for(var w = 0; w <= raw.length; w++){
+    ins.forEach(function(x){ if(x.pos === w) toks.push({w:HES[o.lang], f:'hes'}); });
+    if(w < raw.length) toks.push({w:raw[w], f:marks[w] ? 'lex' : '', g:lexAt[w]});
+  }
+  var nF = nLex + ins.length;
   // repeated words ("the the")
   var reps = 0; for(var r = 1; r < ws.length; r++) if(ws[r] && ws[r] === ws[r-1] && !marks[r]) reps++;
   var minutes = Math.max(speech, 1)/60;
@@ -640,15 +782,18 @@ function analyse(o){
   issues.sort(function(x,y){ return x.v - y.v; });
   if(!issues.length) issues.push({k:'great', v:100});
 
-  return {mode:o.mode, lang:o.lang, prompt:o.prompt, ref:o.ref, refMarks:refMarks, raw:raw, marks:marks, nW:nW, nF:nF, reps:reps, speech:speech,
-    wpm:wpm, fpm:fpm, pauses:pauses.length, avgP:avgP, longP:longP, sd:sd, acc:acc, conf:conf, db:voicedDb, score:score, band:band, issues:issues.slice(0,3), tooShort: speech < 3 || nW < 4};
+  return {mode:o.mode, lang:o.lang, prompt:o.prompt, ref:o.ref, refMarks:refMarks, raw:raw, marks:marks, toks:toks, nLex:nLex, nHes:ins.length, hes:hes, srErr:o.srErr||'', restarts:o.restarts||0, nW:nW, nF:nF, reps:reps, speech:speech,
+    wpm:wpm, fpm:fpm, pauses:pauses.length, avgP:avgP, longP:longP, sd:sd, acc:acc, conf:conf, db:voicedDb, score:score, band:band, issues:issues.slice(0,3), tooShort: speech < 3 || nW < 4, noText: speech >= 3 && nW < 4};
 }
 window.__analyse = analyse; window.__pitch = pitch;
 
 /* ================= result ================= */
 function result(r){
   if(r.tooShort){
-    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk">'+IC.back+'</button><span></span><span></span></div><p class="warnbox">'+L('too_short')+'</p><button class="btn heat" type="button" id="ag">'+L('again')+'</button>';
+    var msg = r.noText ? NOTEXT[profile.ui](Math.round(r.speech), LANG_NAMES[r.lang].n, r.srErr) : L('too_short');
+    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk">'+IC.back+'</button><span></span><span></span></div><p class="warnbox">'+esc(msg)+'</p>'+
+      (r.noText ? '<button class="btn ghost" type="button" id="lg">'+L('train_lang')+'</button>' : '')+'<button class="btn heat" type="button" id="ag">'+L('again')+'</button>';
+    var lg = document.getElementById('lg'); if(lg) lg.onclick = function(){ onboarding(); };
     document.getElementById('bk').onclick = home; document.getElementById('ag').onclick = function(){ session(r.mode); }; return;
   }
   var mine = history.filter(function(h){ return h.lang===r.lang; }), prev = mine[mine.length-1];
@@ -661,7 +806,8 @@ function result(r){
   var badge = lvAfter > lvBefore ? L('level')+' '+(lvAfter+1)+' · '+L('lv')[lvAfter] : (stAfter > stBefore && stAfter > 1 ? L('streak')(stAfter) : (r.nF===0 ? (profile.ui==='ru'?'Ни одного паразита':profile.ui==='kk'?'Бірде-бір арам сөз жоқ':'Zero filler words') : null));
   var band = r.band;
   var paceTag = r.wpm > band[1] ? ['bad', L('fast')] : r.wpm < band[0] ? ['warn', L('slow')] : ['good', L('ok')];
-  var tx = r.raw.map(function(w,i){ return r.marks[i] ? '<mark>'+esc(w)+'</mark>' : esc(w); }).join(' ');
+  var tx = r.toks.map(function(t){ return t.f==='hes' ? '<mark class="hes" title="'+esc(HESTIP[profile.ui])+'">'+esc(t.w)+'</mark>' : t.f ? '<mark>'+esc(t.w)+'</mark>' : esc(t.w); }).join(' ');
+  var dbg = /[?&]debug=1/.test(location.search) ? '<div class="card dbg">'+esc('hesitations: '+r.hes.map(function(h){ return h.s.toFixed(2)+'–'+h.e.toFixed(2)+'s'; }).join(', ')+'\nlexical fillers: '+r.nLex+'\nrecogniser restarts: '+r.restarts+'\nlast error: '+(r.srErr||'—'))+'</div>' : '';
   var refHtml = r.ref ? r.ref.split(/\s+/).filter(function(t){ return norm(t); }).map(function(t,i){ return '<span class="'+(r.refMarks[i]?'ok':'miss')+'">'+esc(t)+'</span>'; }).join(' ') : '';
   var tips = r.issues.map(function(is, i){ var a = ADVICE[is.k][profile.ui]; return '<div class="tip"><span class="n">'+(i+1)+'</span><div><b>'+a[0]+'</b><p>'+a[1]+'</p><p class="drill">'+a[2].replace('{lo}', band[0]).replace('{hi}', band[1])+'</p></div></div>'; }).join('');
   app.innerHTML =
@@ -671,14 +817,14 @@ function result(r){
     (badge ? '<div class="badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="10" r="6" stroke="#FF9F0A" stroke-width="2"/><path d="M8.5 15l-1.5 6 5-2.5 5 2.5-1.5-6" stroke="#FF9F0A" stroke-width="2" stroke-linejoin="round"/></svg><span><b>'+L('badge')+':</b> '+esc(badge)+'</span></div>' : '')+
     '<div class="grid2">'+
       stat(L('pace'), Math.round(r.wpm)+' '+L('wpm'), L('target')+' '+band[0]+'–'+band[1]+' · '+paceTag[1], paceTag[0])+
-      stat(L('fillers'), fmt1(r.fpm)+' '+L('per_min'), r.nF ? r.nF+' × '+uniqFillers(r) : L('none'), r.fpm > 3 ? 'bad' : r.fpm > 1 ? 'warn' : 'good')+
+      stat(L('fillers'), fmt1(r.fpm)+' '+L('per_min'), r.nF ? r.nF+': '+uniqFillers(r) : L('none'), r.fpm > 3 ? 'bad' : r.fpm > 1 ? 'warn' : 'good')+
       stat(L('pauses'), String(r.pauses), r.longP ? L('long_p')(r.longP) : L('avg')+' '+fmt1(r.avgP)+' '+(profile.ui==='en'?'s':'с'), r.longP ? 'warn' : 'good')+
       (r.sd==null ? stat(L('inton'), '—', '', '') : stat(L('inton'), fmt1(r.sd)+' '+L('st'), r.sd < 1.5 ? L('mono') : L('lively'), r.sd < 1.5 ? 'warn' : 'good'))+
       (r.acc!=null ? stat(L('acc'), Math.round(r.acc*100)+'%', '', r.acc < .85 ? 'warn' : 'good') : '')+
       (r.conf!=null ? stat(L('clar'), Math.round(r.conf*100)+'%', '', r.conf < .75 ? 'warn' : 'good') : '')+
     '</div>'+
     '<p class="label">'+L('tips')+'</p>'+tips+
-    '<p class="label">'+L('transcript')+'</p><p class="tx">'+(tx || '—')+'</p>'+
+    '<p class="label">'+L('transcript')+'</p><p class="tx">'+(tx || '—')+'</p>'+(r.nHes ? '<p class="small">'+esc(HESTIP[profile.ui])+'</p>' : '')+dbg+
     (r.ref ? '<p class="tx">'+refHtml+'</p><p class="small">'+L('ref_hint')+'</p>' : '')+
     (aiKey ? '<button class="btn ghost" type="button" id="ai">'+L('ai_btn')+'</button><div class="card" id="aibox" hidden><p class="ai" id="aitx"></p></div>' : '')+
     '<div class="row"><button class="btn ghost" type="button" id="hm">'+L('home')+'</button><button class="btn heat" type="button" id="ag">'+L('again')+'</button></div>';
@@ -692,14 +838,14 @@ function result(r){
   var aiBtn = document.getElementById('ai'); if(aiBtn) aiBtn.onclick = function(){ aiReview(r, aiBtn); };
 }
 function stat(k, v, e, cls){ return '<div class="stat"><span>'+k+'</span><b>'+v+'</b>'+(e?'<em class="'+cls+'">'+esc(e)+'</em>':'')+'</div>'; }
-function uniqFillers(r){ var u = {}; r.raw.forEach(function(w,i){ if(r.marks[i]) u[norm(w)] = 1; }); return Object.keys(u).slice(0,3).map(function(w){ return '«'+w+'»'; }).join(', '); }
+function uniqFillers(r){ var u = {}; r.toks.forEach(function(t){ var k = t.f==='hes' ? t.w : t.g; if(k) u[k] = (u[k]||0) + 1; }); return Object.keys(u).sort(function(a,b){ return u[b]-u[a]; }).slice(0,3).map(function(w){ return '«'+w+'»'+(u[w]>1?' ×'+u[w]:''); }).join(', '); }
 
 /* ================= optional AI coach (user’s own Claude API key) ================= */
 function aiReview(r, btn){
   var box = document.getElementById('aibox'), out = document.getElementById('aitx');
   box.hidden = false; out.textContent = L('ai_wait'); btn.disabled = true;
   var uiName = {ru:'Russian', en:'English', kk:'Kazakh'}[profile.ui], trName = {ru:'Russian', en:'English', kk:'Kazakh'}[r.lang];
-  var metrics = {mode:r.mode, task:r.prompt, words:r.nW, seconds:Math.round(r.speech), wpm:Math.round(r.wpm), target_wpm:r.band, fillers:r.nF, fillers_per_min:+r.fpm.toFixed(1),
+  var metrics = {mode:r.mode, task:r.prompt, words:r.nW, seconds:Math.round(r.speech), wpm:Math.round(r.wpm), target_wpm:r.band, fillers:r.nF, hesitation_sounds_from_audio:r.nHes, fillers_per_min:+r.fpm.toFixed(1),
     pauses:r.pauses, avg_pause_s:+r.avgP.toFixed(2), long_pauses:r.longP, pitch_sd_semitones:r.sd==null?null:+r.sd.toFixed(1), read_accuracy:r.acc, score:r.score};
   var prompt = 'You are a speaking coach. The user spoke in '+trName+'. Transcript from speech recognition (filler sounds like "um" may be missing): """'+r.raw.join(' ')+'"""\nMeasured metrics: '+JSON.stringify(metrics)+
     '\nReply in '+uiName+', plain text, no markdown headings. Give: 1) one sentence on what already works; 2) three specific, actionable tips tied to the metrics and the actual words used; 3) a rewritten version of what they said — clearer, without fillers, same meaning, in '+trName+'. Keep it under 180 words.';
