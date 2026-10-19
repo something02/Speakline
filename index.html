@@ -101,6 +101,44 @@ h1,h2,h3,p{margin:0}
 .ai{white-space:pre-wrap;font-size:15px;line-height:1.55;color:var(--ink)}
 .row{display:flex;gap:10px}
 .row > *{flex:1}
+
+/* splash */
+.splash{position:fixed;inset:0;z-index:20;background:radial-gradient(70% 50% at 50% 42%,rgba(255,90,54,.22),transparent 70%),#0B0B0F;display:grid;place-items:center;cursor:pointer;transition:opacity .5s ease}
+.splash.out{opacity:0}
+.sp-in{display:grid;justify-items:center;gap:22px;text-align:center;padding:0 24px}
+.sp-mark{width:112px;height:112px;border-radius:32px;background:linear-gradient(135deg,var(--a),var(--b));display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 20px 60px rgba(255,90,54,.35);animation:pop .9s cubic-bezier(.2,1.4,.3,1) both}
+.sp-mark i{display:block;width:7px;border-radius:4px;background:#fff;animation:eq 1s ease-in-out infinite}
+.sp-mark i:nth-child(1){height:22px;animation-delay:-.2s}.sp-mark i:nth-child(2){height:44px;animation-delay:-.5s}.sp-mark i:nth-child(3){height:64px;animation-delay:-.1s}.sp-mark i:nth-child(4){height:40px;animation-delay:-.7s}.sp-mark i:nth-child(5){height:24px;animation-delay:-.35s}
+.sp-word{font:800 40px/1 var(--display);letter-spacing:-.045em;animation:rise .8s .35s both}
+.sp-tag{font:500 19px/1.35 var(--display);color:var(--soft);letter-spacing:-.02em;animation:rise .8s .6s both;max-width:22ch}
+.sp-bar{width:120px;height:3px;border-radius:2px;background:var(--card2);overflow:hidden;animation:rise .6s .8s both}
+.sp-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--a),var(--b));transform-origin:left;animation:load 2.2s .8s linear both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes eq{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
+@keyframes rise{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes load{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* intro carousel */
+.intro{flex:1;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 60px)}
+.intro-view{overflow:hidden;flex:1;touch-action:pan-y}
+.intro-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.slide{flex:0 0 100%;display:flex;flex-direction:column;gap:16px;padding-top:8px}
+.ill{background:var(--card);border-radius:28px;min-height:260px;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden}
+.ill::before{content:"";position:absolute;inset:-40% -20% auto auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,159,10,.22),transparent 65%)}
+.bubble{position:relative;max-width:88%;background:var(--card2);border-radius:20px 20px 20px 6px;padding:14px 16px;font-size:17px;line-height:1.55}
+.bubble mark{background:rgba(255,69,58,.22);color:var(--bad);border-radius:5px;padding:0 4px;font-weight:600}
+.bubble.r{border-radius:20px 20px 6px 20px;background:#2a2016;margin-left:auto;font-size:15px;color:#FFD9A0}
+.steps{display:grid;gap:10px;width:100%;position:relative}
+.step{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;background:var(--card2);border-radius:16px;padding:12px}
+.step b{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;color:#fff;font:700 17px/1 var(--display)}
+.step span{font-size:15px;line-height:1.4}
+.dots{display:flex;gap:6px;justify-content:center}
+.dots i{width:7px;height:7px;border-radius:4px;background:var(--card2);transition:all .3s}
+.dots i.on{width:22px;background:var(--b)}
+.mini-ring{position:relative;width:150px;height:150px;display:grid;place-items:center}
+.mini-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.mini-ring b{font:700 42px/1 var(--display);letter-spacing:-.04em}
+.mini-ring small{font-size:20px}
+@media (prefers-reduced-motion:reduce){.sp-mark,.sp-mark i,.sp-word,.sp-tag,.sp-bar,.sp-bar i{animation:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -122,7 +160,7 @@ var aiKey = store.get('aiKey', '');
 
 /* ================= interface text ================= */
 var T = {
- ru:{ hello:'Говори так, чтобы тебя слышали.', hello_p:'Speakline слушает твою речь и показывает темп, паузы, интонацию и слова-паразиты. Всё считается на твоём устройстве.',
+ ru:{ hello:'Настроим под тебя', hello_p:'Выбери язык приложения, язык тренировки и цель — это займёт 10 секунд.',
   ui_lang:'Язык приложения', train_lang:'На каком языке тренироваться?', goal:'Где важно звучать уверенно?', goals:['Встречи и созвоны','Собеседования','Презентации','Small talk'], start:'Начать',
   hi:'Привет', streak:function(n){ return 'Серия '+n+' '+plural(n,'день','дня','дней'); }, streak0:'Начни серию сегодня', level:'Уровень', xp:'опыта',
   lv:['Новичок','Чёткий','Уверенный','Убедительный','Спикер'], last:'Последняя оценка', sessions:'Сессий', avg_f:'Паразитов в мин',
@@ -138,7 +176,7 @@ var T = {
   again:'Ещё раз', home:'Домой', ai_btn:'Подробный разбор от ИИ', ai_wait:'ИИ разбирает твою речь…', ai_err:'Не получилось получить разбор. Проверь ключ API в настройках.',
   settings:'Настройки', key_l:'Ключ Claude API (необязательно)', key_p:'Нужен только для подробного разбора от ИИ. Хранится только на этом устройстве.', save:'Сохранить', reset:'Сбросить прогресс',
   hint_um:'«Эм» и «ээ» распознаются не всегда — паузы и колебания считаю по звуку.', minutes:'мин', badge:'Новый значок' },
- en:{ hello:'Speak so people listen.', hello_p:'Speakline listens to you and shows your pace, pauses, intonation and filler words. Everything is computed on your device.',
+ en:{ hello:'Let’s set you up', hello_p:'Pick the app language, the language you want to train and your goal — it takes 10 seconds.',
   ui_lang:'App language', train_lang:'Which language do you want to train?', goal:'Where do you need to sound confident?', goals:['Meetings and calls','Job interviews','Presentations','Small talk'], start:'Start',
   hi:'Hi', streak:function(n){ return n+'-day streak'; }, streak0:'Start your streak today', level:'Level', xp:'XP',
   lv:['Starter','Clear','Confident','Persuasive','Speaker'], last:'Last score', sessions:'Sessions', avg_f:'Fillers per min',
@@ -154,7 +192,7 @@ var T = {
   again:'Try again', home:'Home', ai_btn:'Detailed AI review', ai_wait:'The AI is reviewing your speech…', ai_err:'Couldn’t get the review. Check the API key in settings.',
   settings:'Settings', key_l:'Claude API key (optional)', key_p:'Only needed for the detailed AI review. Stored on this device only.', save:'Save', reset:'Reset progress',
   hint_um:'“Um” and “uh” aren’t always transcribed — pauses and hesitations are measured from the audio.', minutes:'min', badge:'New badge' },
- kk:{ hello:'Сені тыңдайтындай сөйле.', hello_p:'Speakline сөйлеуіңді тыңдап, қарқынды, үзілістерді, интонацияны және арам сөздерді көрсетеді. Бәрі құрылғыңда есептеледі.',
+ kk:{ hello:'Өзіңе бейімдейік', hello_p:'Қосымша тілін, жаттығу тілін және мақсатыңды таңда — 10 секунд қана.',
   ui_lang:'Қосымша тілі', train_lang:'Қай тілде жаттығасың?', goal:'Қай жерде сенімді сөйлеу маңызды?', goals:['Жиналыстар мен қоңыраулар','Жұмыс сұхбаттары','Презентациялар','Small talk'], start:'Бастау',
   hi:'Сәлем', streak:function(n){ return n+' күндік серия'; }, streak0:'Серияны бүгін баста', level:'Деңгей', xp:'тәжірибе',
   lv:['Бастаушы','Анық','Сенімді','Сендіргіш','Шешен'], last:'Соңғы баға', sessions:'Сессиялар', avg_f:'Минутына арам сөз',
@@ -223,6 +261,83 @@ var ADVICE = {
          kk:['Тамаша нәтиже','Барлық көрсеткіш қалыпты.','Келесі қадам — жақын кездесуің тақырыбына 60 секунд еркін сөйлеу.'] }
 };
 
+var INTRO = {
+ ru:{ tag:'Говори так, чтобы тебя слышали.', next:'Далее', go:'Выбрать язык', skip:'Пропустить',
+  s1:['Тренажёр речи в кармане','10 минут в день. Ты говоришь вслух — Speakline слушает и показывает, как ты звучишь для других.'],
+  s2:['Знакомо?','Лучшая идея на встрече теряется в «ну», «э-э», спешке и ровном голосе. Перебивают не из-за содержания, а из-за подачи.'],
+  s3:['Как это работает','Микрофон включается только во время записи.'],
+  steps:['Прочитай фразу или ответь на вопрос — 20–60 секунд','Получи оценку: темп, паузы, интонация, паразиты красным','Следуй 3 советам и смотри, как растёт процент'],
+  b1:'Ну, я хочу, э-э, типа показать три идеи…', b2:'Так что вы предлагаете?', ring:'звучишь профессионально' },
+ en:{ tag:'Speak so people listen.', next:'Next', go:'Choose language', skip:'Skip',
+  s1:['A speech coach in your pocket','10 minutes a day. You speak out loud — Speakline listens and shows how you sound to others.'],
+  s2:['Sound familiar?','Your best idea in the meeting gets lost in “um”s, rushing and a flat voice. People interrupt because of how you say it, not what.'],
+  s3:['How it works','The microphone is on only while you record.'],
+  steps:['Read a sentence or answer a question — 20–60 seconds','Get your score: pace, pauses, intonation, fillers in red','Follow 3 tips and watch your score grow'],
+  b1:'So, um, I’d like to, like, show you three ideas…', b2:'So what are you proposing?', ring:'professional' },
+ kk:{ tag:'Сені тыңдайтындай сөйле.', next:'Келесі', go:'Тілді таңдау', skip:'Өткізу',
+  s1:['Қалтаңдағы сөйлеу жаттықтырушысы','Күніне 10 минут. Дауыстап сөйлейсің — Speakline тыңдап, басқаларға қалай естілетініңді көрсетеді.'],
+  s2:['Таныс па?','Жиналыстағы ең жақсы идеяң «енді», «ээ», асығыстық пен бірсарынды дауыста жоғалады. Сені мазмұн үшін емес, мәнер үшін бөледі.'],
+  s3:['Қалай жұмыс істейді','Микрофон тек жазу кезінде қосылады.'],
+  steps:['Сөйлемді оқы не сұраққа жауап бер — 20–60 секунд','Бағаңды ал: қарқын, үзіліс, интонация, арам сөздер қызылмен','3 кеңесті орында да, пайыздың өсуін бақыла'],
+  b1:'Енді, мен, ээ, әлгі үш идеяны көрсеткім…', b2:'Сонда не ұсынасыз?', ring:'кәсіби' }
+};
+function guessUI(){
+  if(profile && profile.ui) return profile.ui;
+  var ls = (navigator.languages || [navigator.language || 'ru']).map(function(x){ return String(x).toLowerCase(); });
+  for(var i = 0; i < ls.length; i++){ if(ls[i].indexOf('kk')===0) return 'kk'; if(ls[i].indexOf('ru')===0) return 'ru'; if(ls[i].indexOf('en')===0) return 'en'; }
+  return 'ru';
+}
+var introUI = null;
+
+function splash(next){
+  var t = INTRO[guessUI()];
+  var el = document.createElement('div');
+  el.className = 'splash'; el.setAttribute('role','button'); el.setAttribute('aria-label','Speakline');
+  el.innerHTML = '<div class="sp-in"><div class="sp-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p class="sp-word">Speakline</p><p class="sp-tag">'+t.tag+'</p><div class="sp-bar" aria-hidden="true"><i></i></div></div>';
+  document.body.appendChild(el);
+  var gone = false, reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function end(){ if(gone) return; gone = true; next(); el.classList.add('out'); setTimeout(function(){ el.remove(); }, 520); }
+  el.onclick = end;
+  setTimeout(end, reduce ? 1200 : 3100);
+}
+
+function intro(){
+  introUI = introUI || guessUI();
+  var idx = 0;
+  function render(){
+    var t = INTRO[introUI];
+    app.innerHTML =
+      '<div class="top">'+LOGO+'<div class="chips" role="group" aria-label="Язык · Language · Тіл">'+['ru','en','kk'].map(function(c){ return '<button type="button" class="chip" data-ilang="'+c+'" aria-pressed="'+(introUI===c)+'" style="padding:6px 11px;font-size:13px">'+({ru:'Рус',en:'Eng',kk:'Қаз'})[c]+'</button>'; }).join('')+'</div></div>'+
+      '<div class="intro"><div class="intro-view" id="iv"><div class="intro-track" id="itr">'+
+        slide(illRing(t), t.s1)+
+        slide('<div style="display:grid;gap:12px;width:100%;position:relative"><p class="bubble">'+markF(t.b1)+'</p><p class="bubble r">'+t.b2+'</p></div>', t.s2)+
+        slide('<div class="steps">'+t.steps.map(function(x,i){ return '<div class="step"><b>'+(i+1)+'</b><span>'+x+'</span></div>'; }).join('')+'</div>', t.s3)+
+      '</div></div>'+
+      '<div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>'+
+      '<button class="btn heat" type="button" id="inext"></button>'+
+      '<button class="link" type="button" id="iskip">'+t.skip+'</button></div>';
+    app.querySelectorAll('[data-ilang]').forEach(function(b){ b.onclick = function(){ introUI = b.getAttribute('data-ilang'); render(); }; });
+    document.getElementById('inext').onclick = function(){ if(idx < 2){ idx++; move(); } else toLang(); };
+    document.getElementById('iskip').onclick = toLang;
+    var iv = document.getElementById('iv'), x0 = null;
+    iv.addEventListener('pointerdown', function(e){ x0 = e.clientX; });
+    iv.addEventListener('pointerup', function(e){ if(x0==null) return; var dx = e.clientX - x0; x0 = null; if(dx < -40 && idx < 2){ idx++; move(); } else if(dx > 40 && idx > 0){ idx--; move(); } });
+    move(true);
+  }
+  function move(){
+    var t = INTRO[introUI];
+    document.getElementById('itr').style.transform = 'translateX('+(-100*idx)+'%)';
+    app.querySelectorAll('.dots i').forEach(function(d,i){ d.classList.toggle('on', i===idx); });
+    document.getElementById('inext').textContent = idx < 2 ? t.next : t.go;
+    document.getElementById('iskip').style.visibility = idx < 2 ? 'visible' : 'hidden';
+  }
+  function toLang(){ onboarding(introUI); }
+  function slide(ill, txt){ return '<section class="slide"><div class="ill">'+ill+'</div><h1 class="h1">'+txt[0]+'</h1><p class="p">'+txt[1]+'</p></section>'; }
+  function markF(s){ return s.replace(/(Ну|э-э|типа|um|like|Енді|ээ|әлгі)/g, '<mark>$1</mark>'); }
+  function illRing(t){ return '<div style="display:grid;justify-items:center;gap:10px;position:relative"><div class="mini-ring"><svg viewBox="0 0 120 120" width="150" height="150" aria-hidden="true"><defs><linearGradient id="ig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#2C2C2E" stroke-width="10"/><circle cx="60" cy="60" r="52" fill="none" stroke="url(#ig)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="84.9"/></svg><b>74<small>%</small></b></div><p class="small">'+t.ring+' · +6</p></div>'; }
+  render();
+}
+
 /* ================= helpers ================= */
 function plural(n, a, b, c){ var m10 = n%10, m100 = n%100; return (m10===1 && m100!==11) ? a : (m10>=2 && m10<=4 && (m100<10||m100>=20)) ? b : c; }
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
@@ -259,8 +374,9 @@ var IC = {
 };
 var LOGO = '<span class="logo"><i>'+IC.free.replace('width="22" height="22"','width="14" height="14"')+'</i>Speakline</span>';
 
-function onboarding(){
-  var p = profile || {ui:'ru', train:'en', goal:0};
+function onboarding(initUI){
+  var p = profile || {ui:initUI || guessUI(), train:'en', goal:0};
+  if(initUI) p = {ui:initUI, train:p.train, goal:p.goal};
   var draft = {ui:p.ui, train:p.train, goal:p.goal};
   function render(){
     var lt = T[draft.ui];
@@ -319,9 +435,11 @@ function settings(){
     '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
     '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
     '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
+    '<button class="btn ghost" type="button" id="intro">'+({ru:'Показать знакомство',en:'Show the intro',kk:'Танысуды көрсету'})[profile.ui]+'</button>'+
     '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>';
   document.getElementById('bk').onclick = home;
-  document.getElementById('lang').onclick = onboarding;
+  document.getElementById('lang').onclick = function(){ onboarding(); };
+  document.getElementById('intro').onclick = function(){ introUI = profile.ui; splash(intro); };
   document.getElementById('sv').onclick = function(){ aiKey = document.getElementById('key').value.trim(); store.set('aiKey', aiKey); home(); };
   document.getElementById('rs').onclick = function(){
     document.getElementById('rsbox').innerHTML = '<div class="row"><button class="btn ghost" type="button" id="no">✕</button><button class="btn heat" type="button" id="yes">'+L('reset')+'</button></div>';
@@ -595,7 +713,7 @@ function aiReview(r, btn){
 
 /* ================= boot ================= */
 document.documentElement.lang = (profile && profile.ui) || 'ru';
-if(profile) home(); else onboarding();
+splash(function(){ if(profile) home(); else intro(); });
 })();
 </script>
 </body>
