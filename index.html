@@ -144,6 +144,128 @@ h1,h2,h3,p{margin:0}
 .mini-ring small{font-size:20px}
 @media (prefers-reduced-motion:reduce){.sp-mark,.sp-mark i,.sp-word,.sp-tag,.sp-bar,.sp-bar i{animation:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* journey: hero, missions, path, paywall, tours */
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:20px;display:grid;gap:14px;color:#fff;
+  background:radial-gradient(120% 90% at 100% 0%,rgba(255,214,10,.35),transparent 55%),linear-gradient(140deg,#FF5A36 0%,#FF7A1A 55%,#FF9F0A 100%);box-shadow:0 18px 50px rgba(255,90,54,.28)}
+.hero-l{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.hero-t{font:800 28px/1.08 var(--display);letter-spacing:-.04em;text-wrap:balance;margin-top:-6px}
+.hero-row{display:flex;gap:16px;align-items:center}
+.hero-k{font-weight:700;font-size:15px}
+.hero-v{font:800 20px/1.15 var(--display);letter-spacing:-.03em}
+.hero-r{display:flex;gap:6px;align-items:center;font-size:13px;opacity:.95;margin-top:8px}
+.hero-bar{height:8px;border-radius:4px;background:rgba(0,0,0,.18);overflow:hidden;margin-top:8px}
+.hero-bar i{display:block;height:100%;background:#fff;border-radius:4px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px}
+.hero-chips span{display:inline-flex;gap:5px;align-items:center;background:rgba(0,0,0,.18);border-radius:999px;padding:6px 10px;font-size:12.5px;font-weight:600}
+.pring{position:relative;flex:none;display:grid;place-items:center}
+.pring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.pring b{font:800 26px/1 var(--display);letter-spacing:-.04em;display:grid;place-items:center}
+.pring b small{font-size:14px}
+.btn.white{background:#fff;color:#0B0B0F}
+.mcard{background:var(--card);border-radius:22px;padding:18px;display:grid;gap:10px;border:1px solid rgba(255,159,10,.35)}
+.mcard.locked{border-color:var(--hair)}
+.mhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mreward{display:flex;gap:8px;align-items:center;font-size:14px;color:#FFD9A0;background:rgba(255,159,10,.1);border-radius:12px;padding:8px 10px}
+.lockpill{display:inline-flex;gap:5px;align-items:center;font-size:12px;font-weight:600;color:var(--soft);background:var(--card2);border-radius:999px;padding:4px 9px}
+.planpill{border:0;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;display:inline-flex;gap:5px;align-items:center}
+.planpill.on{background:var(--card);color:#FFD60A}
+.path{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.pn{display:grid;grid-template-columns:34px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.pn:last-child{padding-bottom:0}
+.pn::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--card2)}
+.pn:last-child::before{display:none}
+.pn.done::before{background:var(--b)}
+.pn .dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--card2);font-weight:700;font-size:14px;color:var(--soft)}
+.pn.done .dot{background:linear-gradient(135deg,var(--a),var(--b))}
+.pn.cur .dot{background:#fff;color:#0B0B0F;box-shadow:0 0 0 5px rgba(255,159,10,.3)}
+.pn.fin .dot{background:#2a2410}
+.pn b{display:block;font-size:15px;font-weight:600;padding-top:6px}
+.pn small{color:var(--muted);font-size:12.5px}
+.pn.todo b{color:var(--soft)}
+.today{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:18px;padding:12px 14px;background:#0A84FF;color:#fff;cursor:pointer}
+.today svg{background:rgba(255,255,255,.2);border-radius:11px;padding:9px;width:40px;height:40px}
+.today b{display:block}.today small{opacity:.85;font-size:13px}
+.today .chev{border-color:#fff}
+.mlist{display:grid;gap:8px}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:10px 12px}
+.mrow b{display:block;font-size:15px}.mrow small{color:var(--muted);font-size:12.5px}
+.mrow .chip{background:var(--ink);color:#0B0B0F;font-weight:600}
+#mform{display:grid;gap:8px}
+.chip.dim{opacity:.55}
+.hrow2{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:16px;padding:10px 12px;background:var(--card2);cursor:pointer}
+.card .hrow2{background:var(--card2)}
+.hist > .hrow2{background:var(--card)}
+.card .hist > .hrow2{background:var(--card2)}
+.hmid b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hmid{min-width:0}.hmid small{color:var(--muted);font-size:12.5px}
+.sc{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font:800 17px/1 var(--display);font-variant-numeric:tabular-nums}
+.sc.good{background:rgba(48,209,88,.16);color:var(--good)}.sc.warn{background:rgba(255,159,10,.16);color:var(--b)}.sc.bad{background:rgba(255,105,97,.16);color:var(--bad)}
+.sc.big{width:76px;height:76px;border-radius:22px;font-size:24px}
+.dhead{display:flex;gap:14px;align-items:center}
+.dhead b{font-size:17px}
+.tipsbox{display:grid;gap:10px}
+.sticky{position:sticky;bottom:0;display:flex;gap:10px;padding:12px 0 calc(4px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 30%)}
+.sticky > *{flex:1}
+.sticky .btn.heat{flex:1.6}
+/* reward */
+.celebrate{flex:1;display:grid;align-content:center;justify-items:center;gap:16px;text-align:center;min-height:calc(100vh - 60px)}
+.medal{animation:pop .8s cubic-bezier(.2,1.4,.3,1) both;filter:drop-shadow(0 16px 40px rgba(255,159,10,.45))}
+.medal svg{width:120px;height:120px}
+.cert{width:100%;border-radius:20px;padding:18px;background:linear-gradient(140deg,#2a2410,#1C1C1E);border:1px solid rgba(255,214,10,.45);display:grid;gap:6px}
+.cert-t{font:700 19px/1.3 var(--display);letter-spacing:-.02em;color:#FFE58A}
+.cprog{width:100%;display:grid;gap:8px}
+.cprog .hero-bar{background:var(--card2)}
+.cprog .hero-bar i{background:linear-gradient(90deg,var(--a),var(--b))}
+.celebrate .btn{max-width:420px}
+.confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+/* paywall */
+.pw-hero{display:grid;gap:10px}
+.pw-bars{display:flex;gap:14px;align-items:flex-end;padding:0 4px}
+.pw-bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;position:relative}
+.pw-bars i{display:block;width:100%;border-radius:12px 12px 6px 6px;background:var(--card2)}
+.pw-bars i.t{background:linear-gradient(180deg,var(--b),var(--a))}
+.pw-bars span{font:800 18px/1 var(--display)}
+.pw-bars small{font-size:12px;color:var(--muted)}
+.feat{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.feat li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center}
+.feat .fi{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center}
+.feat b{display:block;font-size:15px}.feat small{color:var(--muted);font-size:13px}
+.plans{display:grid;gap:8px}
+.plan{position:relative;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;min-height:64px;padding:12px 16px;border-radius:16px;border:2px solid transparent;background:var(--card);cursor:pointer}
+.plan[aria-checked="true"]{border-color:var(--b);background:#221a10}
+.plan b{display:block;font-size:16px}.plan small{color:var(--muted);font-size:13px}
+.plan strong{font:700 18px/1 var(--display)}
+.plan em{position:absolute;top:-9px;right:14px;font-style:normal;font-size:11px;font-weight:800;background:var(--good);color:#04210d;border-radius:999px;padding:3px 8px}
+.sheet-wrap{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;transition:background .3s}
+.sheet-wrap.on{background:rgba(0,0,0,.6)}
+.sheet{width:100%;max-width:520px;background:#1C1C1E;border-radius:24px 24px 0 0;padding:12px 18px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:12px;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sheet-wrap.on .sheet{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:#48484A;justify-self:center}
+.payrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px 14px}
+.payrow b{display:block}.payrow small{color:var(--muted);font-size:13px}.payrow strong{font:700 18px/1 var(--display)}
+.okbtn{background:var(--good)!important;color:#04210d!important;display:flex;gap:8px;align-items:center;justify-content:center}
+.spin{width:20px;height:20px;border-radius:50%;border:3px solid rgba(0,0,0,.2);border-top-color:#0B0B0F;display:inline-block;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.upc{background:var(--card);border-radius:20px;padding:16px;display:grid;gap:10px;border:1.5px solid var(--hair)}
+.upc.on{border-color:var(--good)}
+.upc strong{color:var(--b)}
+.btn svg{vertical-align:-3px}
+/* tour */
+.tour{position:fixed;inset:0;z-index:40;pointer-events:none}
+.tour-block,.tour-tip{pointer-events:auto}
+.tour-block{position:absolute;inset:0}
+.tour-hole{position:fixed;border-radius:18px;box-shadow:0 0 0 200vmax rgba(0,0,0,.74);outline:2px solid var(--b);transition:all .35s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.tour-tip{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:#F5F5F7;color:#0B0B0F;border-radius:18px;padding:14px 16px;display:grid;gap:4px;box-shadow:0 20px 50px rgba(0,0,0,.5);transition:top .35s cubic-bezier(.2,.8,.2,1)}
+.tour-tip .tn{font-size:12px;color:#6e6e73;font-weight:700}
+.tour-tip b{font:700 18px/1.2 var(--display);letter-spacing:-.02em}
+.tour-tip .tt{font-size:15px;color:#3a3a3c;line-height:1.4}
+.tour-b{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.tlink{background:none;border:0;color:#6e6e73;font-size:14px;cursor:pointer;padding:8px 0}
+.tlink:disabled{cursor:default;color:#FF5A36;font-weight:600}
+.tbtn{border:0;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font-weight:700;font-size:15px;padding:10px 18px;cursor:pointer}
+.pulse{animation:pulse 1.5s infinite;position:relative;z-index:41}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,159,10,.7)}70%{box-shadow:0 0 0 16px rgba(255,159,10,0)}100%{box-shadow:0 0 0 0 rgba(255,159,10,0)}}
+@media (prefers-reduced-motion:reduce){.pulse,.medal,.spin{animation:none}}
 </style>
 </head>
 <body>
@@ -409,32 +531,10 @@ function onboarding(initUI){
       '<button class="btn heat" type="button" id="go">'+lt.start+'</button>';
     app.querySelectorAll('[data-kind]').forEach(function(b){ b.onclick = function(){ draft[b.getAttribute('data-kind')] = b.getAttribute('data-v'); render(); }; });
     app.querySelectorAll('[data-goal]').forEach(function(b){ b.onclick = function(){ draft.goal = +b.getAttribute('data-goal'); render(); }; });
-    document.getElementById('go').onclick = function(){ profile = draft; store.set('profile', profile); home(); };
+    document.getElementById('go').onclick = function(){ draft.pathStart = (profile && profile.pathStart && profile.goal === draft.goal) ? profile.pathStart : Date.now(); profile = draft; store.set('profile', profile); home(); window.scrollTo(0,0); };
   }
   function opt(kind, c, on){ return '<button type="button" class="opt" data-kind="'+kind+'" data-v="'+c+'" aria-pressed="'+on+'"><span><b>'+LANG_NAMES[c].n+'</b><small>'+LANG_NAMES[c].s+'</small></span><i aria-hidden="true"></i></button>'; }
   render();
-}
-
-function home(){
-  var xp = totalXP(), lv = levelOf(xp), st = streak(), mine = history.filter(function(h){ return h.lang===profile.train; });
-  var last = mine[mine.length-1];
-  var avgF = mine.length ? mine.slice(-5).reduce(function(s,h){ return s+h.fpm; },0)/Math.min(5,mine.length) : null;
-  app.innerHTML =
-    '<div class="top">'+LOGO+'<button class="icon-btn" type="button" id="set" aria-label="'+L('settings')+'">'+IC.gear+'</button></div>'+
-    '<h1 class="h1">'+L('hi')+'</h1>'+
-    '<div class="card"><div class="streak">'+IC.flame+'<div><b class="h2">'+(st ? L('streak')(st) : L('streak0'))+'</b><p class="small">'+LANG_NAMES[profile.train].n+' · '+esc(L('goals')[profile.goal||0])+'</p></div></div>'+
-    '<div style="display:flex;justify-content:space-between;font-size:14px"><b>'+L('level')+' '+(lv.i+1)+' · '+L('lv')[lv.i]+'</b><span class="small">'+(lv.max ? xp : lv.cur+' / '+lv.need)+' '+L('xp')+'</span></div>'+
-    '<div class="xp"><i style="width:'+(lv.max?100:Math.round(lv.cur/lv.need*100))+'%"></i></div></div>'+
-    '<div class="grid2">'+
-      '<div class="stat"><span>'+L('last')+'</span><b>'+(last ? last.score+'%' : '—')+'</b></div>'+
-      '<div class="stat"><span>'+L('avg_f')+'</span><b>'+(avgF==null ? '—' : fmt1(avgF))+'</b></div></div>'+
-    '<div class="modes">'+
-      '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
-      '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
-    '<div class="card"><p class="label">'+L('progress')+'</p>'+(mine.length ? chart(mine.slice(-12)) : '<p class="small">'+L('no_hist')+'</p>')+'</div>'+
-    (mine.length ? '<p class="label">'+L('history')+'</p><div class="hist">'+mine.slice(-5).reverse().map(function(h){ var d = new Date(h.ts); return '<div class="hrow"><span>'+d.toLocaleDateString()+' · '+(h.mode==='read'?L('m_read'):L('m_free'))+'</span><b>'+h.score+'%</b></div>'; }).join('')+'</div>' : '');
-  document.getElementById('set').onclick = settings;
-  app.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ session(b.getAttribute('data-mode')); }; });
 }
 
 function chart(list){
@@ -449,31 +549,14 @@ function chart(list){
   return s;
 }
 
-function settings(){
-  app.innerHTML =
-    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
-    '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
-    '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
-    '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
-    '<button class="btn ghost" type="button" id="intro">'+({ru:'Показать знакомство',en:'Show the intro',kk:'Танысуды көрсету'})[profile.ui]+'</button>'+
-    '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>';
-  document.getElementById('bk').onclick = home;
-  document.getElementById('lang').onclick = function(){ onboarding(); };
-  document.getElementById('intro').onclick = function(){ introUI = profile.ui; splash(intro); };
-  document.getElementById('sv').onclick = function(){ aiKey = document.getElementById('key').value.trim(); store.set('aiKey', aiKey); home(); };
-  document.getElementById('rs').onclick = function(){
-    document.getElementById('rsbox').innerHTML = '<div class="row"><button class="btn ghost" type="button" id="no">✕</button><button class="btn heat" type="button" id="yes">'+L('reset')+'</button></div>';
-    document.getElementById('no').onclick = settings;
-    document.getElementById('yes').onclick = function(){ history = []; store.set('history', history); home(); };
-  };
-}
-
 /* ================= recording session ================= */
 var ctx = null, media = null;
-function session(mode){
-  var lang = profile.train, text = mode==='read' ? pick(PHRASES[lang]) : pick(TOPICS[lang]), maxSec = mode==='read' ? 20 : 60;
+function session(mode, o){
+  o = o || {}; sessCtx = o;
+  var lang = profile.train, text = mode==='read' ? pick(PHRASES[lang]) : (o.topic || pick(TOPICS[lang])), maxSec = mode==='read' ? 20 : 60;
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[lang].n+'</span><span class="timer" id="tm">0:00</span></div>'+
+    (o.mission!=null ? '<p class="mreward">'+ICX.medal.replace('width="72" height="72"','width="20" height="20"')+'<span>'+XL('mission')+' '+(o.mission+1)+' · '+esc(mTitle(o.mission))+'</span></p><p class="small">'+esc(XL('M')[o.mission][1])+'</p>' : '')+
     '<p class="label">'+(mode==='read' ? L('read_this') : L('speak_on'))+'</p>'+
     '<p class="prompt">'+(mode==='read' ? '«'+esc(text)+'»' : esc(text))+'</p>'+
     '<canvas class="wave" id="wv" width="900" height="220" aria-hidden="true"></canvas>'+
@@ -482,6 +565,7 @@ function session(mode){
     '<div class="card"><p class="label">'+L('transcript')+'</p><p class="live" id="live"></p></div>'+
     '<p class="small">'+L('hint_um')+'</p>'+
     (SR ? '' : '<p class="warnbox">'+L('no_sr')+'</p>');
+  if(!tours.sess){ tours.sess = 1; store.set('tours', tours); setTimeout(function(){ tour(mode==='read' ? XL('T_sess') : XL('T_sess').map(function(x){ return [x[0], x[1], x[2].replace(/прочитай текст выше вслух|read the text above out loud|жоғарыдағы мәтінді дауыстап оқы/, {ru:'ответь вслух',en:'answer out loud',kk:'дауыстап жауап бер'}[profile.ui]), x[3]]; })); }, 400); }
   var stopFn = null, busy = false;
   document.getElementById('bk').onclick = function(){ if(stopFn) stopFn(true); else { releaseRecog(); releaseMic(); } home(); };
   var recBtn = document.getElementById('rec');
@@ -788,55 +872,6 @@ function analyse(o){
 window.__analyse = analyse; window.__pitch = pitch;
 
 /* ================= result ================= */
-function result(r){
-  if(r.tooShort){
-    var msg = r.noText ? NOTEXT[profile.ui](Math.round(r.speech), LANG_NAMES[r.lang].n, r.srErr) : L('too_short');
-    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk">'+IC.back+'</button><span></span><span></span></div><p class="warnbox">'+esc(msg)+'</p>'+
-      (r.noText ? '<button class="btn ghost" type="button" id="lg">'+L('train_lang')+'</button>' : '')+'<button class="btn heat" type="button" id="ag">'+L('again')+'</button>';
-    var lg = document.getElementById('lg'); if(lg) lg.onclick = function(){ onboarding(); };
-    document.getElementById('bk').onclick = home; document.getElementById('ag').onclick = function(){ session(r.mode); }; return;
-  }
-  var mine = history.filter(function(h){ return h.lang===r.lang; }), prev = mine[mine.length-1];
-  var xp = Math.round(r.score/2) + 10 + (prev && r.score > prev.score ? 10 : 0);
-  var lvBefore = levelOf(totalXP()).i;
-  var stBefore = streak();
-  history.push({ts:Date.now(), mode:r.mode, lang:r.lang, score:r.score, wpm:Math.round(r.wpm), fpm:r.fpm, xp:xp});
-  store.set('history', history);
-  var lvAfter = levelOf(totalXP()).i, stAfter = streak();
-  var badge = lvAfter > lvBefore ? L('level')+' '+(lvAfter+1)+' · '+L('lv')[lvAfter] : (stAfter > stBefore && stAfter > 1 ? L('streak')(stAfter) : (r.nF===0 ? (profile.ui==='ru'?'Ни одного паразита':profile.ui==='kk'?'Бірде-бір арам сөз жоқ':'Zero filler words') : null));
-  var band = r.band;
-  var paceTag = r.wpm > band[1] ? ['bad', L('fast')] : r.wpm < band[0] ? ['warn', L('slow')] : ['good', L('ok')];
-  var tx = r.toks.map(function(t){ return t.f==='hes' ? '<mark class="hes" title="'+esc(HESTIP[profile.ui])+'">'+esc(t.w)+'</mark>' : t.f ? '<mark>'+esc(t.w)+'</mark>' : esc(t.w); }).join(' ');
-  var dbg = /[?&]debug=1/.test(location.search) ? '<div class="card dbg">'+esc('hesitations: '+r.hes.map(function(h){ return h.s.toFixed(2)+'–'+h.e.toFixed(2)+'s'; }).join(', ')+'\nlexical fillers: '+r.nLex+'\nrecogniser restarts: '+r.restarts+'\nlast error: '+(r.srErr||'—'))+'</div>' : '';
-  var refHtml = r.ref ? r.ref.split(/\s+/).filter(function(t){ return norm(t); }).map(function(t,i){ return '<span class="'+(r.refMarks[i]?'ok':'miss')+'">'+esc(t)+'</span>'; }).join(' ') : '';
-  var tips = r.issues.map(function(is, i){ var a = ADVICE[is.k][profile.ui]; return '<div class="tip"><span class="n">'+(i+1)+'</span><div><b>'+a[0]+'</b><p>'+a[1]+'</p><p class="drill">'+a[2].replace('{lo}', band[0]).replace('{hi}', band[1])+'</p></div></div>'; }).join('');
-  app.innerHTML =
-    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[r.lang].n+' · '+(r.mode==='read'?L('m_read'):L('m_free'))+'</span><span style="width:40px"></span></div>'+
-    '<div class="ringbox"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#2C2C2E" stroke-width="10"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><span class="num"><span id="num">0</span><small>%</small></span></div>'+
-    '<div class="center"><p class="h2">'+L('sound')(r.score)+'</p><p class="small" style="margin-top:4px;color:'+(prev && r.score>=prev.score?'#30D158':'#8E8E93')+'">'+(prev ? L('vs')(r.score-prev.score) : L('first'))+' · '+L('got_xp')(xp)+'</p></div>'+
-    (badge ? '<div class="badge"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="10" r="6" stroke="#FF9F0A" stroke-width="2"/><path d="M8.5 15l-1.5 6 5-2.5 5 2.5-1.5-6" stroke="#FF9F0A" stroke-width="2" stroke-linejoin="round"/></svg><span><b>'+L('badge')+':</b> '+esc(badge)+'</span></div>' : '')+
-    '<div class="grid2">'+
-      stat(L('pace'), Math.round(r.wpm)+' '+L('wpm'), L('target')+' '+band[0]+'–'+band[1]+' · '+paceTag[1], paceTag[0])+
-      stat(L('fillers'), fmt1(r.fpm)+' '+L('per_min'), r.nF ? r.nF+': '+uniqFillers(r) : L('none'), r.fpm > 3 ? 'bad' : r.fpm > 1 ? 'warn' : 'good')+
-      stat(L('pauses'), String(r.pauses), r.longP ? L('long_p')(r.longP) : L('avg')+' '+fmt1(r.avgP)+' '+(profile.ui==='en'?'s':'с'), r.longP ? 'warn' : 'good')+
-      (r.sd==null ? stat(L('inton'), '—', '', '') : stat(L('inton'), fmt1(r.sd)+' '+L('st'), r.sd < 1.5 ? L('mono') : L('lively'), r.sd < 1.5 ? 'warn' : 'good'))+
-      (r.acc!=null ? stat(L('acc'), Math.round(r.acc*100)+'%', '', r.acc < .85 ? 'warn' : 'good') : '')+
-      (r.conf!=null ? stat(L('clar'), Math.round(r.conf*100)+'%', '', r.conf < .75 ? 'warn' : 'good') : '')+
-    '</div>'+
-    '<p class="label">'+L('tips')+'</p>'+tips+
-    '<p class="label">'+L('transcript')+'</p><p class="tx">'+(tx || '—')+'</p>'+(r.nHes ? '<p class="small">'+esc(HESTIP[profile.ui])+'</p>' : '')+dbg+
-    (r.ref ? '<p class="tx">'+refHtml+'</p><p class="small">'+L('ref_hint')+'</p>' : '')+
-    (aiKey ? '<button class="btn ghost" type="button" id="ai">'+L('ai_btn')+'</button><div class="card" id="aibox" hidden><p class="ai" id="aitx"></p></div>' : '')+
-    '<div class="row"><button class="btn ghost" type="button" id="hm">'+L('home')+'</button><button class="btn heat" type="button" id="ag">'+L('again')+'</button></div>';
-  // score animation
-  var arc = document.getElementById('arc'), num = document.getElementById('num'), C = 326.7, to = r.score;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var setv = function(v){ num.textContent = Math.round(v); arc.setAttribute('stroke-dashoffset', (C*(1-v/100)).toFixed(1)); };
-  if(reduce) setv(to); else { var t0 = null; var tick = function(ts){ if(!t0) t0 = ts; var k = Math.min(1,(ts-t0)/1200); setv(to*(1-Math.pow(1-k,3))); if(k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
-  document.getElementById('bk').onclick = home; document.getElementById('hm').onclick = home;
-  document.getElementById('ag').onclick = function(){ session(r.mode); };
-  var aiBtn = document.getElementById('ai'); if(aiBtn) aiBtn.onclick = function(){ aiReview(r, aiBtn); };
-}
 function stat(k, v, e, cls){ return '<div class="stat"><span>'+k+'</span><b>'+v+'</b>'+(e?'<em class="'+cls+'">'+esc(e)+'</em>':'')+'</div>'; }
 function uniqFillers(r){ var u = {}; r.toks.forEach(function(t){ var k = t.f==='hes' ? t.w : t.g; if(k) u[k] = (u[k]||0) + 1; }); return Object.keys(u).sort(function(a,b){ return u[b]-u[a]; }).slice(0,3).map(function(w){ return '«'+w+'»'+(u[w]>1?' ×'+u[w]:''); }).join(', '); }
 
@@ -856,6 +891,593 @@ function aiReview(r, btn){
   .catch(function(){ out.textContent = L('ai_err'); })
   .then(function(){ btn.disabled = false; });
 }
+
+/* ================= journey: goal → missions → rewards, tours, plans ================= */
+var plan = store.get('plan', null);          // {id, ts} — demo purchase
+var addons = store.get('addons', {});        // {pack:true, pro:true}
+var tours = store.get('tours', {});          // which first-run hints were shown
+var meetings = store.get('meetings', []);    // [{id, title, ts}]
+var sessCtx = {};
+function isPremium(){ return !!plan; }
+function XL(k){ return X[(profile && profile.ui) || 'ru'][k]; }
+var REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var X = {
+ ru:{
+  goal_l:'Твоя цель', mission:'Миссия', of:'из', start_m:'Начать миссию', unlock:'Открыть с Premium', reward:'Награда', path:'Путь к цели',
+  goalT:['Звучать уверенно на встречах','Пройти собеседование уверенно','Уверенно выступать на презентациях','Легко поддерживать разговор'],
+  goalR:['Голос встречи','Готов к собеседованию','Спикер презентаций','Мастер small talk'],
+  goalRL:['Теперь тебя слышат на встречах: говоришь коротко, по делу и без «э-э».','Теперь ты готов к собеседованию: отвечаешь чётко, уверенно и в своём темпе.','Теперь ты спикер, который может выступать на презентации.','Теперь ты легко заводишь и держишь разговор с кем угодно.'],
+  M:[['Первый замер','Прочитай одну фразу вслух — узнаем твою отправную точку.','Первый шаг'],
+     ['Минута без бумажки','Ответь на вопрос свободной речью — хотя бы 25 секунд.','Без шпаргалки'],
+     ['Меньше «э-э»','Свободная речь: не больше 3 паразитов в минуту.','Чистая речь'],
+     ['Темп под контролем','Прочитай фразу в целевом темпе с оценкой от 75%.','Ритм'],
+     ['Три дня подряд','Тренируйся 3 дня подряд — так навык закрепляется.','Привычка'],
+     ['Боевая репетиция','Выступи на тему своей цели 40+ секунд: оценка от 80% и не больше 2 паразитов в минуту.','']],
+  stat_last:'Последняя', stat_best:'Лучшая', stat_f:'Паразитов/мин', stat_n:'Записей',
+  practice:'Свободная тренировка', history:'История', all_hist:'Вся история', hist_empty:'Здесь появятся твои записи: что ты сказал, где ошибся и как исправить.',
+  meet:'Подготовка к встречам', meet_p:'Добавь реальную встречу — приложение подготовит тебя к ней и напомнит в день встречи.', meet_add:'Добавить встречу', meet_t:'Что за встреча?', meet_ph:'Например: защита кейса', meet_when:'Когда', meet_save:'Сохранить', meet_prep:'Подготовиться', meet_today:'Сегодня встреча', meet_min:'5 минут подготовки',
+  prep_topic:function(t){ return 'Встреча: «'+t+'». Скажи за минуту главное, что хочешь донести, и чего ждёшь в итоге.'; },
+  scen:'Сценарии', scen_p:'10 готовых ситуаций: собеседование, питч, апдейт, сложный разговор.', pack:'Пакет «Подготовка к встрече»',
+  done_all:'Цель достигнута', new_goal:'Выбрать следующую цель', choose_goal:'Какую цель берём следующей?',
+  cont:'Продолжить', again:'Ещё раз', closeX:'Закрыть',
+  m_done:'Миссия выполнена!', badge_got:function(b){ return 'Новый значок: «'+b+'»'; }, next_m:function(t){ return 'Дальше: '+t; }, to_home:'К цели',
+  final_t:'Цель достигнута!', cert:'Звание',
+  pw_t:'Дойди до цели за 4 недели', pw_s:function(now, goal){ return 'Сейчас ты звучишь на '+now+'%. С ежедневной практикой — до '+goal+'% и звание «'+XL('goalR')[profile.goal||0]+'».'; },
+  pw_f:[['Все 6 миссий пути','и финальное звание'],['Подготовка к встречам','добавь встречу — подготовим к ней'],['Сценарии','собеседование, питч, апдейт'],['Прогресс по навыкам','темп, паузы, паразиты, интонация']],
+  plans:[['week','Неделя','$4.99','7 дней, затем $17.99 в месяц',''],['month','Месяц','$17.99','Отмена в любой момент',''],['quarter','3 месяца','$29.99','$10 в месяц','−44%']],
+  pw_now:'Сейчас', pw_4w:'Через 4 недели', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
+  pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
+  up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
+  up_pro:['Pro','+$10 в месяц','Подробный ИИ-разбор каждой записи и твой текст, переписанный без паразитов.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
+  plan_free:'Free', plan_prem:'Premium', set_plan:'Подписка', set_reset_buy:'Сбросить покупки (демо)', set_tour:'Показать подсказки заново', set_goal:'Сменить цель',
+  locked:'Premium',
+  tour_next:'Далее', tour_skip:'Пропустить', tour_tap:'Нажми на подсвеченное',
+  T_home:[['#hero','Твоя цель','Здесь цель, которую ты выбрал. Кольцо показывает, сколько пути уже пройдено.'],
+          ['#mcard','Миссия на сейчас','Каждая миссия — одно короткое упражнение. Выполнил — получаешь значок и открываешь следующую.'],
+          ['#path','Путь к цели','6 миссий. Последняя — боевая репетиция, за неё дают звание.'],
+          ['#modes','Свободная тренировка','Когда хочется просто потренироваться — без миссии.'],
+          ['#hist','История','Здесь все записи: что ты сказал и где ошибся. Нажми на любую, чтобы разобрать.'],
+          ['#mgo','Начнём!','Первая миссия занимает 20 секунд. Нажми «Начать миссию».', 1]],
+  T_sess:[['#rec','Запись','Нажми, прочитай текст выше вслух и нажми ещё раз, чтобы закончить.', 1]],
+  T_res:[['#ringbox','Твоя оценка','Насколько профессионально ты звучишь. Она складывается из темпа, пауз, интонации и паразитов.'],
+         ['#statgrid','Из чего она','Зелёное — в норме, оранжевое и красное — что тянет оценку вниз.'],
+         ['#tips','Что делать','Три совета под твою запись. Каждый с упражнением на 1 минуту.'],
+         ['#txbox','Что ты сказал','Красным — паразиты. Пунктиром — заминки «э-э», найденные по звуку.'],
+         ['#cont','Дальше','Нажми «Продолжить» — посмотрим, что ты открыл.', 1]],
+  T_prem:[['#meet','Встречи','Добавь реальную встречу — в день встречи наверху появится подготовка к ней.'],
+          ['#scen','Сценарии','Готовые ситуации для тренировки. Пакет открывает все 10.']],
+  greet:function(h){ return h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер'; },
+  sessions_n:function(n){ return n+' '+plural(n,'запись','записи','записей'); },
+  back:'Назад', detail_old:'Для этой записи подробности не сохранились — они сохраняются начиная с этой версии.', your_task:'Задание'
+ },
+ en:{
+  goal_l:'Your goal', mission:'Mission', of:'of', start_m:'Start mission', unlock:'Unlock with Premium', reward:'Reward', path:'Path to your goal',
+  goalT:['Sound confident in meetings','Ace your job interview','Present with confidence','Make easy small talk'],
+  goalR:['Voice of the meeting','Interview-ready','Presentation speaker','Small-talk pro'],
+  goalRL:['People hear you in meetings now: short, to the point, no “um”.','You’re interview-ready: clear, confident answers at your own pace.','You’re now a speaker who can present with confidence.','You now start and keep a conversation going with anyone.'],
+  M:[['First check','Read one sentence out loud — we’ll find your starting point.','First step'],
+     ['A minute, no notes','Answer a question in free speech — at least 25 seconds.','No cheat sheet'],
+     ['Fewer “um”s','Free talk with no more than 3 fillers per minute.','Clean speech'],
+     ['Pace in control','Read a sentence at your target pace with a score of 75%+.','Rhythm'],
+     ['Three days in a row','Practise 3 days in a row — that’s how the skill sticks.','Habit'],
+     ['Dress rehearsal','Speak on your goal topic for 40+ seconds: 80%+ score and no more than 2 fillers per minute.','']],
+  stat_last:'Last', stat_best:'Best', stat_f:'Fillers/min', stat_n:'Recordings',
+  practice:'Free practice', history:'History', all_hist:'All history', hist_empty:'Your recordings will appear here: what you said, where you slipped and how to fix it.',
+  meet:'Meeting prep', meet_p:'Add a real meeting — the app will prepare you for it and remind you on the day.', meet_add:'Add a meeting', meet_t:'What’s the meeting?', meet_ph:'e.g. case defence', meet_when:'When', meet_save:'Save', meet_prep:'Prepare', meet_today:'Meeting today', meet_min:'5-minute prep',
+  prep_topic:function(t){ return 'Meeting: “'+t+'”. In one minute, say the main point you want to land and what outcome you expect.'; },
+  scen:'Scenarios', scen_p:'10 ready situations: interview, pitch, status update, tough conversation.', pack:'“Meeting prep” pack',
+  done_all:'Goal reached', new_goal:'Choose your next goal', choose_goal:'Which goal is next?',
+  cont:'Continue', again:'Try again', closeX:'Close',
+  m_done:'Mission complete!', badge_got:function(b){ return 'New badge: “'+b+'”'; }, next_m:function(t){ return 'Next: '+t; }, to_home:'Back to my goal',
+  final_t:'Goal reached!', cert:'Title',
+  pw_t:'Reach your goal in 4 weeks', pw_s:function(now, goal){ return 'You sound '+now+'% professional now. With daily practice — up to '+goal+'% and the “'+XL('goalR')[profile.goal||0]+'” title.'; },
+  pw_f:[['All 6 missions','and the final title'],['Meeting prep','add a meeting — we’ll prepare you'],['Scenarios','interview, pitch, status update'],['Skill progress','pace, pauses, fillers, intonation']],
+  plans:[['week','1 week','$4.99','7 days, then $17.99 a month',''],['month','1 month','$17.99','Cancel anytime',''],['quarter','3 months','$29.99','$10 a month','−44%']],
+  pw_now:'Now', pw_4w:'In 4 weeks', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
+  pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
+  up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
+  up_pro:['Pro','+$10 a month','Detailed AI review of every recording and your text rewritten without fillers.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
+  plan_free:'Free', plan_prem:'Premium', set_plan:'Subscription', set_reset_buy:'Reset purchases (demo)', set_tour:'Show hints again', set_goal:'Change goal',
+  locked:'Premium',
+  tour_next:'Next', tour_skip:'Skip', tour_tap:'Tap the highlighted item',
+  T_home:[['#hero','Your goal','This is the goal you picked. The ring shows how much of the path you’ve covered.'],
+          ['#mcard','Today’s mission','Each mission is one short exercise. Complete it to earn a badge and unlock the next one.'],
+          ['#path','Path to your goal','6 missions. The last one is a dress rehearsal that earns you a title.'],
+          ['#modes','Free practice','For when you just want to practise — no mission.'],
+          ['#hist','History','Every recording: what you said and where you slipped. Tap one to review it.'],
+          ['#mgo','Let’s go!','The first mission takes 20 seconds. Tap “Start mission”.', 1]],
+  T_sess:[['#rec','Record','Tap, read the text above out loud, then tap again to finish.', 1]],
+  T_res:[['#ringbox','Your score','How professional you sound — built from pace, pauses, intonation and fillers.'],
+         ['#statgrid','What’s inside','Green is on target; orange and red pull the score down.'],
+         ['#tips','What to do','Three tips for this recording, each with a 1-minute drill.'],
+         ['#txbox','What you said','Red — filler words. Dashed — “uh” hesitations found in the audio.'],
+         ['#cont','Next','Tap “Continue” to see what you’ve unlocked.', 1]],
+  T_prem:[['#meet','Meetings','Add a real meeting — on the day, a prep session appears at the top.'],
+          ['#scen','Scenarios','Ready-made situations to practise. The pack unlocks all 10.']],
+  greet:function(h){ return h<5?'Good night':h<12?'Good morning':h<18?'Good afternoon':'Good evening'; },
+  sessions_n:function(n){ return n+' recording'+(n===1?'':'s'); },
+  back:'Back', detail_old:'Details weren’t saved for this recording — they’re saved from this version on.', your_task:'Task'
+ },
+ kk:{
+  goal_l:'Мақсатың', mission:'Миссия', of:'/', start_m:'Миссияны бастау', unlock:'Premium-мен ашу', reward:'Сыйлық', path:'Мақсатқа жол',
+  goalT:['Жиналыстарда сенімді сөйлеу','Сұхбаттан сенімді өту','Презентацияда сенімді сөйлеу','Әңгімені оңай жүргізу'],
+  goalR:['Жиналыс дауысы','Сұхбатқа дайын','Презентация шешені','Small talk шебері'],
+  goalRL:['Енді жиналыста сені естиді: қысқа, нақты, «ээ»-сіз.','Енді сұхбатқа дайынсың: анық, сенімді, өз қарқыныңмен жауап бересің.','Енді сен презентацияда сөйлей алатын шешенсің.','Енді кез келген адаммен әңгімені оңай бастап, жалғастырасың.'],
+  M:[['Алғашқы өлшем','Бір сөйлемді дауыстап оқы — бастапқы деңгейіңді білеміз.','Алғашқы қадам'],
+     ['Қағазсыз бір минут','Сұраққа еркін жауап бер — кемінде 25 секунд.','Шпаргалкасыз'],
+     ['«Ээ»-ні азайт','Еркін сөйлеу: минутына 3-тен көп арам сөз емес.','Таза сөйлеу'],
+     ['Қарқын бақылауда','Сөйлемді мақсатты қарқынмен 75%+ бағамен оқы.','Ырғақ'],
+     ['Қатарынан үш күн','3 күн қатарынан жаттық — дағды осылай бекиді.','Әдет'],
+     ['Нақты дайындық','Мақсатың тақырыбында 40+ секунд сөйле: баға 80%+ және минутына 2-ден көп арам сөз емес.','']],
+  stat_last:'Соңғы', stat_best:'Ең жақсы', stat_f:'Арам сөз/мин', stat_n:'Жазбалар',
+  practice:'Еркін жаттығу', history:'Тарих', all_hist:'Барлық тарих', hist_empty:'Мұнда жазбаларың шығады: не айттың, қай жерде қателестің, қалай түзету керек.',
+  meet:'Кездесуге дайындық', meet_p:'Нақты кездесуді қос — қосымша сені дайындап, сол күні еске салады.', meet_add:'Кездесу қосу', meet_t:'Қандай кездесу?', meet_ph:'Мысалы: кейс қорғау', meet_when:'Қашан', meet_save:'Сақтау', meet_prep:'Дайындалу', meet_today:'Бүгін кездесу', meet_min:'5 минут дайындық',
+  prep_topic:function(t){ return 'Кездесу: «'+t+'». Бір минутта жеткізгің келетін басты ойды және күтетін нәтижені айт.'; },
+  scen:'Сценарийлер', scen_p:'10 дайын жағдай: сұхбат, питч, есеп беру, қиын әңгіме.', pack:'«Кездесуге дайындық» пакеті',
+  done_all:'Мақсатқа жеттің', new_goal:'Келесі мақсатты таңдау', choose_goal:'Келесі мақсат қандай?',
+  cont:'Жалғастыру', again:'Қайталау', closeX:'Жабу',
+  m_done:'Миссия орындалды!', badge_got:function(b){ return 'Жаңа белгі: «'+b+'»'; }, next_m:function(t){ return 'Келесі: '+t; }, to_home:'Мақсатқа',
+  final_t:'Мақсатқа жеттің!', cert:'Атақ',
+  pw_t:'Мақсатқа 4 аптада жет', pw_s:function(now, goal){ return 'Қазір сен '+now+'% кәсіби естілесің. Күнделікті жаттығумен — '+goal+'%-ға дейін және «'+XL('goalR')[profile.goal||0]+'» атағы.'; },
+  pw_f:[['Жолдың 6 миссиясы','және соңғы атақ'],['Кездесуге дайындық','кездесуді қос — дайындаймыз'],['Сценарийлер','сұхбат, питч, есеп беру'],['Дағдылар прогресі','қарқын, үзіліс, арам сөз, интонация']],
+  plans:[['week','Апта','$4.99','7 күн, кейін айына $17.99',''],['month','Ай','$17.99','Кез келген уақытта тоқтатуға болады',''],['quarter','3 ай','$29.99','айына $10','−44%']],
+  pw_now:'Қазір', pw_4w:'4 аптадан кейін', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
+  pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
+  up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
+  up_pro:['Pro','айына +$10','Әр жазбаның толық ЖИ талдауы және арам сөзсіз қайта жазылған мәтінің.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
+  plan_free:'Free', plan_prem:'Premium', set_plan:'Жазылым', set_reset_buy:'Сатып алуларды тазалау (демо)', set_tour:'Кеңестерді қайта көрсету', set_goal:'Мақсатты өзгерту',
+  locked:'Premium',
+  tour_next:'Келесі', tour_skip:'Өткізу', tour_tap:'Белгіленгенді бас',
+  T_home:[['#hero','Мақсатың','Мұнда сен таңдаған мақсат. Сақина жолдың қанша бөлігі өтілгенін көрсетеді.'],
+          ['#mcard','Қазіргі миссия','Әр миссия — бір қысқа жаттығу. Орындасаң — белгі аласың және келесісі ашылады.'],
+          ['#path','Мақсатқа жол','6 миссия. Соңғысы — нақты дайындық, ол үшін атақ беріледі.'],
+          ['#modes','Еркін жаттығу','Миссиясыз жай жаттыққың келгенде.'],
+          ['#hist','Тарих','Барлық жазбалар: не айттың, қай жерде қателестің. Талдау үшін кез келгенін бас.'],
+          ['#mgo','Бастайық!','Алғашқы миссия 20 секунд алады. «Миссияны бастау» бас.', 1]],
+  T_sess:[['#rec','Жазу','Бас, жоғарыдағы мәтінді дауыстап оқы да, аяқтау үшін қайта бас.', 1]],
+  T_res:[['#ringbox','Бағаң','Қаншалықты кәсіби естілесің — қарқын, үзіліс, интонация және арам сөздерден құралады.'],
+         ['#statgrid','Неден құралады','Жасыл — қалыпты, қызғылт сары мен қызыл — бағаны төмендетеді.'],
+         ['#tips','Не істеу керек','Осы жазбаға үш кеңес, әрқайсысында 1 минуттық жаттығу.'],
+         ['#txbox','Не айттың','Қызылмен — арам сөздер. Пунктирмен — дыбыс бойынша табылған «ээ».'],
+         ['#cont','Әрі қарай','«Жалғастыру» бас — не ашқаныңды көрейік.', 1]],
+  T_prem:[['#meet','Кездесулер','Нақты кездесуді қос — сол күні жоғарыда дайындық шығады.'],
+          ['#scen','Сценарийлер','Жаттығуға дайын жағдайлар. Пакет 10-ын да ашады.']],
+  greet:function(h){ return h<11?'Қайырлы таң':h<18?'Қайырлы күн':'Қайырлы кеш'; },
+  sessions_n:function(n){ return n+' жазба'; },
+  back:'Артқа', detail_old:'Бұл жазбаның толығы сақталмаған — бұл нұсқадан бастап сақталады.', your_task:'Тапсырма'
+ }
+};
+
+var GOAL_TOPICS = {
+ ru:[['Дай апдейт по своей задаче за минуту: что сделано, что мешает, что дальше.','Предложи команде одно улучшение и объясни, зачем оно.','Не согласись с решением коллеги вежливо и по делу.'],
+     ['Расскажи о себе за 60 секунд, как на собеседовании.','Расскажи о самом сложном проекте и твоей роли в нём.','Почему ты хочешь эту работу и чем будешь полезен?'],
+     ['Представь свой проект за минуту: проблема, решение, результат.','Объясни главный вывод из своих цифр так, чтобы понял любой.','Закончи выступление: итог и что ты просишь у аудитории.'],
+     ['Расскажи, как прошли твои выходные.','Порекомендуй место или книгу и объясни почему.','Познакомься с новым человеком на мероприятии.']],
+ en:[['Give a one-minute update on your task: done, blocked, next.','Suggest one improvement to your team and explain why.','Disagree with a colleague’s decision politely and to the point.'],
+     ['Tell me about yourself in 60 seconds, as if at a job interview.','Describe your hardest project and your role in it.','Why do you want this job and how will you help?'],
+     ['Present your project in a minute: problem, solution, result.','Explain the key takeaway from your numbers so anyone gets it.','Close a presentation: the summary and what you ask the audience for.'],
+     ['Tell me how your weekend went.','Recommend a place or a book and say why.','Introduce yourself to someone new at an event.']],
+ kk:[['Тапсырмаң бойынша бір минутта есеп бер: не істелді, не кедергі, әрі қарай не.','Командаға бір жақсартуды ұсынып, неге керек екенін түсіндір.','Әріптесіңнің шешімімен сыпайы әрі нақты келіспе.'],
+     ['Өзің туралы 60 секундта айтып бер, сұхбаттағыдай.','Ең қиын жобаң және ондағы рөлің туралы айт.','Неге осы жұмысты қалайсың және қандай пайда бересің?'],
+     ['Жобаңды бір минутта таныстыр: мәселе, шешім, нәтиже.','Сандарыңнан басты қорытындыны кез келген адам түсінетіндей түсіндір.','Презентацияны аяқта: қорытынды және аудиториядан не сұрайсың.'],
+     ['Демалысың қалай өткенін айтып бер.','Бір орынды не кітапты ұсынып, себебін айт.','Іс-шарада жаңа адаммен таныс.']]
+};
+var SCEN = {
+ ru:[['Собеседование','Расскажи о себе и почему ты подходишь на эту роль.'],['Питч инвестору','Продай свою идею инвестору за 60 секунд.'],['Апдейт руководителю','Дай короткий апдейт: результат, риск, что нужно от руководителя.'],['Сложный разговор','Скажи коллеге, что его часть работы задерживает проект.'],['Зарплата','Попроси повышение и аргументируй цифрами.'],['Защита кейса','Защити свой кейс: ниша, экономика, вывод.'],['Отказ клиенту','Вежливо откажи клиенту и предложи альтернативу.'],['Тост','Скажи короткий тост на дне рождения друга.'],['Ответ на возражение','Клиент говорит «дорого». Ответь.'],['Самопрезентация','Представься на нетворкинге за 30 секунд.']],
+ en:[['Job interview','Tell me about yourself and why you fit this role.'],['Investor pitch','Sell your idea to an investor in 60 seconds.'],['Update to your manager','Give a short update: result, risk, what you need from your manager.'],['Tough conversation','Tell a colleague their part is delaying the project.'],['Salary','Ask for a raise and back it with numbers.'],['Case defence','Defend your case: niche, unit economics, conclusion.'],['Saying no to a client','Politely decline a client and offer an alternative.'],['A toast','Give a short toast at a friend’s birthday.'],['Handling objections','The client says “too expensive”. Respond.'],['Elevator pitch','Introduce yourself at a networking event in 30 seconds.']],
+ kk:[['Сұхбат','Өзің туралы және неге осы рөлге сай екеніңді айт.'],['Инвесторға питч','Идеяңды инвесторға 60 секундта сат.'],['Басшыға есеп','Қысқа есеп бер: нәтиже, тәуекел, басшыдан не керек.'],['Қиын әңгіме','Әріптесіңе оның бөлігі жобаны кешіктіріп жатқанын айт.'],['Жалақы','Жалақыны көтеруді сұрап, сандармен дәлелде.'],['Кейс қорғау','Кейсіңді қорға: тауашa, экономика, қорытынды.'],['Клиентке бас тарту','Клиентке сыпайы бас тартып, балама ұсын.'],['Тост','Досыңның туған күнінде қысқа тост айт.'],['Қарсылыққа жауап','Клиент «қымбат» дейді. Жауап бер.'],['Өзін таныстыру','Нетворкингте 30 секундта өзіңді таныстыр.']]
+};
+
+/* ---------- missions: evaluated over the sessions since the current goal started ---------- */
+var MISSIONS = [
+  {mode:'read', test:function(h){ return true; }},
+  {mode:'free', test:function(h){ return h.mode==='free' && (h.speech||0) >= 25; }},
+  {mode:'free', test:function(h){ return h.mode==='free' && (h.speech||0) >= 20 && h.fpm <= 3; }},
+  {mode:'read', test:function(h){ return h.band && h.wpm >= h.band[0] && h.wpm <= h.band[1] && h.score >= 75; }},
+  {mode:'free', test:function(h, upto){ return streakAt(upto) >= 3; }},
+  {mode:'free', goalTopic:true, test:function(h){ return h.mode==='free' && (h.speech||0) >= 40 && h.score >= 80 && h.fpm <= 2; }}
+];
+var FREE_MISSIONS = 2;
+function streakAt(list){
+  if(!list.length) return 0;
+  var days = {}; list.forEach(function(h){ days[dayKey(h.ts)] = 1; });
+  var d = new Date(list[list.length-1].ts), n = 0;
+  while(days[dayKey(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function pathState(){
+  var start = (profile && profile.pathStart) || 0;
+  var hs = history.filter(function(h){ return h.ts >= start && h.lang === profile.train; });
+  var done = [], from = 0;
+  for(var m = 0; m < MISSIONS.length; m++){
+    if(m >= FREE_MISSIONS && !isPremium()) break;
+    var hit = -1;
+    for(var k = from; k < hs.length; k++){ if(MISSIONS[m].test(hs[k], hs.slice(0, k+1))){ hit = k; break; } }
+    if(hit < 0) break;
+    done.push(hs[hit].ts); from = hit + 1;
+  }
+  return {n:done.length, total:MISSIONS.length, done:done, complete: done.length === MISSIONS.length};
+}
+function mTitle(i){ return XL('M')[i][0]; }
+function mBadge(i){ return i === MISSIONS.length-1 ? XL('goalR')[profile.goal||0] : XL('M')[i][2]; }
+function startMission(i){
+  if(i >= FREE_MISSIONS && !isPremium()){ paywall('lock', home); return; }
+  var M = MISSIONS[i], lang = profile.train, topic = null;
+  if(M.mode === 'free') topic = pick(GOAL_TOPICS[lang][profile.goal||0]);
+  session(M.mode, {mission:i, topic:topic});
+}
+
+/* ---------- shared bits ---------- */
+var ICX = {
+  check:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  lock:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="#8E8E93"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#8E8E93" stroke-width="2.4"/></svg>',
+  trophy:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0V4z" fill="#FFD60A"/><path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5" stroke="#FFD60A" stroke-width="2"/><path d="M10 14h4v3h-4zM8 20h8" stroke="#FFD60A" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  cal:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3" stroke="#fff" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  star:'<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z" fill="#fff"/></svg>',
+  medal:'<svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><defs><linearGradient id="md" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD60A"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><path d="M24 4h10l6 18H30zM48 4H38l-6 18h10z" fill="#FF5A36"/><circle cx="36" cy="44" r="22" fill="url(#md)"/><circle cx="36" cy="44" r="15" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/><path d="M36 33l3.4 7 7.6 1-5.5 5.3 1.3 7.6L36 50.3l-6.8 3.6 1.3-7.6L25 41l7.6-1z" fill="#fff"/></svg>'
+};
+function ring(pct, size, label){
+  var C = 2*Math.PI*44, off = C*(1-pct/100);
+  return '<div class="pring" style="width:'+size+'px;height:'+size+'px"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="9"/><circle cx="50" cy="50" r="44" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/></svg><b>'+label+'</b></div>';
+}
+function scoreCls(s){ return s >= 80 ? 'good' : s >= 60 ? 'warn' : 'bad'; }
+function fmtWhen(ts){
+  var d = new Date(ts), now = new Date(), loc = {ru:'ru-RU', en:'en-GB', kk:'kk-KZ'}[profile.ui];
+  var time = d.toLocaleTimeString(loc, {hour:'2-digit', minute:'2-digit'});
+  var dd = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate()))/864e5);
+  var day = dd===0 ? {ru:'сегодня',en:'today',kk:'бүгін'}[profile.ui] : dd===1 ? {ru:'завтра',en:'tomorrow',kk:'ертең'}[profile.ui] : dd===-1 ? {ru:'вчера',en:'yesterday',kk:'кеше'}[profile.ui] : d.toLocaleDateString(loc, {weekday:'short', day:'numeric', month:'short'});
+  return day+', '+time;
+}
+
+/* ---------- home ---------- */
+function home(){
+  var ps = pathState(), g = profile.goal||0, xp = totalXP(), lv = levelOf(xp), st = streak();
+  var mine = history.filter(function(h){ return h.lang===profile.train; });
+  var last = mine[mine.length-1], best = mine.reduce(function(m,h){ return Math.max(m, h.score); }, 0);
+  var avgF = mine.length ? mine.slice(-5).reduce(function(s,h){ return s+h.fpm; },0)/Math.min(5,mine.length) : null;
+  var pct = Math.round(ps.n/ps.total*100), cur = ps.n, locked = cur >= FREE_MISSIONS && !isPremium() && !ps.complete;
+  var h = new Date().getHours(), loc = {ru:'ru-RU', en:'en-GB', kk:'kk-KZ'}[profile.ui];
+  meetings = meetings.filter(function(m){ return m.ts > Date.now() - 6*3600e3; }).sort(function(a,b){ return a.ts-b.ts; });
+  var today = meetings.filter(function(m){ return dayKey(m.ts) === dayKey(Date.now()); })[0];
+
+  var heroBody = ps.complete
+    ? '<div class="hero-row">'+ring(100, 92, ICX.trophy)+'<div><p class="hero-k">'+XL('done_all')+'</p><p class="hero-v">«'+esc(XL('goalR')[g])+'»</p></div></div><button class="btn white" type="button" id="ngoal">'+XL('new_goal')+'</button>'
+    : '<div class="hero-row">'+ring(pct, 92, pct+'<small>%</small>')+'<div style="flex:1;min-width:0"><p class="hero-k">'+XL('mission')+' '+(cur+1)+' '+XL('of')+' '+ps.total+'</p><div class="hero-bar"><i style="width:'+pct+'%"></i></div><p class="hero-r">'+ICX.trophy.replace('width="22" height="22"','width="15" height="15"')+' '+esc(XL('goalR')[g])+'</p></div></div>';
+
+  var mcard = ps.complete ? '' :
+    '<section class="mcard'+(locked?' locked':'')+'" id="mcard"><div class="mhead"><span class="label">'+XL('mission')+' '+(cur+1)+'</span>'+(locked?'<span class="lockpill">'+ICX.lock+' '+XL('locked')+'</span>':'<span class="small">'+(MISSIONS[cur].mode==='read'?'~20 s':'~60 s')+'</span>')+'</div>'+
+    '<h2 class="h2">'+esc(mTitle(cur))+'</h2><p class="p">'+esc(XL('M')[cur][1])+'</p>'+
+    '<p class="mreward">'+ICX.medal.replace('width="72" height="72"','width="22" height="22"')+'<span>'+XL('reward')+': «'+esc(mBadge(cur))+'»</span></p>'+
+    '<button class="btn '+(locked?'white':'heat')+'" type="button" id="mgo">'+(locked?XL('unlock'):XL('start_m'))+'</button></section>';
+
+  var pathH = '<section class="card" id="path"><p class="label">'+XL('path')+'</p><ol class="path">'+MISSIONS.map(function(M, i){
+    var cls = i < ps.n ? 'done' : i === ps.n ? 'cur' : 'todo', lk = i >= FREE_MISSIONS && !isPremium() && i >= ps.n, fin = i === MISSIONS.length-1;
+    var dot = i < ps.n ? ICX.check : fin ? ICX.trophy.replace('width="22" height="22"','width="16" height="16"') : lk ? ICX.lock : String(i+1);
+    return '<li class="pn '+cls+(fin?' fin':'')+'"><span class="dot">'+dot+'</span><div><b>'+esc(mTitle(i))+'</b><small>'+(fin ? esc(XL('goalRL')[g]) : XL('reward')+': «'+esc(mBadge(i))+'»')+'</small></div>'+(lk && i===ps.n?'':'')+'</li>';
+  }).join('')+'</ol></section>';
+
+  var meetH = '<section class="card" id="meet"><div class="mhead"><p class="label">'+XL('meet')+'</p>'+(isPremium()?'':'<span class="lockpill">'+ICX.lock+' '+XL('locked')+'</span>')+'</div>'+
+    (meetings.length ? '<div class="mlist">'+meetings.slice(0,3).map(function(m){ return '<div class="mrow"><div><b>'+esc(m.title)+'</b><small>'+fmtWhen(m.ts)+'</small></div><button class="chip" type="button" data-prep="'+m.id+'">'+XL('meet_prep')+'</button></div>'; }).join('')+'</div>' : '<p class="p">'+XL('meet_p')+'</p>')+
+    '<div id="mform" hidden><input class="input" id="mt" maxlength="60" placeholder="'+esc(XL('meet_ph'))+'" aria-label="'+esc(XL('meet_t'))+'"><input class="input" id="mw" type="datetime-local" aria-label="'+esc(XL('meet_when'))+'"><button class="btn heat" type="button" id="msave">'+XL('meet_save')+'</button></div>'+
+    '<button class="btn ghost" type="button" id="madd">+ '+XL('meet_add')+'</button></section>';
+
+  var scenH = '<section class="card" id="scen"><div class="mhead"><p class="label">'+XL('scen')+'</p>'+(addons.pack?'':'<span class="lockpill">'+ICX.lock+' $9.99</span>')+'</div><p class="p">'+XL('scen_p')+'</p><div class="chips">'+
+    SCEN[profile.train].map(function(s, i){ var open = addons.pack || i < 2; return '<button class="chip'+(open?'':' dim')+'" type="button" data-scen="'+i+'">'+(open?'':'🔒 ')+esc(s[0])+'</button>'; }).join('')+'</div></section>';
+
+  var histH = '<section class="card" id="hist"><div class="mhead"><p class="label">'+XL('history')+'</p>'+(mine.length?'<span class="small">'+XL('sessions_n')(mine.length)+'</span>':'')+'</div>'+
+    (mine.length ? '<div class="hist">'+mine.slice(-3).reverse().map(histRow).join('')+'</div><button class="btn ghost" type="button" id="hall">'+XL('all_hist')+'</button>' : '<p class="p">'+XL('hist_empty')+'</p>')+'</section>';
+
+  app.innerHTML =
+    '<div class="top">'+LOGO+'<div style="display:flex;gap:8px;align-items:center"><button class="planpill'+(isPremium()?' on':'')+'" type="button" id="pp">'+(isPremium()?ICX.star.replace('width="20" height="20"','width="13" height="13"')+' '+XL('plan_prem'):XL('plan_free')+' · '+XL('plan_prem'))+'</button><button class="icon-btn" type="button" id="set" aria-label="'+L('settings')+'">'+IC.gear+'</button></div></div>'+
+    '<div><p class="small">'+XL('greet')(h)+' · '+new Date().toLocaleDateString(loc, {weekday:'long', day:'numeric', month:'long'})+'</p></div>'+
+    (today ? '<button class="today" type="button" data-prep="'+today.id+'">'+ICX.cal+'<span><b>'+XL('meet_today')+': '+esc(today.title)+'</b><small>'+fmtWhen(today.ts)+' · '+XL('meet_min')+'</small></span><span class="chev"></span></button>' : '')+
+    '<section class="hero" id="hero"><p class="hero-l">'+XL('goal_l')+'</p><h1 class="hero-t">'+esc(XL('goalT')[g])+'</h1>'+heroBody+
+      '<div class="hero-chips"><span>'+IC.flame.replace('width="34" height="34"','width="16" height="16"')+' '+(st ? L('streak')(st) : L('streak0'))+'</span><span>'+L('level')+' '+(lv.i+1)+' · '+L('lv')[lv.i]+'</span><span>'+xp+' '+L('xp')+'</span></div></section>'+
+    mcard+
+    '<div class="grid2">'+
+      '<div class="stat"><span>'+XL('stat_last')+'</span><b>'+(last ? last.score+'%' : '—')+'</b></div>'+
+      '<div class="stat"><span>'+XL('stat_f')+'</span><b>'+(avgF==null ? '—' : fmt1(avgF))+'</b></div></div>'+
+    pathH+
+    '<p class="label">'+XL('practice')+'</p><div class="modes" id="modes">'+
+      '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
+      '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
+    meetH+scenH+
+    (mine.length > 1 ? '<div class="card"><p class="label">'+L('progress')+'</p>'+chart(mine.slice(-12))+'</div>' : '')+
+    histH;
+
+  var $ = function(id){ return document.getElementById(id); };
+  $('set').onclick = settings;
+  $('pp').onclick = function(){ if(!isPremium()) paywall('home', home); else settings(); };
+  if($('mgo')) $('mgo').onclick = function(){ startMission(cur); };
+  if($('ngoal')) $('ngoal').onclick = chooseGoal;
+  if($('hall')) $('hall').onclick = historyList;
+  app.querySelectorAll('[data-mode]').forEach(function(b){ b.onclick = function(){ session(b.getAttribute('data-mode')); }; });
+  app.querySelectorAll('[data-h]').forEach(function(b){ b.onclick = function(){ var r = history.filter(function(h){ return h.ts == b.getAttribute('data-h'); })[0]; if(r) detail(r, home); }; });
+  app.querySelectorAll('[data-prep]').forEach(function(b){ b.onclick = function(){
+    if(!isPremium()){ paywall('lock', home); return; }
+    var m = meetings.filter(function(x){ return String(x.id) === b.getAttribute('data-prep'); })[0]; if(m) session('free', {topic:XL('prep_topic')(m.title)});
+  }; });
+  app.querySelectorAll('[data-scen]').forEach(function(b){ b.onclick = function(){
+    var i = +b.getAttribute('data-scen');
+    if(!(addons.pack || i < 2)){ upsell(home, true); return; }
+    session('free', {topic:SCEN[profile.train][i][1]});
+  }; });
+  $('madd').onclick = function(){
+    if(!isPremium()){ paywall('lock', home); return; }
+    $('mform').hidden = false; $('madd').hidden = true;
+    var d = new Date(Date.now() + 864e5); d.setMinutes(0); $('mw').value = new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); $('mt').focus();
+  };
+  $('msave').onclick = function(){
+    var t = $('mt').value.trim(), w = new Date($('mw').value).getTime();
+    if(!t || !w){ $('mt').focus(); return; }
+    meetings.push({id:Date.now(), title:t, ts:w}); store.set('meetings', meetings); home();
+  };
+  if(!tours.home){ tours.home = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_home')); }, 350); }
+  else if(isPremium() && !tours.prem){ tours.prem = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_prem')); }, 350); }
+}
+function histRow(h){
+  var lbl = h.mission!=null ? XL('mission')+' '+(h.mission+1)+' · '+mTitleSafe(h.mission) : (h.mode==='read'?L('m_read'):L('m_free'));
+  return '<button class="hrow2" type="button" data-h="'+h.ts+'"><span class="sc '+scoreCls(h.score)+'">'+h.score+'</span><span class="hmid"><b>'+esc(lbl)+'</b><small>'+fmtWhen(h.ts)+(h.nF!=null?' · '+L('fillers')+': '+h.nF:'')+'</small></span><span class="chev"></span></button>';
+}
+function mTitleSafe(i){ var m = XL('M')[i]; return m ? m[0] : ''; }
+
+function chooseGoal(){
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span></span><span style="width:40px"></span></div>'+
+    '<h1 class="h1">'+XL('choose_goal')+'</h1><div class="opts">'+XL('goalT').map(function(t, i){ return '<button type="button" class="opt" data-g="'+i+'" aria-pressed="'+(i===profile.goal)+'"><span><b>'+esc(t)+'</b><small>'+XL('reward')+': «'+esc(XL('goalR')[i])+'»</small></span><i aria-hidden="true"></i></button>'; }).join('')+'</div>';
+  document.getElementById('bk').onclick = home;
+  app.querySelectorAll('[data-g]').forEach(function(b){ b.onclick = function(){ profile.goal = +b.getAttribute('data-g'); profile.pathStart = Date.now(); store.set('profile', profile); home(); }; });
+}
+
+/* ---------- history ---------- */
+function historyList(){
+  var mine = history.slice().reverse();
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><b>'+XL('history')+'</b><span style="width:40px"></span></div>'+
+    (mine.length ? '<div class="hist">'+mine.map(histRow).join('')+'</div>' : '<p class="p">'+XL('hist_empty')+'</p>');
+  document.getElementById('bk').onclick = home;
+  app.querySelectorAll('[data-h]').forEach(function(b){ b.onclick = function(){ var r = history.filter(function(h){ return h.ts == b.getAttribute('data-h'); })[0]; if(r) detail(r, historyList); }; });
+  window.scrollTo(0,0);
+}
+function detail(d, back){
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+XL('back')+'">'+IC.back+'</button><span class="small">'+fmtWhen(d.ts)+' · '+LANG_NAMES[d.lang].n+'</span><span style="width:40px"></span></div>'+
+    '<div class="dhead"><span class="sc big '+scoreCls(d.score)+'">'+d.score+'%</span><div><b>'+esc(d.mission!=null ? XL('mission')+' '+(d.mission+1)+' · '+mTitleSafe(d.mission) : (d.mode==='read'?L('m_read'):L('m_free')))+'</b><p class="small">'+L('sound')(d.score)+'</p></div></div>'+
+    (d.prompt ? '<div class="card"><p class="label">'+XL('your_task')+'</p><p>'+esc(d.prompt)+'</p></div>' : '')+
+    (d.toks ? reportBody(d) : '<p class="warnbox">'+XL('detail_old')+'</p>');
+  document.getElementById('bk').onclick = back;
+  window.scrollTo(0,0);
+}
+
+/* stats + tips + transcript, shared by the result screen and history */
+function reportBody(d){
+  var band = d.band || PACE[d.lang], ui = profile.ui;
+  var paceTag = d.wpm > band[1] ? ['bad', L('fast')] : d.wpm < band[0] ? ['warn', L('slow')] : ['good', L('ok')];
+  var tx = (d.toks||[]).map(function(t){ return t[1]===2 ? '<mark class="hes">'+esc(t[0])+'</mark>' : t[1] ? '<mark>'+esc(t[0])+'</mark>' : esc(t[0]); }).join(' ');
+  var refHtml = d.ref && d.refMarks ? d.ref.split(/\s+/).filter(function(t){ return norm(t); }).map(function(t,i){ return '<span class="'+(d.refMarks[i]?'ok':'miss')+'">'+esc(t)+'</span>'; }).join(' ') : '';
+  var tips = (d.issues||[]).map(function(k, i){ var a = ADVICE[k][ui]; return '<div class="tip"><span class="n">'+(i+1)+'</span><div><b>'+a[0]+'</b><p>'+a[1]+'</p><p class="drill">'+a[2].replace('{lo}', band[0]).replace('{hi}', band[1])+'</p></div></div>'; }).join('');
+  return '<div class="grid2" id="statgrid">'+
+      stat(L('pace'), Math.round(d.wpm)+' '+L('wpm'), L('target')+' '+band[0]+'–'+band[1]+' · '+paceTag[1], paceTag[0])+
+      stat(L('fillers'), fmt1(d.fpm)+' '+L('per_min'), d.nF ? d.nF+': '+d.fill : L('none'), d.fpm > 3 ? 'bad' : d.fpm > 1 ? 'warn' : 'good')+
+      stat(L('pauses'), String(d.pauses), d.longP ? L('long_p')(d.longP) : L('avg')+' '+fmt1(d.avgP||0)+' '+(ui==='en'?'s':'с'), d.longP ? 'warn' : 'good')+
+      (d.sd==null ? stat(L('inton'), '—', '', '') : stat(L('inton'), fmt1(d.sd)+' '+L('st'), d.sd < 1.5 ? L('mono') : L('lively'), d.sd < 1.5 ? 'warn' : 'good'))+
+      (d.acc!=null ? stat(L('acc'), Math.round(d.acc*100)+'%', '', d.acc < .85 ? 'warn' : 'good') : '')+
+      (d.conf!=null ? stat(L('clar'), Math.round(d.conf*100)+'%', '', d.conf < .75 ? 'warn' : 'good') : '')+
+    '</div>'+
+    '<p class="label">'+L('tips')+'</p><div id="tips" class="tipsbox">'+tips+'</div>'+
+    '<p class="label">'+L('transcript')+'</p><div id="txbox"><p class="tx">'+(tx || '—')+'</p>'+((d.toks||[]).some(function(t){ return t[1]===2; }) ? '<p class="small" style="margin-top:6px">'+esc(HESTIP[ui])+'</p>' : '')+'</div>'+
+    (refHtml ? '<p class="tx">'+refHtml+'</p><p class="small">'+L('ref_hint')+'</p>' : '');
+}
+
+/* ---------- result ---------- */
+function result(r){
+  var ctx0 = sessCtx || {};
+  if(r.tooShort){
+    var msg = r.noText ? NOTEXT[profile.ui](Math.round(r.speech), LANG_NAMES[r.lang].n, r.srErr) : L('too_short');
+    app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk">'+IC.back+'</button><span></span><span></span></div><p class="warnbox">'+esc(msg)+'</p>'+
+      (r.noText ? '<button class="btn ghost" type="button" id="lg">'+L('train_lang')+'</button>' : '')+'<button class="btn heat" type="button" id="ag">'+L('again')+'</button>';
+    var lg = document.getElementById('lg'); if(lg) lg.onclick = function(){ onboarding(); };
+    document.getElementById('bk').onclick = home; document.getElementById('ag').onclick = function(){ session(r.mode, ctx0); }; return;
+  }
+  var before = pathState();
+  var mine = history.filter(function(h){ return h.lang===r.lang; }), prev = mine[mine.length-1];
+  var xp = Math.round(r.score/2) + 10 + (prev && r.score > prev.score ? 10 : 0);
+  var lvBefore = levelOf(totalXP()).i;
+  var rec = {ts:Date.now(), mode:r.mode, lang:r.lang, score:r.score, wpm:Math.round(r.wpm), fpm:+r.fpm.toFixed(2), xp:xp, speech:Math.round(r.speech),
+    nF:r.nF, fill:r.nF ? uniqFillers(r) : '', pauses:r.pauses, longP:r.longP, avgP:+r.avgP.toFixed(2), sd:r.sd==null?null:+r.sd.toFixed(2), acc:r.acc, conf:r.conf, band:r.band,
+    issues:r.issues.map(function(x){ return x.k; }), toks:r.toks.map(function(t){ return [t.w, t.f==='hes'?2:t.f?1:0]; }), prompt:r.prompt, ref:r.ref, refMarks:r.refMarks,
+    mission: ctx0.mission!=null ? ctx0.mission : null};
+  history.push(rec);
+  history.forEach(function(h, i){ if(i < history.length-60){ delete h.toks; delete h.refMarks; } });   // keep storage small
+  store.set('history', history);
+  var after = pathState(), lvAfter = levelOf(totalXP()).i;
+  if(rec.mission!=null && after.n <= rec.mission){ rec.mission = null; store.set('history', history); }   // attempt didn't meet the bar → plain practice
+  var newly = []; for(var m = before.n; m < after.n; m++) newly.push(m);
+  var badge = lvAfter > lvBefore ? L('level')+' '+(lvAfter+1)+' · '+L('lv')[lvAfter] : (r.nF===0 ? (profile.ui==='ru'?'Ни одного паразита':profile.ui==='kk'?'Бірде-бір арам сөз жоқ':'Zero filler words') : null);
+  var dbg = /[?&]debug=1/.test(location.search) ? '<div class="card dbg">'+esc('hesitations: '+r.hes.map(function(h){ return h.s.toFixed(2)+'–'+h.e.toFixed(2)+'s'; }).join(', ')+'\nlexical fillers: '+r.nLex+'\nrecogniser restarts: '+r.restarts+'\nlast error: '+(r.srErr||'—'))+'</div>' : '';
+  var missNote = ctx0.mission!=null && !newly.length ? '<p class="warnbox">'+XL('mission')+' '+(ctx0.mission+1)+' · '+esc(mTitle(ctx0.mission))+': '+esc(XL('M')[ctx0.mission][1])+'</p>' : '';
+
+  app.innerHTML =
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[r.lang].n+' · '+(r.mode==='read'?L('m_read'):L('m_free'))+'</span><span style="width:40px"></span></div>'+
+    '<div class="ringbox" id="ringbox"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A36"/><stop offset="1" stop-color="#FF9F0A"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#2C2C2E" stroke-width="10"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg><span class="num"><span id="num">0</span><small>%</small></span></div>'+
+    '<div class="center"><p class="h2">'+L('sound')(r.score)+'</p><p class="small" style="margin-top:4px;color:'+(prev && r.score>=prev.score?'#30D158':'#8E8E93')+'">'+(prev ? L('vs')(r.score-prev.score) : L('first'))+' · '+L('got_xp')(xp)+'</p></div>'+
+    (badge ? '<div class="badge">'+ICX.medal.replace('width="72" height="72"','width="24" height="24"')+'<span><b>'+L('badge')+':</b> '+esc(badge)+'</span></div>' : '')+
+    missNote+reportBody(rec)+dbg+
+    ((aiKey || addons.pro) ? '<button class="btn ghost" type="button" id="ai">'+L('ai_btn')+'</button><div class="card" id="aibox" hidden><p class="ai" id="aitx"></p></div>' : '')+
+    '<div class="sticky"><button class="btn ghost" type="button" id="ag">'+XL('again')+'</button><button class="btn heat" type="button" id="cont">'+XL('cont')+'</button></div>';
+  var arc = document.getElementById('arc'), num = document.getElementById('num'), C = 326.7, to = r.score;
+  var setv = function(v){ num.textContent = Math.round(v); arc.setAttribute('stroke-dashoffset', (C*(1-v/100)).toFixed(1)); };
+  if(REDUCE) setv(to); else { var t0 = null; var tick = function(ts){ if(!t0) t0 = ts; var k = Math.min(1,(ts-t0)/1200); setv(to*(1-Math.pow(1-k,3))); if(k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  var next = function(){ afterResult(rec, newly, after); };
+  document.getElementById('bk').onclick = next; document.getElementById('cont').onclick = next;
+  document.getElementById('ag').onclick = function(){ session(r.mode, ctx0); };
+  var aiBtn = document.getElementById('ai'); if(aiBtn) aiBtn.onclick = function(){ if(!aiKey){ aiBtn.textContent = L('key_l'); settings(); return; } aiReview(r, aiBtn); };
+  window.scrollTo(0,0);
+  if(!tours.res){ tours.res = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_res')); }, 1400); }
+}
+/* after a recording: rewards first, then the offer (once), then home */
+function afterResult(rec, newly, after){
+  var queue = newly.slice();
+  function step(){
+    if(queue.length){ var m = queue.shift(); celebrate(m, after, step); return; }
+    if(!isPremium() && !store.get('pwSeen', false)){ store.set('pwSeen', true); paywall('first', home, rec.score); return; }
+    home(); window.scrollTo(0,0);
+  }
+  step();
+}
+
+/* ---------- reward ---------- */
+function celebrate(m, ps, next){
+  var fin = m === MISSIONS.length-1, g = profile.goal||0, nextM = m+1 < MISSIONS.length ? mTitle(m+1) : null;
+  app.innerHTML = '<div class="celebrate">'+
+    '<div class="medal">'+ICX.medal+'</div>'+
+    '<p class="label" style="color:var(--b)">'+(fin ? XL('final_t') : XL('m_done'))+'</p>'+
+    '<h1 class="h1 center">'+esc(fin ? XL('goalR')[g] : mTitle(m))+'</h1>'+
+    (fin ? '<div class="cert"><p class="label">'+XL('cert')+'</p><p class="cert-t">'+esc(XL('goalRL')[g])+'</p><p class="small">Speakline · '+new Date().toLocaleDateString({ru:'ru-RU',en:'en-GB',kk:'kk-KZ'}[profile.ui])+'</p></div>'
+         : '<p class="p center">'+esc(XL('badge_got')(mBadge(m)))+'</p>')+
+    '<div class="cprog"><div class="hero-bar"><i style="width:'+Math.round((m+1)/MISSIONS.length*100)+'%"></i></div><p class="small center">'+XL('mission')+' '+(m+1)+' '+XL('of')+' '+MISSIONS.length+(nextM ? ' · '+esc(XL('next_m')(nextM)) : '')+'</p></div>'+
+    '<button class="btn heat" type="button" id="cnext">'+(fin ? XL('new_goal') : XL('cont'))+'</button>'+
+    (fin ? '<button class="link" type="button" id="chome">'+XL('to_home')+'</button>' : '')+
+  '</div>';
+  confetti();
+  document.getElementById('cnext').onclick = fin ? chooseGoal : next;
+  var ch = document.getElementById('chome'); if(ch) ch.onclick = next;
+  window.scrollTo(0,0);
+}
+function confetti(){
+  if(REDUCE) return;
+  var c = document.createElement('canvas'); c.className = 'confetti'; document.body.appendChild(c);
+  var W = c.width = innerWidth*devicePixelRatio, H = c.height = innerHeight*devicePixelRatio, g = c.getContext('2d');
+  var cols = ['#FF5A36','#FF9F0A','#FFD60A','#30D158','#0A84FF','#fff'], P = [];
+  for(var i = 0; i < 140; i++) P.push({x:W/2, y:H*0.35, vx:(Math.random()-.5)*W*0.03, vy:-Math.random()*H*0.025-H*0.005, s:(4+Math.random()*6)*devicePixelRatio, r:Math.random()*6, c:cols[i%cols.length]});
+  var t = 0;
+  (function f(){
+    g.clearRect(0,0,W,H);
+    P.forEach(function(p){ p.x += p.vx; p.y += p.vy; p.vy += H*0.0009; p.vx *= .99; p.r += .2; g.save(); g.translate(p.x,p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); g.restore(); });
+    if(++t < 150) requestAnimationFrame(f); else c.remove();
+  })();
+}
+
+/* ---------- paywall → checkout (demo) → upsell ---------- */
+function paywall(why, onClose, score){
+  var last = score || (history.length ? history[history.length-1].score : 60), target = Math.min(95, Math.max(last+18, 80)), sel = 'quarter';
+  function render(){
+    app.innerHTML = '<div class="top"><span></span><span></span><button class="icon-btn" type="button" id="x" aria-label="'+XL('closeX')+'"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#F5F5F7" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>'+
+      '<div class="pw-hero"><div class="pw-bars" aria-hidden="true"><div><span>'+last+'%</span><i style="height:'+Math.round(last*0.9)+'px"></i><small>'+XL('pw_now')+'</small></div><div><span>'+target+'%</span><i class="t" style="height:'+Math.round(target*0.9)+'px"></i><small>'+XL('pw_4w')+'</small></div></div>'+
+      '<h1 class="h1">'+XL('pw_t')+'</h1><p class="p">'+esc(XL('pw_s')(last, target))+'</p></div>'+
+      '<ul class="feat">'+XL('pw_f').map(function(f){ return '<li><span class="fi">'+ICX.check+'</span><span><b>'+f[0]+'</b><small>'+f[1]+'</small></span></li>'; }).join('')+'</ul>'+
+      '<div class="plans" role="radiogroup">'+XL('plans').map(function(p){ return '<button type="button" class="plan" role="radio" data-p="'+p[0]+'" aria-checked="'+(sel===p[0])+'">'+(p[4]?'<em>'+p[4]+'</em>':'')+'<span><b>'+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></button>'; }).join('')+'</div>'+
+      '<button class="btn heat" type="button" id="buy">'+XL('pw_go')+'</button><button class="link" type="button" id="later">'+XL('pw_later')+'</button><p class="small center">'+XL('pw_demo')+'</p>';
+    app.querySelectorAll('[data-p]').forEach(function(b){ b.onclick = function(){ sel = b.getAttribute('data-p'); render(); }; });
+    document.getElementById('x').onclick = onClose; document.getElementById('later').onclick = onClose;
+    document.getElementById('buy').onclick = function(){ checkout(sel, onClose); };
+  }
+  render(); window.scrollTo(0,0);
+}
+function checkout(id, onClose){
+  var p = XL('plans').filter(function(x){ return x[0]===id; })[0];
+  var sh = document.createElement('div'); sh.className = 'sheet-wrap';
+  sh.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(XL('pay_t'))+'"><span class="grab"></span><b class="h2">'+XL('pay_t')+'</b>'+
+    '<div class="payrow"><span><b>Speakline Premium · '+p[1]+'</b><small>'+p[3]+'</small></span><strong>'+p[2]+'</strong></div><p class="small">'+XL('pay_via')+'</p>'+
+    '<button class="btn" type="button" id="pay">'+XL('pay_btn')+'</button><button class="link" type="button" id="pcan">'+XL('pw_later')+'</button></div>';
+  document.body.appendChild(sh);
+  requestAnimationFrame(function(){ sh.classList.add('on'); });
+  var close = function(){ sh.classList.remove('on'); setTimeout(function(){ sh.remove(); }, 300); };
+  sh.onclick = function(e){ if(e.target === sh) close(); };
+  sh.querySelector('#pcan').onclick = close;
+  sh.querySelector('#pay').onclick = function(){
+    var b = sh.querySelector('#pay'); b.disabled = true; b.innerHTML = '<span class="spin"></span>';
+    setTimeout(function(){
+      plan = {id:id, ts:Date.now()}; store.set('plan', plan);
+      b.innerHTML = ICX.check+' '+XL('pay_ok'); b.classList.add('okbtn');
+      setTimeout(function(){ close(); upsell(onClose); }, 800);
+    }, 900);
+  };
+}
+function upsell(onDone, packOnly){
+  function render(){
+    var item = function(key, t){ var on = !!addons[key]; return '<div class="upc'+(on?' on':'')+'"><div class="mhead"><b>'+t[0]+'</b><strong>'+t[1]+'</strong></div><p class="p">'+t[2]+'</p><button class="btn '+(on?'ghost':'white')+'" type="button" data-add="'+key+'"'+(on?' disabled':'')+'>'+(on?ICX.check+' '+XL('up_added'):XL('up_add'))+'</button></div>'; };
+    app.innerHTML = '<div class="top"><span></span><span></span><button class="icon-btn" type="button" id="x" aria-label="'+XL('closeX')+'"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#F5F5F7" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>'+
+      '<h1 class="h1">'+XL('up_t')+'</h1><p class="p">'+(packOnly?XL('scen_p'):XL('up_s'))+'</p>'+
+      item('pack', XL('up_pack'))+(packOnly?'':item('pro', XL('up_pro')))+
+      '<button class="btn heat" type="button" id="udone">'+((addons.pack||addons.pro)?XL('up_done'):XL('up_skip'))+'</button><p class="small center">'+XL('pw_demo')+'</p>';
+    app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){ addons[b.getAttribute('data-add')] = true; store.set('addons', addons); render(); }; });
+    document.getElementById('x').onclick = onDone; document.getElementById('udone').onclick = onDone;
+  }
+  render(); window.scrollTo(0,0);
+}
+
+/* ---------- settings ---------- */
+function settings(){
+  var pn = plan ? XL('plans').filter(function(x){ return x[0]===plan.id; })[0] : null;
+  app.innerHTML =
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
+    '<div class="card"><p class="label">'+XL('set_plan')+'</p><div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?pn[3]:XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
+      (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
+      (plan ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '<button class="btn heat" type="button" id="buy">'+XL('plan_prem')+'</button>')+'</div>'+
+    '<button class="btn ghost" type="button" id="goal">'+XL('set_goal')+'</button>'+
+    '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
+    '<button class="btn ghost" type="button" id="intro">'+({ru:'Показать знакомство',en:'Show the intro',kk:'Танысуды көрсету'})[profile.ui]+'</button>'+
+    '<button class="btn ghost" type="button" id="tr">'+XL('set_tour')+'</button>'+
+    '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
+    '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
+    '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>';
+  var $ = function(id){ return document.getElementById(id); };
+  $('bk').onclick = home;
+  if($('buy')) $('buy').onclick = function(){ paywall('settings', settings); };
+  if($('unbuy')) $('unbuy').onclick = function(){ plan = null; addons = {}; store.set('plan', null); store.set('addons', {}); store.set('pwSeen', false); tours.prem = 0; store.set('tours', tours); settings(); };
+  $('goal').onclick = chooseGoal;
+  $('lang').onclick = function(){ onboarding(); };
+  $('intro').onclick = function(){ introUI = profile.ui; splash(intro); };
+  $('tr').onclick = function(){ tours = {}; store.set('tours', tours); home(); };
+  $('sv').onclick = function(){ aiKey = $('key').value.trim(); store.set('aiKey', aiKey); home(); };
+  $('rs').onclick = function(){
+    $('rsbox').innerHTML = '<div class="row"><button class="btn ghost" type="button" id="no">✕</button><button class="btn heat" type="button" id="yes">'+L('reset')+'</button></div>';
+    $('no').onclick = settings;
+    $('yes').onclick = function(){ history = []; store.set('history', history); profile.pathStart = Date.now(); store.set('profile', profile); store.set('pwSeen', false); home(); };
+  };
+  window.scrollTo(0,0);
+}
+
+/* ---------- coach marks: dim the screen, spotlight one element, explain it ---------- */
+function tour(steps, onDone){
+  steps = steps.filter(function(s){ return document.querySelector(s[0]); });
+  if(!steps.length){ if(onDone) onDone(); return; }
+  var i = 0, ov = document.createElement('div'); ov.className = 'tour';
+  ov.innerHTML = '<div class="tour-block"></div><div class="tour-hole"></div><div class="tour-tip" role="dialog" aria-live="polite"><p class="tn"></p><b></b><p class="tt"></p><div class="tour-b"><button class="tlink" type="button" data-skip>'+XL('tour_skip')+'</button><button class="tbtn" type="button" data-next>'+XL('tour_next')+'</button></div></div>';
+  document.body.appendChild(ov);
+  var hole = ov.querySelector('.tour-hole'), tip = ov.querySelector('.tour-tip'), block = ov.querySelector('.tour-block'), target = null, tapFn = null;
+  function show(){
+    var s = steps[i]; target = document.querySelector(s[0]);
+    tip.querySelector('.tn').textContent = (i+1)+' / '+steps.length;
+    tip.querySelector('b').textContent = s[1]; tip.querySelector('.tt').textContent = s[2];
+    var tap = !!s[3], nb = tip.querySelector('[data-next]');
+    nb.hidden = tap; block.style.display = tap ? 'none' : 'block';
+    tip.querySelector('[data-skip]').textContent = tap ? XL('tour_tap') : XL('tour_skip');
+    tip.querySelector('[data-skip]').disabled = tap;
+    if(tap){ target.classList.add('pulse'); tapFn = function(){ end(); }; target.addEventListener('click', tapFn, {once:true}); }
+    var r = target.getBoundingClientRect();
+    target.scrollIntoView({block: r.height > innerHeight*0.5 ? 'start' : 'center', behavior: REDUCE ? 'auto' : 'smooth'});
+    setTimeout(place, REDUCE ? 30 : 420); setTimeout(place, 900);
+  }
+  function place(){
+    if(!target) return;
+    var r = target.getBoundingClientRect(), p = 8;
+    var top = Math.max(8, r.top - p), bot = Math.min(innerHeight - 8, r.bottom + p);
+    hole.style.top = top+'px'; hole.style.left = (r.left - p)+'px'; hole.style.width = (r.width + 2*p)+'px'; hole.style.height = Math.max(0, bot - top)+'px';
+    var th = tip.offsetHeight, y;
+    if(bot + 14 + th < innerHeight - 8) y = bot + 14; else if(top - 14 - th > 8) y = top - 14 - th; else y = innerHeight - th - 12;
+    tip.style.top = y+'px';
+  }
+  function end(){
+    window.removeEventListener('resize', place); window.removeEventListener('scroll', place, true);
+    if(target) target.classList.remove('pulse');
+    ov.remove(); if(onDone) onDone();
+  }
+  tip.querySelector('[data-next]').onclick = function(){ i++; if(i < steps.length) show(); else end(); };
+  tip.querySelector('[data-skip]').onclick = end;
+  window.addEventListener('resize', place); window.addEventListener('scroll', place, true);
+  show();
+}
+window.__tourEnd = function(){ var t = document.querySelector('.tour'); if(t) t.remove(); };
 
 /* ================= boot ================= */
 document.documentElement.lang = (profile && profile.ui) || 'ru';
