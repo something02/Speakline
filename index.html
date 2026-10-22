@@ -1726,6 +1726,7 @@ function settings(){
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
     '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(PAY.env==='sandbox' && PAY.token?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?(plan.cancel_scheduled?XL('cancel_sched'):pn[3]):XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
+      (plan && plan.src==='web' ? '<p class="small">'+(WEB[profile.ui]||WEB.en).src+' · '+(WEB[profile.ui]||WEB.en).next.toLowerCase()+': '+nextPay()+'</p>' : '')+
       (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
       (plan && PAY.api && API.token ? '<button class="btn ghost" type="button" id="manage">'+XL('manage')+'</button>' : '')+
       (plan && !PAY.api ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '')+
@@ -1738,6 +1739,7 @@ function settings(){
     '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
     '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
     '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>'+
+    '<button class="link" type="button" id="restart">'+(WEB[profile.ui]||WEB.en).restart+'</button>'+
     '<div id="acbox" class="row">'+(PAY.api && API.token ? '<button class="link" type="button" id="logout">'+XL('logout')+'</button>' : '')+'<button class="link" type="button" id="del" style="color:var(--bad)">'+XL('del')+'</button></div>'+
     '<p class="small center legal">'+(profile.ui==='en' ? '<a href="terms-en.html" target="_blank">Terms</a> · <a href="privacy-en.html" target="_blank">Privacy</a> · <a href="refund-en.html" target="_blank">Refunds</a>' : '<a href="terms.html" target="_blank">Оферта</a> · <a href="privacy.html" target="_blank">Конфиденциальность</a> · <a href="refund.html" target="_blank">Возврат</a>')+'</p>';
   var $ = function(id){ return document.getElementById(id); };
@@ -1747,6 +1749,7 @@ function settings(){
   if($('login')) $('login').onclick = function(){ signIn({}, settings); };
   if($('logout')) $('logout').onclick = function(){ api('POST', '/api/logout').catch(function(){}).then(function(){ signOutLocal(); home(); }); };
   $('del').onclick = function(){ deleteAccount($('acbox')); };
+  $('restart').onclick = function(){ try{ Object.keys(localStorage).filter(function(k){ return k.indexOf('speakline.') === 0 && k !== 'speakline.anon' && k !== 'speakline.consent'; }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} location.replace('start/?restart=1&lang='+profile.ui); };
   if($('unbuy')) $('unbuy').onclick = function(){ plan = null; addons = {}; account = null; store.set('account', null); store.set('plan', null); store.set('addons', {}); store.set('pwSeen', false); tours.prem = 0; store.set('tours', tours); settings(); };
   $('goal').onclick = chooseGoal;
   $('lang').onclick = function(){ onboarding(); };
@@ -1803,11 +1806,36 @@ function tour(steps, onDone){
 }
 window.__tourEnd = function(){ var t = document.querySelector('.tour'); if(t) t.remove(); };
 
+/* ---------- first open after paying in the web funnel ---------- */
+var WEB = {
+  en:{paid:'Payment received', t:'Welcome to Speakline Premium', p:'You bought your plan on the website — everything is already unlocked here.', next:'Next payment', goal:'Your goal', go:'Start my first mission', src:'Bought on the website', restart:'Restart the demo from the quiz'},
+  ru:{paid:'Оплата прошла', t:'Добро пожаловать в Speakline Premium', p:'Ты купил план на сайте — здесь уже всё открыто.', next:'Следующее списание', goal:'Твоя цель', go:'Начать первую миссию', src:'Куплено на сайте', restart:'Пройти демо заново с теста'},
+  kk:{paid:'Төлем өтті', t:'Speakline Premium-ға қош келдің', p:'Жоспарды сайтта сатып алдың — мұнда бәрі ашық.', next:'Келесі төлем', goal:'Мақсатың', go:'Бірінші миссияны бастау', src:'Сайтта сатып алынды', restart:'Демоны тесттен қайта бастау'}
+};
+function nextPay(){ return plan && plan.until ? new Date(plan.until).toLocaleDateString({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'}[profile.ui], {day:'numeric', month:'long'}) : ''; }
+function welcome(){
+  store.set('welcome', false);
+  var W = WEB[profile.ui] || WEB.en, pn = plan ? XL('plans').filter(function(x){ return x[0]===plan.id; })[0] : null;
+  if(!pn){ home(); return; }
+  app.innerHTML = '<div class="celebrate"><div class="medal">'+ICX.medal+'</div><p class="label" style="color:var(--good)">'+W.paid+'</p>'+
+    '<h1 class="h1 center">'+W.t+'</h1><p class="p center">'+W.p+'</p>'+
+    '<div class="card" style="width:100%;max-width:420px;text-align:left"><div class="payrow"><span><b>Premium · '+esc(pn[1])+'</b><small>'+esc(pn[3])+'</small></span><strong>'+pn[2]+'</strong></div>'+
+    '<p class="small">'+W.next+': '+nextPay()+(account && account.email ? ' · '+esc(account.email) : '')+'</p>'+
+    '<p class="small">'+W.goal+': '+esc(XL('goalT')[profile.goal||0])+(addons.pack ? ' · + '+esc(XL('up_pack')[0]) : '')+'</p></div>'+
+    '<button class="btn heat" type="button" id="wgo">'+W.go+'</button></div>';
+  confetti(); track('welcome_web', {plan:plan.id});
+  document.getElementById('wgo').onclick = function(){ home(); window.scrollTo(0,0); };
+  window.scrollTo(0,0);
+}
+
 /* ================= boot ================= */
+/* web2app: a new visitor starts in the web funnel (start/), pays there, and arrives here with the plan already active.
+   ?app=1 opens the old in-app intro instead (kept for testing). */
+if(!profile && !/[?&]app=1/.test(location.search)){ location.replace('start/?lang='+guessUI()); return; }
 document.documentElement.lang = (profile && profile.ui) || 'ru';
 track('app_open', {returning:!!profile});
 syncMe();
-splash(function(){ if(profile) home(); else intro(); consentBanner(); });
+splash(function(){ if(profile && store.get('welcome', false)) welcome(); else if(profile) home(); else intro(); consentBanner(); });
 })();
 </script>
 </body>
