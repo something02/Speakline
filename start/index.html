@@ -89,6 +89,16 @@ h1,h2,p{margin:0}
 .timer{font:700 44px/1 var(--display);text-align:center;letter-spacing:-.03em}
 .live{min-height:52px;text-align:center;color:var(--soft);font-size:15px}
 .live mark{background:var(--bad-tint);color:var(--bad);border-radius:4px;padding:0 3px}
+.ld{display:grid;justify-items:center;gap:12px;padding-top:6px}
+.ld-ring{position:relative;width:148px;height:148px}
+.ld-ring b{position:absolute;inset:0;display:grid;place-items:center;font:700 34px/1 var(--display);letter-spacing:-.03em}
+.ld-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.ld-chips span{background:var(--sel);color:var(--a);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.gets{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.gets li{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:center;font-size:15px;opacity:.28;transition:opacity .4s}
+.gets li.on{opacity:1}
+.gets .gi{width:26px;height:26px;border-radius:50%;background:var(--line2);display:grid;place-items:center;transition:background .4s}
+.gets li.on .gi{background:var(--good)}
 .ana{display:grid;gap:16px}
 .ana-row{display:grid;gap:8px}
 .ana-row div{display:flex;justify-content:space-between;font-size:15px}
@@ -190,7 +200,8 @@ var T = {
   f1:'Most people never hear their own fillers', f1p:'Others notice them right away. A 10-second test shows you what they hear — before you pay anything.',
   vt:'10-second voice test', vtp:'Tap the microphone and answer out loud:', vq:'What do you do at work, and what is the hardest part?',
   tap:'Tap to start', rec:'Listening… tap to finish', nosr:'This browser cannot recognise speech. Open the page in Chrome or Safari, or skip the test.', skip:'Skip the test', denied:'No microphone access. You can allow it in the browser settings or skip the test.',
-  an:'Building your plan', ans:['Analysing your voice','Matching exercises to your goal','Planning the days to your date'],
+  an:'Creating your personal plan', ans:['Analysing your voice','Matching exercises to your goal','Planning the days to your date'], ready:'Your plan is ready', see:'See my results', get_t:'Your plan will include',
+  gets:function(d, nodate, f){ return [(nodate ? d+'-day plan to reach 80%' : d+'-day plan to your date'), 'Daily 10-minute missions for your goal', 'Main focus: '+f, 'Instant feedback: pace, pauses, fillers', 'A reminder an hour before your meeting']; },
   res:'Here is how you sound now', res_t:'Target for your goal', fil:'Fillers', pace:'Words/min', fix:'Main focus', wpmu:'wpm',
   focus:{fillers:'Fewer fillers', fast:'Slower pace', slow:'More energy', mono:'Livelier voice', ok:'Pauses and structure'},
   plan_t:function(d){ return 'Your plan: '+d+' days to 80%'; }, today:'Today', goalday:'Your date', est:'Estimate based on your test and answers. Individual results vary.',
@@ -221,7 +232,8 @@ var T = {
   f1:'Свои паразиты почти никто не слышит', f1p:'А другие замечают сразу. Тест на 10 секунд покажет, что слышат они, — ещё до оплаты.',
   vt:'Голосовой тест на 10 секунд', vtp:'Нажми на микрофон и ответь вслух:', vq:'Чем ты занимаешься на работе и что в ней самое сложное?',
   tap:'Нажми, чтобы начать', rec:'Слушаю… нажми, чтобы закончить', nosr:'Этот браузер не распознаёт речь. Открой страницу в Chrome или Safari либо пропусти тест.', skip:'Пропустить тест', denied:'Нет доступа к микрофону. Разреши его в настройках браузера или пропусти тест.',
-  an:'Собираем твой план', ans:['Анализируем голос','Подбираем упражнения под цель','Расписываем дни до твоей даты'],
+  an:'Делаем твой индивидуальный план', ans:['Анализируем голос','Подбираем упражнения под цель','Расписываем дни до твоей даты'], ready:'План готов', see:'Показать результат', get_t:'В твоём плане будет',
+  gets:function(d, nodate, f){ return [(nodate ? 'План на '+d+' дней до 80%' : 'План на '+d+' дней до твоей даты'), 'Миссии по 10 минут каждый день под твою цель', 'Главный фокус: '+f, 'Разбор сразу: темп, паузы, паразиты', 'Напоминание за час до встречи']; },
   res:'Так ты звучишь сейчас', res_t:'Цель для твоей задачи', fil:'Паразиты', pace:'Слов/мин', fix:'Главный фокус', wpmu:'сл/мин',
   focus:{fillers:'Меньше паразитов', fast:'Спокойнее темп', slow:'Больше энергии', mono:'Живее интонация', ok:'Паузы и структура'},
   plan_t:function(d){ return 'Твой план: '+d+' дней до 80%'; }, today:'Сегодня', goalday:'Твоя дата', est:'Оценка по твоему тесту и ответам. Результат у всех разный.',
@@ -252,7 +264,8 @@ var T = {
   f1:'Өз арам сөздерін ешкім дерлік естімейді', f1p:'Ал басқалар бірден байқайды. 10 секундтық тест олардың не еститінін көрсетеді — төлемге дейін.',
   vt:'10 секундтық дауыс тесті', vtp:'Микрофонды бас та, дауыстап жауап бер:', vq:'Жұмыста немен айналысасың және ең қиыны не?',
   tap:'Бастау үшін бас', rec:'Тыңдап тұрмын… аяқтау үшін бас', nosr:'Бұл браузер сөзді тани алмайды. Бетті Chrome не Safari-де аш немесе тесттен өт.', skip:'Тесттен өту', denied:'Микрофонға рұқсат жоқ. Браузер баптауынан рұқсат бер немесе тесттен өт.',
-  an:'Жоспарыңды құрастырып жатырмыз', ans:['Дауысыңды талдаймыз','Мақсатқа жаттығулар таңдаймыз','Күніңе дейінгі күндерді жоспарлаймыз'],
+  an:'Жеке жоспарыңды жасап жатырмыз', ans:['Дауысыңды талдаймыз','Мақсатқа жаттығулар таңдаймыз','Күніңе дейінгі күндерді жоспарлаймыз'], ready:'Жоспар дайын', see:'Нәтижені көру', get_t:'Жоспарыңда болады',
+  gets:function(d, nodate, f){ return [d+' күндік жоспар', 'Мақсатыңа күн сайын 10 минуттық миссиялар', 'Басты назар: '+f, 'Бірден талдау: қарқын, үзіліс, арам сөздер', 'Кездесуден бір сағат бұрын еске салу']; },
   res:'Қазір осылай естілесің', res_t:'Мақсатыңа керек деңгей', fil:'Арам сөздер', pace:'Сөз/мин', fix:'Басты назар', wpmu:'сөз/мин',
   focus:{fillers:'Арам сөз азырақ', fast:'Баяуырақ қарқын', slow:'Көбірек қуат', mono:'Жанды интонация', ok:'Үзіліс пен құрылым'},
   plan_t:function(d){ return 'Жоспарың: 80%-ға дейін '+d+' күн'; }, today:'Бүгін', goalday:'Сенің күнің', est:'Тест пен жауаптарыңа негізделген болжам. Нәтиже әркімде әртүрлі.',
@@ -401,14 +414,28 @@ function finish(txt, secs){
 }
 
 /* ---------- analysing → result ---------- */
+/* loading screen: a ring that fills, the stages, and what the plan will include — built from the answers */
 function analyse(){
-  app.innerHTML = frame('<h1 class="h1">'+t('an')+'</h1><div class="ana">'+t('ans').map(function(a, i){ return '<div class="ana-row"><div><span>'+a+'</span><span id="ap'+i+'"><span class="spin dark"></span></span></div><div class="bar"><i id="ab'+i+'"></i></div></div>'; }).join('')+'</div>', {noBack:true});
+  var d = planDays(), fk = focusKey(), goal = t('goals')[A.goal || 0][1], lang = t('trains')[A.train || 0][1], mins = t('mins')[A.mins == null ? 1 : A.mins][0];
+  var gets = t('gets')(d, A.when === 3, t('focus')[fk]), R = 52, C = 2*Math.PI*R, DUR = 6500;
+  app.innerHTML = frame('<div class="ld"><div class="ld-ring"><svg viewBox="0 0 120 120" width="148" height="148" aria-hidden="true"><circle cx="60" cy="60" r="'+R+'" fill="none" stroke="var(--line)" stroke-width="10"/>'+
+      '<circle id="lr" cx="60" cy="60" r="'+R+'" fill="none" stroke="var(--a)" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+C.toFixed(1)+'" transform="rotate(-90 60 60)"/></svg><b id="lp">0%</b></div>'+
+      '<h1 class="h1 center">'+t('an')+'</h1><div class="ld-chips"><span>'+esc(goal)+'</span><span>'+esc(lang)+'</span><span>'+esc(mins)+'</span></div>'+
+      '<p class="small center" id="ls">'+t('ans')[0]+'…</p></div>'+
+    '<div class="card"><p class="label">'+t('get_t')+'</p><ul class="gets">'+gets.map(function(g, i){ return '<li id="lg'+i+'"><span class="gi">'+CHECK+'</span><span>'+esc(g)+'</span></li>'; }).join('')+'</ul></div>'+
+    '<div class="spacer"></div><button class="btn" type="button" id="nx" disabled>'+t('see')+'</button>', {noBack:true});
   bind();
-  [0,1,2].forEach(function(i){
-    setTimeout(function(){ var b = document.getElementById('ab'+i); if(b) b.style.width = '100%'; }, 150 + i*1100);
-    setTimeout(function(){ var p = document.getElementById('ap'+i); if(p) p.innerHTML = '<span style="color:var(--good)">✓</span>'; }, 1250 + i*1100);
-  });
-  setTimeout(function(){ if(STEPS[step] === 'analyse') next(); }, 3800);
+  var t0 = Date.now(), lr = document.getElementById('lr'), lp = document.getElementById('lp'), ls = document.getElementById('ls'), nx = document.getElementById('nx'), shown = -1;
+  nx.onclick = next;
+  (function tick(){
+    if(STEPS[step] !== 'analyse' || !document.getElementById('lr')) return;
+    var k = Math.min(1, (Date.now()-t0)/DUR), e = 1 - Math.pow(1-k, 1.6);
+    lr.setAttribute('stroke-dashoffset', (C*(1-e)).toFixed(1)); lp.textContent = Math.round(e*100)+'%';
+    ls.textContent = k < 1 ? t('ans')[Math.min(2, Math.floor(e*3))]+'…' : t('ready');
+    var g = Math.min(gets.length-1, Math.floor(e*gets.length*1.05) - 1 + (k >= 1 ? 1 : 0));
+    while(shown < g){ shown++; var li = document.getElementById('lg'+shown); if(li) li.classList.add('on'); }
+    if(k < 1) requestAnimationFrame(tick); else { nx.disabled = false; track('plan_ready'); }
+  })();
 }
 function estScore(){
   if(A.score != null) return A.score;
