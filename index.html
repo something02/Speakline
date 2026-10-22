@@ -78,6 +78,17 @@ h1,h2,h3,p{margin:0}
 .chip{border:0;border-radius:999px;padding:9px 14px;background:var(--card2);cursor:pointer;font-size:14px}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);font-weight:600}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pro-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pro-tile{display:grid;gap:4px;align-content:start;text-align:left;border:0;border-radius:16px;padding:12px;background:var(--card2);cursor:pointer;font:inherit;color:inherit;min-height:104px}
+.pro-tile b{font-size:14.5px;line-height:1.25}
+.pro-tile small{font-size:12px;color:var(--muted);line-height:1.3}
+.pro-tile.dim{opacity:.62}
+.pro-ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#fff;font:700 16px/1 var(--display);margin-bottom:4px}
+.pro-ic.big{width:56px;height:56px;border-radius:16px;font-size:26px;flex:none}
+.pro-head{display:flex;gap:14px;align-items:flex-start}
+.pro-head .h1{font-size:28px}
+.prompt.sm{font-size:19px}
+
 .stat{background:var(--card);border-radius:20px;padding:16px;display:grid;gap:2px;min-width:0;box-shadow:var(--shadow)}
 .stat span{font-size:12.5px;color:var(--muted)}
 .stat b{font:700 26px/1.15 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
@@ -638,12 +649,12 @@ function chart(list){
 var ctx = null, media = null;
 function session(mode, o){
   o = o || {}; sessCtx = o;
-  var lang = profile.train, lvl = mode==='read' ? (o.level||0) : null, lt = mode==='read' ? levelText(lang, lvl) : null;
+  var lang = profile.train, lvl = mode==='read' ? (o.level||0) : null, lt = mode==='read' ? (o.text ? {text:o.text, src:null} : levelText(lang, lvl)) : null;
   var text = mode==='read' ? lt.text : (o.topic || pick(TOPICS[lang])), maxSec = mode==='read' ? Math.max(20, Math.round(text.split(/\s+/).length*0.6) + 10) : 60;
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[lang].n+'</span><span class="timer" id="tm">0:00</span></div>'+
     (o.mission!=null ? '<p class="mreward">'+ICX.medal.replace('width="72" height="72"','width="20" height="20"')+'<span>'+XL('mission')+' '+(o.mission+1)+' · '+esc(mTitle(o.mission))+'</span></p><p class="small">'+esc(XL('M')[o.mission][1])+'</p>' : '')+
-    (mode==='read' && o.mission==null ? '<p class="lvtag">'+LX('tag')+' '+(lvl+1)+' · '+esc(LEVELS[lang][lvl].n)+'</p>' : '')+
+    (mode==='read' && o.mission==null ? '<p class="lvtag">'+(o.pro!=null ? 'Pro · '+esc(o.tag) : LX('tag')+' '+(lvl+1)+' · '+esc(LEVELS[lang][lvl].n))+'</p>' : '')+
     '<p class="label">'+(mode==='read' ? L('read_this') : L('speak_on'))+'</p>'+
     '<p class="prompt">'+(mode==='read' ? '«'+esc(text)+'»' : esc(text))+'</p>'+
     (lt && lt.src ? '<p class="src">'+esc(lt.src)+'</p>' : '')+
@@ -1018,7 +1029,7 @@ var X = {
   acc_t:'Создай аккаунт', acc_p:'На эту почту оформим подписку. Потом по ней войдёшь в приложение на любом устройстве — телефоне или компьютере.', acc_go:'Перейти к оплате', acc_bad:'Проверь адрес почты.', pay_h:'Оплата', pay_test:'Тестовый режим: деньги не списываются. Карта 4242 4242 4242 4242, любой будущий срок, CVC 100.', pay_secure:'Данные карты вводятся в защищённой форме Paddle и не попадают в Speakline.', pay_err:'Не удалось загрузить оплату. Проверь интернет и попробуй ещё раз.', paid_t:'Подписка оформлена', paid_p:function(e){ return 'Аккаунт: '+e+'. Входи по этой почте в приложении на любом устройстве.'; }, login_t:'Вход', login_p:'Введи почту, на которую оформлена подписка. Пришлём код для входа.', code_send:'Получить код', code_t:'Код из письма', code_p:function(e){ return 'Отправили 6 цифр на '+e+'. Письмо может прийти через минуту — проверь «Спам».'; }, code_ok:'Войти', code_again:'Отправить код ещё раз', err_wait:'Слишком много попыток. Подожди немного и попробуй снова.', err_net:'Нет связи с сервером. Проверь интернет и попробуй ещё раз.', err_code:'Неверный код.', err_expired:'Код устарел — запроси новый.', already:'У тебя уже есть подписка — всё открыто.', manage:'Управлять подпиской', cancel_sched:'Отменена, доступ до конца периода', login:'Войти по почте', logout:'Выйти', has_sub:'Уже есть подписка? Войти', del:'Удалить аккаунт и данные', del_warn:'Подписка будет отменена, аккаунт и история тренировок удалятся без возможности восстановления.', del_yes:'Удалить', ck_t:'Cookies', ck_p:'Мы используем cookies для работы приложения и, с твоего согласия, для оценки рекламы.', ck_more:'Подробнее', ck_no:'Только нужные', ck_yes:'Принять', pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Нужно для звания', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
   pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
   up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
-  up_pro:['Pro','+$10 в месяц','Подробный ИИ-разбор каждой записи и твой текст, переписанный без паразитов.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
+  up_pro:['Pro','+$10 в месяц','Сценарии из реальных компаний с готовыми текстами: собеседование в Google, презентация для Zimran, демо в Kaspi, переговоры о зарплате и другие.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Подписка', set_reset_buy:'Сбросить покупки (демо)', set_tour:'Показать подсказки заново', set_goal:'Сменить цель',
   locked:'Premium',
   tour_next:'Далее', tour_skip:'Пропустить', tour_tap:'Нажми на подсвеченное',
@@ -1066,7 +1077,7 @@ var X = {
   acc_t:'Create your account', acc_p:'We’ll attach the subscription to this email. Use it to sign in on any device — phone or computer.', acc_go:'Continue to payment', acc_bad:'Check your email address.', pay_h:'Payment', pay_test:'Test mode: no money is charged. Card 4242 4242 4242 4242, any future expiry, CVC 100.', pay_secure:'Card details go into Paddle’s secure form and never reach Speakline.', pay_err:'Couldn’t load the payment form. Check your connection and try again.', paid_t:'You’re subscribed', paid_p:function(e){ return 'Account: '+e+'. Sign in with this email on any device.'; }, login_t:'Sign in', login_p:'Enter the email your subscription is on. We’ll send you a sign-in code.', code_send:'Get a code', code_t:'Code from the email', code_p:function(e){ return 'We sent 6 digits to '+e+'. It may take a minute — check spam too.'; }, code_ok:'Sign in', code_again:'Send the code again', err_wait:'Too many attempts. Wait a little and try again.', err_net:'Can’t reach the server. Check your connection and try again.', err_code:'Wrong code.', err_expired:'The code has expired — request a new one.', already:'You already have a subscription — everything is unlocked.', manage:'Manage subscription', cancel_sched:'Cancelled, access until the period ends', login:'Sign in with email', logout:'Sign out', has_sub:'Already subscribed? Sign in', del:'Delete account and data', del_warn:'Your subscription will be cancelled and your account and practice history deleted permanently.', del_yes:'Delete', ck_t:'Cookies', ck_p:'We use cookies to run the app and, with your consent, to measure ads.', ck_more:'Learn more', ck_no:'Essential only', ck_yes:'Accept', pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms-en.html" target="_blank">terms</a>, <a href="privacy-en.html" target="_blank">privacy policy</a> and <a href="refund-en.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'Needed for the title', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
   pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
   up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
-  up_pro:['Pro','+$10 a month','Detailed AI review of every recording and your text rewritten without fillers.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
+  up_pro:['Pro','+$10 a month','Scenarios from real companies with ready texts: an interview at Google, a presentation for Zimran, a demo at Kaspi, a salary negotiation and more.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Subscription', set_reset_buy:'Reset purchases (demo)', set_tour:'Show hints again', set_goal:'Change goal',
   locked:'Premium',
   tour_next:'Next', tour_skip:'Skip', tour_tap:'Tap the highlighted item',
@@ -1114,7 +1125,7 @@ var X = {
   acc_t:'Аккаунт жаса', acc_p:'Жазылымды осы поштаға рәсімдейміз. Кейін осы поштамен кез келген құрылғыда кіресің.', acc_go:'Төлемге өту', acc_bad:'Пошта мекенжайын тексер.', pay_h:'Төлем', pay_test:'Тест режимі: ақша алынбайды. Карта 4242 4242 4242 4242, кез келген болашақ мерзім, CVC 100.', pay_secure:'Карта деректері Paddle-дің қорғалған формасына енгізіледі және Speakline-ға түспейді.', pay_err:'Төлем формасы жүктелмеді. Интернетті тексеріп, қайталап көр.', paid_t:'Жазылым рәсімделді', paid_p:function(e){ return 'Аккаунт: '+e+'. Осы поштамен кез келген құрылғыда кір.'; }, login_t:'Кіру', login_p:'Жазылым рәсімделген поштаны енгіз. Кіру кодын жібереміз.', code_send:'Код алу', code_t:'Хаттағы код', code_p:function(e){ return '6 санды '+e+' мекенжайына жібердік. Хат бір минутта келуі мүмкін — «Спам»-ды да тексер.'; }, code_ok:'Кіру', code_again:'Кодты қайта жіберу', err_wait:'Әрекет тым көп. Сәл күтіп, қайталап көр.', err_net:'Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көр.', err_code:'Код қате.', err_expired:'Кодтың мерзімі өтті — жаңасын сұра.', already:'Сенде жазылым бар — бәрі ашық.', manage:'Жазылымды басқару', cancel_sched:'Тоқтатылды, кезең соңына дейін қолжетімді', login:'Поштамен кіру', logout:'Шығу', has_sub:'Жазылым бар ма? Кіру', del:'Аккаунт пен деректерді жою', del_warn:'Жазылым тоқтатылады, аккаунт пен жаттығу тарихы біржола жойылады.', del_yes:'Жою', ck_t:'Cookies', ck_p:'Біз cookies-ті қосымша жұмысы үшін және сенің келісіміңмен жарнаманы бағалау үшін қолданамыз.', ck_more:'Толығырақ', ck_no:'Тек қажеттілері', ck_yes:'Қабылдау', pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'Атақ үшін керек', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
   pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
   up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
-  up_pro:['Pro','айына +$10','Әр жазбаның толық ЖИ талдауы және арам сөзсіз қайта жазылған мәтінің.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
+  up_pro:['Pro','айына +$10','Дайын мәтіндері бар нақты компаниялардың сценарийлері: Google-да сұхбат, Zimran-ға презентация, Kaspi-де демо, жалақы туралы келіссөз және т.б.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Жазылым', set_reset_buy:'Сатып алуларды тазалау (демо)', set_tour:'Кеңестерді қайта көрсету', set_goal:'Мақсатты өзгерту',
   locked:'Premium',
   tour_next:'Келесі', tour_skip:'Өткізу', tour_tap:'Белгіленгенді бас',
@@ -1157,6 +1168,97 @@ var SCEN = {
  en:[['Job interview','Tell me about yourself and why you fit this role.'],['Investor pitch','Sell your idea to an investor in 60 seconds.'],['Update to your manager','Give a short update: result, risk, what you need from your manager.'],['Tough conversation','Tell a colleague their part is delaying the project.'],['Salary','Ask for a raise and back it with numbers.'],['Case defence','Defend your case: niche, unit economics, conclusion.'],['Saying no to a client','Politely decline a client and offer an alternative.'],['A toast','Give a short toast at a friend’s birthday.'],['Handling objections','The client says “too expensive”. Respond.'],['Elevator pitch','Introduce yourself at a networking event in 30 seconds.']],
  kk:[['Сұхбат','Өзің туралы және неге осы рөлге сай екеніңді айт.'],['Инвесторға питч','Идеяңды инвесторға 60 секундта сат.'],['Басшыға есеп','Қысқа есеп бер: нәтиже, тәуекел, басшыдан не керек.'],['Қиын әңгіме','Әріптесіңе оның бөлігі жобаны кешіктіріп жатқанын айт.'],['Жалақы','Жалақыны көтеруді сұрап, сандармен дәлелде.'],['Кейс қорғау','Кейсіңді қорға: тауашa, экономика, қорытынды.'],['Клиентке бас тарту','Клиентке сыпайы бас тартып, балама ұсын.'],['Тост','Досыңның туған күнінде қысқа тост айт.'],['Қарсылыққа жауап','Клиент «қымбат» дейді. Жауап бер.'],['Өзін таныстыру','Нетворкингте 30 секундта өзіңді таныстыр.']]
 };
+
+/* ---------- Pro: scenarios from real companies, each with short ready texts to read aloud ----------
+   Practice scripts written for Speakline (role-play, not statements by these companies). */
+var PRO_UI = {
+ en:{t:'Pro scenarios', p:'Real interviews and presentations with ready texts — pick one and read.', lock:'Pro · +$10/mo', read:'Read aloud', texts:'3 texts', back:'Back'},
+ ru:{t:'Pro-сценарии', p:'Реальные собеседования и презентации с готовыми текстами — выбери и читай.', lock:'Pro · +$10/мес', read:'Прочитать вслух', texts:'3 текста', back:'Назад'},
+ kk:{t:'Pro-сценарийлер', p:'Дайын мәтіндері бар нақты сұхбаттар мен презентациялар — таңда да оқы.', lock:'Pro · айына +$10', read:'Дауыстап оқу', texts:'3 мәтін', back:'Артқа'}
+};
+var PRO_META = [{ic:'G', c:'#1A73E8'}, {ic:'Z', c:'#6C47FF'}, {ic:'K', c:'#E4202F'}, {ic:'a', c:'#FF9900'}, {ic:'⚡', c:'#0E2E63'}, {ic:'$', c:'#1E9E57'}];
+var PRO_T = {
+ en:[['Interview at Google','3 answers for the first round'],['Presentation for Zimran','Pitch a product idea'],['Product demo at Kaspi','Show a feature to the team'],['Interview at Amazon','Leadership principle stories'],['Demo Day pitch','60 seconds for investors'],['Salary negotiation','The offer call']],
+ ru:[['Собеседование в Google','3 ответа для первого раунда'],['Презентация для Zimran','Питч продуктовой идеи'],['Демо продукта в Kaspi','Покажи фичу команде'],['Собеседование в Amazon','Истории о принципах лидерства'],['Питч на Demo Day','60 секунд для инвесторов'],['Переговоры о зарплате','Звонок с оффером']],
+ kk:[['Google-да сұхбат','Бірінші кезеңге 3 жауап'],['Zimran-ға презентация','Өнім идеясының питчі'],['Kaspi-де өнім демосы','Командаға жаңа мүмкіндікті көрсет'],['Amazon-да сұхбат','Көшбасшылық қағидалары туралы әңгімелер'],['Demo Day питчі','Инвесторларға 60 секунд'],['Жалақы туралы келіссөз','Оффер қоңырауы']]
+};
+var PRO_TX = {
+ en:[
+  [['Tell me about yourself','I’m a product analyst who turns messy data into decisions. Last year my dashboard cut our weekly reporting from five hours to twenty minutes. I want to do the same at Google scale.'],
+   ['A time you failed','We launched a feature nobody used. I had skipped user interviews to move fast. Now I talk to five users before I write a single line of a spec.'],
+   ['Why Google?','Because the problems are big and the data is honest. I want to work where one good experiment helps a billion people find what they need a little faster.']],
+  [['The hook','Every morning millions of people open a learning app, and every evening they forget why. Our idea brings them back with ten minutes that actually feel like progress.'],
+   ['The numbers','In our test funnel, about two and a half percent of clicks became paying users. Each of them brings around fifty dollars a year. Better creatives move us from test to scale.'],
+   ['The ask','We are asking for four weeks and eight thousand dollars of ad budget. If the numbers hold, we scale. If they don’t, you will know in fourteen days, not six months.']],
+  [['Open the demo','Paying for something should take one tap, not five screens. Today I’ll show you a checkout that saves every customer twelve seconds — and why twelve seconds matter at Kaspi scale.'],
+   ['The problem','Here is the problem in one sentence: people drop off at the delivery step. So we moved the address to the very first screen and pre-filled it from the last order.'],
+   ['The ask','My ask is simple: two weeks and one A/B test. If conversion grows, we roll it out to everyone. If it doesn’t, we learn something important for free.']],
+  [['Customer obsession','A customer emailed us at midnight because her order was stuck. I didn’t wait for the morning meeting. I fixed it, called her back, and we changed the process so it never happened again.'],
+   ['Ownership','Nobody owned our onboarding emails, so they were three years old. I took them over, rewrote every message, and our first-week activation went up.'],
+   ['Disagree and commit','I disagreed with my manager’s launch date and said so, with data. We kept her date anyway, and I made sure we hit it.']],
+  [['Who we are','Hi, I’m Alex, and we help people stop saying “um”. Ten minutes a day, and you walk into the meeting as the calmest person in the room.'],
+   ['How it works','Everyone has a conversation they dread. We turn that dread into a plan: a ten-second voice test, a daily mission, and a reminder one hour before the real thing.'],
+   ['The close','We are raising five hundred thousand dollars to launch in three countries. Join us, and let’s make every important conversation a little less scary.']],
+  [['Say thank you first','Thank you for the offer — I’m genuinely excited about this role and the team. Before I say yes, I’d like to talk about the base salary.'],
+   ['Name your number','Based on my experience and the market for this position, I was expecting something closer to the top of your range. Is there flexibility there?'],
+   ['Find another way','If the base is fixed, could we look at a signing bonus or a salary review in six months? I want to make this work for both of us.']]
+ ],
+ ru:[
+  [['Расскажите о себе','Я продуктовый аналитик и превращаю хаос в данных в решения. В прошлом году мой дашборд сократил еженедельную отчётность с пяти часов до двадцати минут. Хочу делать то же в масштабе Google.'],
+   ['История провала','Мы запустили функцию, которой никто не пользовался. Я пропустил интервью с пользователями, чтобы успеть быстрее. Теперь я говорю с пятью пользователями до того, как напишу первую строчку ТЗ.'],
+   ['Почему Google?','Потому что здесь большие задачи и честные данные. Я хочу работать там, где один удачный эксперимент помогает миллиарду людей чуть быстрее находить то, что им нужно.']],
+  [['Крючок','Каждое утро миллионы людей открывают обучающее приложение, а вечером забывают зачем. Наша идея возвращает их десятью минутами, которые реально ощущаются как прогресс.'],
+   ['Цифры','В тестовой воронке примерно два с половиной процента кликов стали платящими. Каждый приносит около пятидесяти долларов в год. Сильные креативы переведут нас из теста в масштаб.'],
+   ['Просьба','Мы просим четыре недели и восемь тысяч долларов на рекламу. Если цифры подтвердятся — масштабируем. Если нет — вы узнаете это через четырнадцать дней, а не через полгода.']],
+  [['Начало демо','Оплата должна занимать одно касание, а не пять экранов. Сегодня покажу оплату, которая экономит каждому клиенту двенадцать секунд, — и почему двенадцать секунд важны в масштабе Kaspi.'],
+   ['Проблема','Проблема в одном предложении: люди уходят на шаге доставки. Поэтому мы перенесли адрес на самый первый экран и заполняем его из прошлого заказа.'],
+   ['Просьба','Прошу немного: две недели и один A/B-тест. Если конверсия вырастет — раскатываем на всех. Если нет — бесплатно узнаём что-то важное.']],
+  [['Одержимость клиентом','Клиентка написала нам в полночь: её заказ завис. Я не стал ждать утренней планёрки. Исправил ошибку, перезвонил ей, и мы поменяли процесс, чтобы это не повторилось.'],
+   ['Ответственность','Письмами для новых пользователей никто не занимался, им было три года. Я взял их на себя, переписал каждое, и активация в первую неделю выросла.'],
+   ['Не согласен, но делаю','Я был не согласен с датой запуска и сказал об этом руководителю, с цифрами. Мы оставили её дату, и я сделал всё, чтобы мы успели.']],
+  [['Кто мы','Привет, я Алекс, и мы помогаем людям перестать говорить «э-э». Десять минут в день — и ты заходишь на встречу самым спокойным человеком в комнате.'],
+   ['Как это работает','У каждого есть разговор, которого он боится. Мы превращаем страх в план: голосовой тест на десять секунд, ежедневная миссия и напоминание за час до встречи.'],
+   ['Финал','Мы привлекаем пятьсот тысяч долларов, чтобы запуститься в трёх странах. Присоединяйтесь — сделаем каждый важный разговор чуть менее страшным.']],
+  [['Сначала спасибо','Спасибо за оффер — мне правда нравятся эта роль и команда. Прежде чем сказать «да», я бы хотел обсудить базовую зарплату.'],
+   ['Назови свою цифру','С учётом моего опыта и рынка для этой позиции я ожидал сумму ближе к верхней границе вашей вилки. Есть ли здесь гибкость?'],
+   ['Найди другой путь','Если база фиксирована, можем ли мы обсудить бонус при выходе или пересмотр зарплаты через полгода? Я хочу, чтобы это сработало для нас обоих.']]
+ ],
+ kk:[
+  [['Өзіңіз туралы айтыңыз','Мен өнім талдаушысымын, шашыраңқы деректерді шешімге айналдырамын. Былтыр менің дашбордым апталық есепті бес сағаттан жиырма минутқа дейін қысқартты. Мұны Google ауқымында жасағым келеді.'],
+   ['Сәтсіздік туралы оқиға','Біз ешкім қолданбаған функцияны шығардық. Жылдам болу үшін пайдаланушылармен сұхбатты өткізіп жібердім. Енді техникалық тапсырманың бірінші жолын жазбас бұрын бес пайдаланушымен сөйлесемін.'],
+   ['Неге Google?','Өйткені мұнда міндеттер үлкен, деректер шынайы. Бір сәтті эксперимент миллиард адамға керегін сәл жылдамырақ табуға көмектесетін жерде жұмыс істегім келеді.']],
+  [['Ілмек','Күн сайын таңертең миллиондаған адам оқу қолданбасын ашады, ал кешке неге ашқанын ұмытады. Біздің идея оларды шынымен прогресс сияқты сезілетін он минутпен қайтарады.'],
+   ['Сандар','Тест воронкасында кликтердің шамамен екі жарым пайызы төлеуші болды. Әрқайсысы жылына елу долларға жуық әкеледі. Күшті креативтер бізді тесттен ауқымға шығарады.'],
+   ['Өтініш','Біз төрт апта және жарнамаға сегіз мың доллар сұраймыз. Сандар расталса — ауқымдаймыз. Расталмаса — мұны алты айдан кейін емес, он төрт күннен кейін білесіз.']],
+  [['Демоның басы','Төлем бес экран емес, бір рет басумен болуы керек. Бүгін әр клиентке он екі секунд үнемдейтін төлемді көрсетемін — және неге он екі секунд Kaspi ауқымында маңызды.'],
+   ['Мәселе','Мәселе бір сөйлеммен: адамдар жеткізу қадамында кетіп қалады. Сондықтан мекенжайды ең бірінші экранға көшіріп, алдыңғы тапсырыстан толтырдық.'],
+   ['Өтініш','Сұрайтыным аз: екі апта және бір A/B тест. Конверсия өссе — бәріне қосамыз. Өспесе — маңызды бір нәрсені тегін білеміз.']],
+  [['Клиентке берілгендік','Клиент түн ортасында жазды: тапсырысы тұрып қалған. Мен таңғы жиналысты күтпедім. Қатені түзеттім, оған қайта қоңырау шалдым, және бұл қайталанбас үшін процесті өзгерттік.'],
+   ['Жауапкершілік','Жаңа пайдаланушыларға арналған хаттармен ешкім айналыспады, олар үш жыл бұрын жазылған еді. Мен оларды өз мойныма алып, әрқайсысын қайта жаздым, және бірінші аптадағы белсенділік өсті.'],
+   ['Келіспесем де орындаймын','Шығару күнімен келіспедім және басшыма деректермен айттым. Бәрібір оның күнін қалдырдық, ал мен сол күнге үлгеруімізді қамтамасыз еттім.']],
+  [['Біз кімбіз','Сәлем, мен Алекспін, біз адамдарға «ээ» деуді қоюға көмектесеміз. Күніне он минут — және жиналысқа бөлмедегі ең сабырлы адам болып кіресің.'],
+   ['Қалай жұмыс істейді','Әркімнің қорқатын әңгімесі бар. Біз қорқынышты жоспарға айналдырамыз: он секундтық дауыс тесті, күнделікті миссия және кездесуден бір сағат бұрын еске салу.'],
+   ['Қорытынды','Үш елде іске қосылу үшін бес жүз мың доллар тартып жатырмыз. Бізге қосылыңыз — әр маңызды әңгімені сәл де болса қорқынышсыз етейік.']],
+  [['Алдымен рақмет','Офферге рақмет — бұл рөл мен команда маған шынымен ұнайды. «Иә» деместен бұрын негізгі жалақыны талқылағым келеді.'],
+   ['Өз санымды айту','Тәжірибем мен осы лауазымның нарығын ескере отырып, сіздердің аралықтың жоғарғы шегіне жақын соманы күттім. Мұнда икемділік бар ма?'],
+   ['Басқа жол табу','Егер негізгі жалақы бекітілген болса, кіру бонусын немесе алты айдан кейін жалақыны қайта қарауды талқылай аламыз ба? Бұл екеуімізге де тиімді болғанын қалаймын.']]
+ ]
+};
+function proHome(){
+  var U = PRO_UI[profile.ui] || PRO_UI.en, T2 = PRO_T[profile.ui] || PRO_T.en;
+  return '<section class="card" id="pro"><div class="mhead"><p class="label">'+U.t+'</p>'+(addons.pro?'':'<span class="lockpill">'+ICX.lock+' '+U.lock+'</span>')+'</div><p class="p">'+U.p+'</p><div class="pro-grid">'+
+    T2.map(function(t, i){ var m = PRO_META[i]; return '<button class="pro-tile'+(addons.pro?'':' dim')+'" type="button" data-pro="'+i+'"><span class="pro-ic" style="background:'+m.c+'">'+m.ic+'</span><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></button>'; }).join('')+
+    '</div></section>';
+}
+function proScreen(i){
+  var U = PRO_UI[profile.ui] || PRO_UI.en, t = (PRO_T[profile.ui] || PRO_T.en)[i], m = PRO_META[i], tx = PRO_TX[profile.train][i];
+  app.innerHTML = '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+U.back+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[profile.train].n+'</span><span style="width:40px"></span></div>'+
+    '<div class="pro-head"><span class="pro-ic big" style="background:'+m.c+'">'+m.ic+'</span><div><p class="label">'+U.t+'</p><h1 class="h1">'+esc(t[0])+'</h1><p class="p">'+esc(t[1])+'</p></div></div>'+
+    tx.map(function(x, k){ return '<section class="card pro-text"><p class="label">'+(k+1)+' · '+esc(x[0])+'</p><p class="prompt sm">«'+esc(x[1])+'»</p><button class="btn heat" type="button" data-rd="'+k+'">'+U.read+'</button></section>'; }).join('');
+  document.getElementById('bk').onclick = home;
+  app.querySelectorAll('[data-rd]').forEach(function(b){ b.onclick = function(){ var k = +b.getAttribute('data-rd'); track('pro_read', {s:i, t:k}); session('read', {text:tx[k][1], tag:t[0]+' · '+tx[k][0], pro:i}); }; });
+  window.scrollTo(0,0);
+}
 
 /* ---------- missions: evaluated over the sessions since the current goal started ---------- */
 var MISSIONS = [
@@ -1290,7 +1392,7 @@ function home(){
     '<p class="label">'+XL('practice')+'</p><div class="modes" id="modes">'+
       '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
       '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
-    meetH+scenH+
+    meetH+proHome()+scenH+
     (mine.length > 1 ? '<div class="card"><p class="label">'+L('progress')+'</p>'+chart(mine.slice(-12))+'</div>' : '')+
     histH;
 
@@ -1305,6 +1407,11 @@ function home(){
   app.querySelectorAll('[data-prep]').forEach(function(b){ b.onclick = function(){
     if(!isPremium()){ paywall('lock', home); return; }
     var m = meetings.filter(function(x){ return String(x.id) === b.getAttribute('data-prep'); })[0]; if(m) session('free', {topic:XL('prep_topic')(m.title)});
+  }; });
+  app.querySelectorAll('[data-pro]').forEach(function(b){ b.onclick = function(){
+    var i = +b.getAttribute('data-pro');
+    if(!addons.pro){ track('pro_lock', {s:i}); upsell(home); return; }
+    proScreen(i);
   }; });
   app.querySelectorAll('[data-scen]').forEach(function(b){ b.onclick = function(){
     var i = +b.getAttribute('data-scen');
@@ -1392,7 +1499,7 @@ function result(r){
   var rec = {ts:Date.now(), mode:r.mode, lang:r.lang, score:r.score, wpm:Math.round(r.wpm), fpm:+r.fpm.toFixed(2), xp:xp, speech:Math.round(r.speech),
     nF:r.nF, fill:r.nF ? uniqFillers(r) : '', pauses:r.pauses, longP:r.longP, avgP:+r.avgP.toFixed(2), sd:r.sd==null?null:+r.sd.toFixed(2), acc:r.acc, conf:r.conf, band:r.band,
     issues:r.issues.map(function(x){ return x.k; }), toks:r.toks.map(function(t){ return [t.w, t.f==='hes'?2:t.f?1:0]; }), prompt:r.prompt, ref:r.ref, refMarks:r.refMarks,
-    mission: ctx0.mission!=null ? ctx0.mission : null, level: r.mode==='read' ? (ctx0.level||0) : null};
+    mission: ctx0.mission!=null ? ctx0.mission : null, level: r.mode==='read' ? (ctx0.pro!=null ? 'pro' : (ctx0.level||0)) : null, pro: ctx0.pro!=null ? ctx0.pro : null};
   history.push(rec); track('session_done', {mode:rec.mode, lang:rec.lang, score:rec.score, n:history.length, mission:rec.mission});
   history.forEach(function(h, i){ if(i < history.length-60){ delete h.toks; delete h.refMarks; } });   // keep storage small
   store.set('history', history);
