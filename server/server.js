@@ -26,6 +26,9 @@ const CFG = {
   mailFrom: env('MAIL_FROM', 'Speakline <no-reply@example.com>'),
   appUrl: env('APP_URL', 'http://localhost:8080/'),
   adminKey: env('ADMIN_KEY', ''),
+  aiKey: env('ANTHROPIC_API_KEY', ''),                    // secret — server only; powers the AI coach
+  aiModel: env('AI_MODEL', 'claude-sonnet-5-5'),
+  aiDaily: +env('AI_DAILY_LIMIT', 40),                    // AI reviews per user per day
   devEcho: env('DEV_ECHO_CODES', '0') === '1'             // return login codes in the response (local testing only)
 };
 const PADDLE_API = CFG.paddleEnv === 'production' ? 'https://api.paddle.com' : 'https://sandbox-api.paddle.com';
@@ -297,6 +300,44 @@ function stats(req, res, url) {
   send(res, 200, { since: new Date(since).toISOString(), funnel, subscriptions: subs, users: q('SELECT COUNT(*) AS n FROM users').get().n });
 }
 
+/* ---------- AI coach: the server builds the prompt from validated numbers and calls Claude ----------
+   The key never reaches the browser. Premium only, rate-limited per user. */
+const LANGS = { ru: 'Russian', en: 'English', kk: 'Kazakh' };
+const METRIC_KEYS = ['words', 'seconds', 'wpm', 'fillers', 'hesitation_sounds', 'fillers_per_min', 'pauses', 'avg_pause_s', 'long_pauses', 'pitch_sd_semitones', 'read_accuracy', 'score'];
+function coachPrompt(b) {
+  const m = {};
+  for (const k of METRIC_KEYS) { const v = b.metrics && b.metrics[k]; if (typeof v === 'number' && isFinite(v)) m[k] = Math.round(v * 100) / 100; }
+  if (Array.isArray(b.metrics && b.metrics.target_wpm)) m.target_wpm = b.metrics.target_wpm.slice(0, 2).map(Number);
+  const tr = LANGS[b.lang], ui = LANGS[b.ui];
+  const words = String(b.transcript || '').replace(/\s+/g, ' ').trim().slice(0, 2000);
+  const task = String(b.task || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+  return 'You are Speakline\'s speaking coach. The user ' + (b.mode === 'read' ? 'read this text out loud' : 'answered this prompt out loud') + ': """' + task + '""". They spoke in ' + tr + '.\n' +
+    'Transcript from speech recognition (filler sounds like "um" are often dropped by the recogniser, the metrics count them from audio): """' + words + '"""\n' +
+    'Measured metrics: ' + JSON.stringify(m) + '\n' +
+    'Reply in ' + ui + ', plain text, no markdown, under 170 words. Give: 1) one sentence on what already works; 2) three specific, actionable tips tied to these metrics and the words actually used; ' +
+    (b.mode === 'read' ? '3) one sentence on how to deliver the hardest part of the text.' : '3) a rewritten version of what they said — clearer, no fillers, same meaning, in ' + tr + '.') +
+    ' Do not invent metrics that are not listed.';
+}
+async function coach(req, res, u) {
+  if (!CFG.aiKey) return send(res, 503, { error: 'ai_off' });
+  if (!me(u).premium) return send(res, 402, { error: 'premium' });
+  if (limited('coach:' + u.id, CFG.aiDaily, 24 * 3600e3)) return send(res, 429, { error: 'limit' });
+  const b = json(await readBody(req, 16 * 1024));
+  if (!b || !LANGS[b.lang] || !LANGS[b.ui] || !['read', 'free'].includes(b.mode) || !String(b.transcript || '').trim()) return send(res, 400, { error: 'bad_request' });
+  const r = await fetch(process.env.AI_API_URL || 'https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-api-key': CFG.aiKey, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({ model: CFG.aiModel, max_tokens: 700, messages: [{ role: 'user', content: coachPrompt(b) }] }),
+    signal: AbortSignal.timeout(30000)
+  }).catch(() => null);
+  if (!r || !r.ok) { console.error('coach upstream', r && r.status); return send(res, 502, { error: 'ai_upstream' }); }
+  const j = await r.json().catch(() => ({}));
+  const text = (j.content || []).map(c => c.text || '').join('').trim();
+  if (!text) return send(res, 502, { error: 'ai_empty' });
+  q('INSERT INTO events (ts, anon_id, user_id, name, props) VALUES (?, ?, ?, ?, ?)').run(now(), '', u.id, 'ai_coach', JSON.stringify({ lang: b.lang, mode: b.mode }));
+  send(res, 200, { text });
+}
+
 /* ---------- trial reminders: hourly, ~2 days before the trial ends ---------- */
 async function trialReminders() {
   const t = now();
@@ -346,6 +387,7 @@ const server = http.createServer(async (req, res) => {
       if (!u) return send(res, 401, { error: 'auth' });
       if (r === 'GET /api/me') return send(res, 200, me(u));
       if (r === 'POST /api/portal') return await portal(req, res, u);
+      if (r === 'POST /api/coach') return await coach(req, res, u);
       if (r === 'POST /api/logout') { q('DELETE FROM sessions WHERE token_hash = ?').run(sha(String(req.headers.authorization).slice(7).trim())); return send(res, 200, { ok: true }); }
       if (r === 'DELETE /api/account') return await deleteAccount(req, res, u);
       return send(res, 404, { error: 'not_found' });
@@ -363,4 +405,4 @@ if (require.main === module) {
   setInterval(() => trialReminders().catch(e => console.error(e)), 3600e3);
   trialReminders().catch(() => {});
 }
-module.exports = { server, db, CFG, trialReminders, verifyPaddle };
+module.exports = { server, db, CFG, trialReminders, verifyPaddle, coachPrompt };

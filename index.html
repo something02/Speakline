@@ -128,6 +128,8 @@ h1,h2,h3,p{margin:0}
 .input{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-size:16px}
 .input:focus{border-color:var(--a);outline:0;box-shadow:0 0 0 4px var(--ring)}
 .ai{white-space:pre-wrap;font-size:15px;line-height:1.55;color:var(--ink)}
+.ailock{width:100%;text-align:left;border:0;cursor:pointer;font:inherit;color:inherit}
+.ailock .lockpill{justify-self:start}
 .row{display:flex;gap:10px}
 .row > *{flex:1}
 
@@ -331,7 +333,6 @@ var store = {
 };
 var profile = store.get('profile', null);   // {ui, train, goal}
 var history = store.get('history', []);     // [{ts, mode, lang, score, wpm, fpm, ...}]
-var aiKey = store.get('aiKey', '');
 
 /* ================= interface text ================= */
 var T = {
@@ -348,8 +349,8 @@ var T = {
   pace:'Темп', wpm:'сл/мин', fillers:'Паразиты', per_min:'в минуту', pauses:'Паузы', avg:'средняя', inton:'Интонация', st:'полутонов', acc:'Точность', clar:'Разборчивость',
   target:'цель', fast:'быстро', slow:'медленно', ok:'в норме', mono:'монотонно', lively:'живо', none:'нет', long_p:function(n){ return n+' '+plural(n,'долгая','долгие','долгих'); },
   tips:'Что улучшить', transcript:'Что я услышал', ref_hint:'Оранжевым — слова из фразы, которые не распознались', got_xp:function(x){ return '+'+x+' опыта'; },
-  again:'Ещё раз', home:'Домой', ai_btn:'Подробный разбор от ИИ', ai_wait:'ИИ разбирает твою речь…', ai_err:'Не получилось получить разбор. Проверь ключ API в настройках.',
-  settings:'Настройки', key_l:'Ключ Claude API (необязательно)', key_p:'Нужен только для подробного разбора от ИИ. Хранится только на этом устройстве.', save:'Сохранить', reset:'Сбросить прогресс',
+  again:'Ещё раз', home:'Домой', ai_t:'ИИ-коуч', ai_wait:'ИИ-коуч разбирает твою речь…', ai_err:'ИИ-коуч сейчас недоступен — советы выше всё равно работают.', ai_lock:'Личный разбор твоих слов и чистая версия ответа — в Premium', ai_demo:'В рабочей версии здесь появится разбор от ИИ-коуча: он работает на сервере Speakline, а в этом демо сервер не подключён.',
+  settings:'Настройки', save:'Сохранить', reset:'Сбросить прогресс',
   hint_um:'Распознавание речи выкидывает «э-э» и «м-м» из текста, поэтому такие заминки я ловлю по звуку: ровный протяжный звук дольше 0,35 с.', minutes:'мин', badge:'Новый значок' },
  en:{ hello:'Let’s set you up', hello_p:'Pick the app language, the language you want to train and your goal — it takes 10 seconds.',
   ui_lang:'App language', train_lang:'Which language do you want to train?', goal:'Where do you need to sound confident?', goals:['Meetings and calls','Job interviews','Presentations','Small talk'], start:'Start',
@@ -364,8 +365,8 @@ var T = {
   pace:'Pace', wpm:'wpm', fillers:'Fillers', per_min:'per minute', pauses:'Pauses', avg:'average', inton:'Intonation', st:'semitones', acc:'Accuracy', clar:'Clarity',
   target:'goal', fast:'fast', slow:'slow', ok:'on target', mono:'flat', lively:'lively', none:'none', long_p:function(n){ return n+' long'; },
   tips:'What to improve', transcript:'What I heard', ref_hint:'Orange — words from the sentence that weren’t recognised', got_xp:function(x){ return '+'+x+' XP'; },
-  again:'Try again', home:'Home', ai_btn:'Detailed AI review', ai_wait:'The AI is reviewing your speech…', ai_err:'Couldn’t get the review. Check the API key in settings.',
-  settings:'Settings', key_l:'Claude API key (optional)', key_p:'Only needed for the detailed AI review. Stored on this device only.', save:'Save', reset:'Reset progress',
+  again:'Try again', home:'Home', ai_t:'AI coach', ai_wait:'The AI coach is reviewing your speech…', ai_err:'The AI coach is unavailable right now — the tips above still apply.', ai_lock:'A personal review of your words and a cleaner version of your answer — in Premium', ai_demo:'In the live version the AI coach review appears here. It runs on the Speakline server, which is not connected in this demo.',
+  settings:'Settings', save:'Save', reset:'Reset progress',
   hint_um:'Speech recognition drops “um” and “uh” from the text, so I catch them from the sound: a flat, drawn-out sound longer than 0.35 s.', minutes:'min', badge:'New badge' },
  kk:{ hello:'Өзіңе бейімдейік', hello_p:'Қосымша тілін, жаттығу тілін және мақсатыңды таңда — 10 секунд қана.',
   ui_lang:'Қосымша тілі', train_lang:'Қай тілде жаттығасың?', goal:'Қай жерде сенімді сөйлеу маңызды?', goals:['Жиналыстар мен қоңыраулар','Жұмыс сұхбаттары','Презентациялар','Small talk'], start:'Бастау',
@@ -380,8 +381,8 @@ var T = {
   pace:'Қарқын', wpm:'сөз/мин', fillers:'Арам сөздер', per_min:'минутына', pauses:'Үзілістер', avg:'орташа', inton:'Интонация', st:'жартылай тон', acc:'Дәлдік', clar:'Анықтық',
   target:'мақсат', fast:'жылдам', slow:'баяу', ok:'қалыпты', mono:'бірсарынды', lively:'жанды', none:'жоқ', long_p:function(n){ return n+' ұзақ'; },
   tips:'Нені жақсарту керек', transcript:'Мен не естідім', ref_hint:'Қызғылт сарымен — танылмаған сөздер', got_xp:function(x){ return '+'+x+' тәжірибе'; },
-  again:'Қайталау', home:'Басты бет', ai_btn:'ЖИ-дан толық талдау', ai_wait:'ЖИ сөйлеуіңді талдап жатыр…', ai_err:'Талдау алынбады. Баптаулардағы API кілтін тексер.',
-  settings:'Баптаулар', key_l:'Claude API кілті (міндетті емес)', key_p:'Тек ЖИ талдауы үшін керек. Тек осы құрылғыда сақталады.', save:'Сақтау', reset:'Прогресті тазалау',
+  again:'Қайталау', home:'Басты бет', ai_t:'ЖИ-коуч', ai_wait:'ЖИ-коуч сөйлеуіңді талдап жатыр…', ai_err:'ЖИ-коуч қазір қолжетімсіз — жоғарыдағы кеңестер бәрібір жарайды.', ai_lock:'Сөздеріңді жеке талдау және жауаптың таза нұсқасы — Premium-да', ai_demo:'Жұмыс нұсқасында мұнда ЖИ-коуч талдауы шығады. Ол Speakline серверінде жұмыс істейді, ал бұл демода сервер қосылмаған.',
+  settings:'Баптаулар', save:'Сақтау', reset:'Прогресті тазалау',
   hint_um:'Тану «ээ» мен «мм»-ді мәтіннен алып тастайды, сондықтан оларды дыбыс бойынша ұстаймын: 0,35 с-тан ұзақ біркелкі созылған дыбыс.', minutes:'мин', badge:'Жаңа белгі' }
 };
 var LANG_NAMES = {ru:{n:'Русский',s:'Russian · Орыс тілі'}, en:{n:'English',s:'Английский · Ағылшын тілі'}, kk:{n:'Қазақша',s:'Kazakh · Казахский'}};
@@ -963,20 +964,21 @@ function stat(k, v, e, cls){ return '<div class="stat"><span>'+k+'</span><b>'+v+
 function uniqFillers(r){ var u = {}; r.toks.forEach(function(t){ var k = t.f==='hes' ? t.w : t.g; if(k) u[k] = (u[k]||0) + 1; }); return Object.keys(u).sort(function(a,b){ return u[b]-u[a]; }).slice(0,3).map(function(w){ return '«'+w+'»'+(u[w]>1?' ×'+u[w]:''); }).join(', '); }
 
 /* ================= optional AI coach (user’s own Claude API key) ================= */
-function aiReview(r, btn){
-  var box = document.getElementById('aibox'), out = document.getElementById('aitx');
-  box.hidden = false; out.textContent = L('ai_wait'); btn.disabled = true;
-  var uiName = {ru:'Russian', en:'English', kk:'Kazakh'}[profile.ui], trName = {ru:'Russian', en:'English', kk:'Kazakh'}[r.lang];
-  var metrics = {mode:r.mode, task:r.prompt, words:r.nW, seconds:Math.round(r.speech), wpm:Math.round(r.wpm), target_wpm:r.band, fillers:r.nF, hesitation_sounds_from_audio:r.nHes, fillers_per_min:+r.fpm.toFixed(1),
+/* AI coach: built into the product. The browser sends the transcript and the measured numbers to our server;
+   the server holds the Claude key, checks Premium and builds the prompt. No key ever lives in the app. */
+function coachCard(){
+  var head = '<div class="mhead"><p class="label">'+ICX.star.replace('width="20" height="20"','width="13" height="13"')+' '+L('ai_t')+'</p></div>';
+  if(!isPremium()) return '<button class="card ailock" type="button" id="ailock">'+head+'<p class="p">'+L('ai_lock')+'</p><span class="lockpill">'+ICX.lock+' Premium</span></button>';
+  if(!PAY.api || !API.token) return '<div class="card" id="aidemo">'+head+'<p class="small">'+L('ai_demo')+'</p></div>';
+  return '<div class="card" id="aibox">'+head+'<p class="ai" id="aitx"><span class="spin"></span> '+L('ai_wait')+'</p></div>';
+}
+function aiReview(r){
+  var out = document.getElementById('aitx'); if(!out) return;
+  var metrics = {words:r.nW, seconds:Math.round(r.speech), wpm:Math.round(r.wpm), target_wpm:r.band, fillers:r.nF, hesitation_sounds:r.nHes, fillers_per_min:+r.fpm.toFixed(1),
     pauses:r.pauses, avg_pause_s:+r.avgP.toFixed(2), long_pauses:r.longP, pitch_sd_semitones:r.sd==null?null:+r.sd.toFixed(1), read_accuracy:r.acc, score:r.score};
-  var prompt = 'You are a speaking coach. The user spoke in '+trName+'. Transcript from speech recognition (filler sounds like "um" may be missing): """'+r.raw.join(' ')+'"""\nMeasured metrics: '+JSON.stringify(metrics)+
-    '\nReply in '+uiName+', plain text, no markdown headings. Give: 1) one sentence on what already works; 2) three specific, actionable tips tied to the metrics and the actual words used; 3) a rewritten version of what they said — clearer, without fillers, same meaning, in '+trName+'. Keep it under 180 words.';
-  fetch('https://api.anthropic.com/v1/messages', {method:'POST', headers:{'content-type':'application/json','x-api-key':aiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body: JSON.stringify({model:'claude-sonnet-5-5', max_tokens:700, messages:[{role:'user', content:prompt}]})})
-  .then(function(res){ if(!res.ok) throw new Error(res.status); return res.json(); })
-  .then(function(j){ out.textContent = (j.content||[]).map(function(c){ return c.text||''; }).join('').trim() || L('ai_err'); })
-  .catch(function(){ out.textContent = L('ai_err'); })
-  .then(function(){ btn.disabled = false; });
+  api('POST', '/api/coach', {lang:r.lang, ui:profile.ui, mode:r.mode, task:r.prompt, transcript:r.raw.join(' '), metrics:metrics})
+    .then(function(j){ out.textContent = j.text || L('ai_err'); track('ai_coach_view'); })
+    .catch(function(){ out.textContent = L('ai_err'); });
 }
 
 /* ================= journey: goal → missions → rewards, tours, plans ================= */
@@ -1407,7 +1409,7 @@ function result(r){
     '<div class="center"><p class="h2">'+L('sound')(r.score)+'</p><p class="small" style="margin-top:4px;color:'+(prev && r.score>=prev.score?'var(--good)':'var(--muted)')+'">'+(prev ? L('vs')(r.score-prev.score) : L('first'))+' · '+L('got_xp')(xp)+'</p></div>'+
     (badge ? '<div class="badge">'+ICX.medal.replace('width="72" height="72"','width="24" height="24"')+'<span><b>'+L('badge')+':</b> '+esc(badge)+'</span></div>' : '')+
     missNote+reportBody(rec)+dbg+
-    ((aiKey || addons.pro) ? '<button class="btn ghost" type="button" id="ai">'+L('ai_btn')+'</button><div class="card" id="aibox" hidden><p class="ai" id="aitx"></p></div>' : '')+
+    coachCard()+
     '<div class="sticky"><button class="btn ghost" type="button" id="ag">'+XL('again')+'</button><button class="btn heat" type="button" id="cont">'+XL('cont')+'</button></div>';
   var arc = document.getElementById('arc'), num = document.getElementById('num'), C = 326.7, to = r.score;
   var setv = function(v){ num.textContent = Math.round(v); arc.setAttribute('stroke-dashoffset', (C*(1-v/100)).toFixed(1)); };
@@ -1415,7 +1417,8 @@ function result(r){
   var next = function(){ afterResult(rec, newly, after); };
   document.getElementById('bk').onclick = next; document.getElementById('cont').onclick = next;
   document.getElementById('ag').onclick = function(){ session(r.mode, ctx0); };
-  var aiBtn = document.getElementById('ai'); if(aiBtn) aiBtn.onclick = function(){ if(!aiKey){ aiBtn.textContent = L('key_l'); settings(); return; } aiReview(r, aiBtn); };
+  var lk = document.getElementById('ailock'); if(lk) lk.onclick = function(){ paywall('ai', home); };
+  if(document.getElementById('aitx')) aiReview(r);
   window.scrollTo(0,0);
   if(!tours.res){ tours.res = 1; store.set('tours', tours); setTimeout(function(){ tour(XL('T_res')); }, 1400); }
 }
@@ -1736,8 +1739,6 @@ function settings(){
     '<button class="btn ghost" type="button" id="lang">'+L('ui_lang')+' · '+L('train_lang')+'</button>'+
     '<button class="btn ghost" type="button" id="intro">'+({ru:'Показать знакомство',en:'Show the intro',kk:'Танысуды көрсету'})[profile.ui]+'</button>'+
     '<button class="btn ghost" type="button" id="tr">'+XL('set_tour')+'</button>'+
-    '<div class="card"><label class="label" for="key">'+L('key_l')+'</label><input class="input" id="key" type="password" autocomplete="off" placeholder="sk-ant-…" value="'+esc(aiKey)+'"><p class="small">'+L('key_p')+'</p>'+
-    '<button class="btn" type="button" id="sv">'+L('save')+'</button></div>'+
     '<div id="rsbox"><button class="link" type="button" id="rs">'+L('reset')+'</button></div>'+
     '<button class="link" type="button" id="restart">'+(WEB[profile.ui]||WEB.en).restart+'</button>'+
     '<div id="acbox" class="row">'+(PAY.api && API.token ? '<button class="link" type="button" id="logout">'+XL('logout')+'</button>' : '')+'<button class="link" type="button" id="del" style="color:var(--bad)">'+XL('del')+'</button></div>'+
@@ -1755,7 +1756,6 @@ function settings(){
   $('lang').onclick = function(){ onboarding(); };
   $('intro').onclick = function(){ introUI = profile.ui; splash(intro); };
   $('tr').onclick = function(){ tours = {}; store.set('tours', tours); home(); };
-  $('sv').onclick = function(){ aiKey = $('key').value.trim(); store.set('aiKey', aiKey); home(); };
   $('rs').onclick = function(){
     $('rsbox').innerHTML = '<div class="row"><button class="btn ghost" type="button" id="no">✕</button><button class="btn heat" type="button" id="yes">'+L('reset')+'</button></div>';
     $('no').onclick = settings;
