@@ -78,6 +78,12 @@ h1,h2,h3,p{margin:0}
 .chip{border:0;border-radius:999px;padding:9px 14px;background:var(--card2);cursor:pointer;font-size:14px}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);font-weight:600}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-top:1px solid var(--hair);padding:6px max(8px,env(safe-area-inset-right,0px)) max(8px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.tabbar button{flex:1;max-width:104px;display:grid;justify-items:center;gap:3px;border:0;background:none;color:var(--muted);font:600 11px/1.1 var(--text);padding:6px 0;cursor:pointer;border-radius:12px}
+.tabbar button[aria-current="page"]{color:var(--a)}
+.tabbar button:active{background:var(--card2)}
+body.has-tabs .app{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+
 .pro-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pro-tile{display:grid;gap:4px;align-content:start;text-align:left;border:0;border-radius:16px;padding:12px;background:var(--card2);cursor:pointer;font:inherit;color:inherit;min-height:104px}
 .pro-tile b{font-size:14.5px;line-height:1.25}
@@ -1341,7 +1347,9 @@ function textLevels(){
 }
 
 /* ---------- home ---------- */
-function home(){
+function home(tab){
+  if(typeof tab === 'string') TAB = tab;
+  if(TAB === 'profile'){ settings(); return; }
   var ps = pathState(), g = profile.goal||0, xp = totalXP(), lv = levelOf(xp), st = streak();
   var mine = history.filter(function(h){ return h.lang===profile.train; });
   var last = mine[mine.length-1], best = mine.reduce(function(m,h){ return Math.max(m, h.score); }, 0);
@@ -1378,26 +1386,27 @@ function home(){
   var histH = '<section class="card" id="hist"><div class="mhead"><p class="label">'+XL('history')+'</p>'+(mine.length?'<span class="small">'+XL('sessions_n')(mine.length)+'</span>':'')+'</div>'+
     (mine.length ? '<div class="hist">'+mine.slice(-3).reverse().map(histRow).join('')+'</div><button class="btn ghost" type="button" id="hall">'+XL('all_hist')+'</button>' : '<p class="p">'+XL('hist_empty')+'</p>')+'</section>';
 
-  app.innerHTML =
-    '<div class="top">'+LOGO+'<div style="display:flex;gap:8px;align-items:center"><button class="planpill'+(isPremium()?' on':'')+'" type="button" id="pp">'+(isPremium()?ICX.star.replace('width="20" height="20"','width="13" height="13"')+' '+XL('plan_prem'):XL('plan_free')+' · '+XL('plan_prem'))+'</button><button class="icon-btn" type="button" id="set" aria-label="'+L('settings')+'">'+IC.gear+'</button></div></div>'+
-    '<div><p class="small">'+XL('greet')(h)+' · '+new Date().toLocaleDateString(loc, {weekday:'long', day:'numeric', month:'long'})+'</p></div>'+
+  var statsH = '<div class="grid2">'+
+      '<div class="stat"><span>'+XL('stat_last')+'</span><b>'+(last ? last.score+'%' : '—')+'</b></div>'+
+      '<div class="stat"><span>'+XL('stat_f')+'</span><b>'+(avgF==null ? '—' : fmt1(avgF))+'</b></div></div>';
+  var T = TABS_T[profile.ui] || TABS_T.en, body;
+  if(TAB === 'practice') body = '<h1 class="h1">'+T.practice+'</h1><div class="modes" id="modes">'+
+      '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
+      '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
+      proHome()+scenH;
+  else if(TAB === 'meet') body = '<h1 class="h1">'+T.meet+'</h1>'+meetH;
+  else if(TAB === 'progress') body = '<h1 class="h1">'+T.progress+'</h1>'+statsH+(mine.length > 1 ? '<div class="card"><p class="label">'+L('progress')+'</p>'+chart(mine.slice(-12))+'</div>' : '')+histH;
+  else body = '<div><p class="small">'+XL('greet')(h)+' · '+new Date().toLocaleDateString(loc, {weekday:'long', day:'numeric', month:'long'})+'</p></div>'+
     (today ? '<button class="today" type="button" data-prep="'+today.id+'">'+ICX.cal+'<span><b>'+XL('meet_today')+': '+esc(today.title)+'</b><small>'+fmtWhen(today.ts)+' · '+XL('meet_min')+'</small></span><span class="chev"></span></button>' : '')+
     '<section class="hero" id="hero"><p class="hero-l">'+XL('goal_l')+'</p><h1 class="hero-t">'+esc(XL('goalT')[g])+'</h1>'+heroBody+
       '<div class="hero-chips"><span>'+IC.flame.replace('width="34" height="34"','width="16" height="16"')+' '+(st ? L('streak')(st) : L('streak0'))+'</span><span>'+L('level')+' '+(lv.i+1)+' · '+L('lv')[lv.i]+'</span><span>'+xp+' '+L('xp')+'</span></div></section>'+
-    mcard+
-    '<div class="grid2">'+
-      '<div class="stat"><span>'+XL('stat_last')+'</span><b>'+(last ? last.score+'%' : '—')+'</b></div>'+
-      '<div class="stat"><span>'+XL('stat_f')+'</span><b>'+(avgF==null ? '—' : fmt1(avgF))+'</b></div></div>'+
-    pathH+
-    '<p class="label">'+XL('practice')+'</p><div class="modes" id="modes">'+
-      '<button class="mode" type="button" data-mode="read"><span class="ic">'+IC.read+'</span><span><b>'+L('m_read')+'</b><small>'+L('m_read_s')+'</small></span><span class="chev"></span></button>'+
-      '<button class="mode" type="button" data-mode="free"><span class="ic">'+IC.free+'</span><span><b>'+L('m_free')+'</b><small>'+L('m_free_s')+'</small></span><span class="chev"></span></button></div>'+
-    meetH+proHome()+scenH+
-    (mine.length > 1 ? '<div class="card"><p class="label">'+L('progress')+'</p>'+chart(mine.slice(-12))+'</div>' : '')+
-    histH;
+    mcard+statsH+pathH;
+  app.innerHTML =
+    '<div class="top">'+LOGO+'<div style="display:flex;gap:8px;align-items:center"><button class="planpill'+(isPremium()?' on':'')+'" type="button" id="pp">'+(isPremium()?ICX.star.replace('width="20" height="20"','width="13" height="13"')+' '+XL('plan_prem'):XL('plan_free')+' · '+XL('plan_prem'))+'</button><button class="icon-btn" type="button" id="set" aria-label="'+L('settings')+'">'+IC.gear+'</button></div></div>'+
+    '<i data-tabscreen hidden></i>'+body;
 
-  var $ = function(id){ return document.getElementById(id); };
-  $('set').onclick = settings;
+  var $ = function(id){ return document.getElementById(id) || {}; };
+  $('set').onclick = function(){ home('profile'); };
   $('pp').onclick = function(){ if(!isPremium()) paywall('home', home); else settings(); };
   if($('mgo')) $('mgo').onclick = function(){ startMission(cur); };
   if($('ngoal')) $('ngoal').onclick = chooseGoal;
@@ -1832,9 +1841,10 @@ function upsell(onDone, packOnly){
 
 /* ---------- settings ---------- */
 function settings(){
+  TAB = 'profile';
   var pn = plan ? XL('plans').filter(function(x){ return x[0]===plan.id; })[0] : null;
   app.innerHTML =
-    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div>'+
+    '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div><i data-tabscreen hidden></i>'+
     '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(PAY.env==='sandbox' && PAY.token?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?(plan.cancel_scheduled?XL('cancel_sched'):pn[3]):XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
       (plan && plan.src==='web' ? '<p class="small">'+(WEB[profile.ui]||WEB.en).src+' · '+(WEB[profile.ui]||WEB.en).next.toLowerCase()+': '+nextPay()+'</p>' : '')+
       (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
@@ -1851,7 +1861,7 @@ function settings(){
     '<div id="acbox" class="row">'+(PAY.api && API.token ? '<button class="link" type="button" id="logout">'+XL('logout')+'</button>' : '')+'<button class="link" type="button" id="del" style="color:var(--bad)">'+XL('del')+'</button></div>'+
     '<p class="small center legal">'+(profile.ui==='en' ? '<a href="terms-en.html" target="_blank">Terms</a> · <a href="privacy-en.html" target="_blank">Privacy</a> · <a href="refund-en.html" target="_blank">Refunds</a>' : '<a href="terms.html" target="_blank">Оферта</a> · <a href="privacy.html" target="_blank">Конфиденциальность</a> · <a href="refund.html" target="_blank">Возврат</a>')+'</p>';
   var $ = function(id){ return document.getElementById(id); };
-  $('bk').onclick = home;
+  $('bk').onclick = function(){ home('today'); };
   if($('buy')) $('buy').onclick = function(){ paywall('settings', settings); };
   if($('manage')) $('manage').onclick = function(){ manageSub($('manage')); };
   if($('login')) $('login').onclick = function(){ signIn({}, settings); };
@@ -1934,6 +1944,35 @@ function welcome(){
   document.getElementById('wgo').onclick = function(){ home(); window.scrollTo(0,0); };
   window.scrollTo(0,0);
 }
+
+/* ---------- bottom tab bar: shown on the five main screens, hidden in sessions, results, paywall ---------- */
+var TAB = 'today';
+var TABS_T = {
+  en:{today:'Today', practice:'Practice', meet:'Meetings', progress:'Progress', profile:'Profile'},
+  ru:{today:'Сегодня', practice:'Практика', meet:'Встречи', progress:'Прогресс', profile:'Профиль'},
+  kk:{today:'Бүгін', practice:'Жаттығу', meet:'Кездесулер', progress:'Прогресс', profile:'Профиль'}
+};
+var TAB_IC = {
+  today:'<path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/>',
+  practice:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>',
+  meet:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  progress:'<path d="M5 19V11M12 19V5M19 19v-6"/>',
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
+};
+function syncTabs(){
+  var on = !!app.querySelector('[data-tabscreen]'), bar = document.getElementById('tabbar');
+  if(!bar){
+    bar = document.createElement('nav'); bar.id = 'tabbar'; bar.className = 'tabbar'; bar.setAttribute('aria-label', 'Menu');
+    document.body.appendChild(bar);
+    bar.addEventListener('click', function(e){ var b = e.target.closest('[data-tab]'); if(!b) return; var t = b.getAttribute('data-tab'); track('tab', {t:t}); home(t); window.scrollTo(0,0); });
+  }
+  var T = TABS_T[(profile && profile.ui) || 'en'] || TABS_T.en;
+  bar.innerHTML = ['today','practice','meet','progress','profile'].map(function(k){
+    return '<button type="button" data-tab="'+k+'"'+(TAB===k?' aria-current="page"':'')+'><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+TAB_IC[k]+'</svg><span>'+T[k]+'</span></button>';
+  }).join('');
+  bar.hidden = !on; document.body.classList.toggle('has-tabs', on);
+}
+new MutationObserver(syncTabs).observe(app, {childList:true});
 
 /* ================= boot ================= */
 /* web2app: a new visitor starts in the web funnel (start/), pays there, and arrives here with the plan already active.
