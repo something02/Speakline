@@ -669,7 +669,7 @@ function session(mode, o){
     '<p class="small srst" id="srst" role="status"></p>'+
     '<div class="card"><p class="label">'+L('transcript')+'</p><p class="live" id="live"></p></div>'+
     '<p class="small">'+L('hint_um')+'</p>'+
-    (SR ? '' : '<p class="warnbox">'+L('no_sr')+'</p>');
+    (SR || PAY.api ? '' : '<p class="warnbox">'+L('no_sr')+'</p>');
   if(!tours.sess){ tours.sess = 1; store.set('tours', tours); setTimeout(function(){ tour(mode==='read' ? XL('T_sess') : XL('T_sess').map(function(x){ return [x[0], x[1], x[2].replace(/прочитай текст выше вслух|read the text above out loud|жоғарыдағы мәтінді дауыстап оқы/, {ru:'ответь вслух',en:'answer out loud',kk:'дауыстап жауап бер'}[profile.ui]), x[3]]; })); }, 400); }
   var stopFn = null, busy = false;
   document.getElementById('bk').onclick = function(){ if(stopFn) stopFn(true); else { releaseRecog(); releaseMic(); } home(); };
@@ -696,6 +696,53 @@ function releaseRecog(){
   });
 }
 function releaseMic(){ if(media){ try{ media.getTracks().forEach(function(tr){ tr.stop(); }); }catch(e){} media = null; } }
+
+/* ---------- Soniox real-time speech-to-text ----------
+   Our server hands out a 60-second key (the real key never reaches the browser); the audio then goes straight
+   to Soniox over a WebSocket. Works wherever the microphone works — also Safari, Firefox and in-app browsers,
+   where the browser's own SpeechRecognition is missing. Returns null when it cannot start, so the caller
+   falls back to SpeechRecognition. h.onText(final, interim, confidences) · h.onFail(reason) · h.onDone() */
+function sonioxSession(apiBase, stream, lang, h){
+  if(!apiBase || !window.WebSocket || !window.MediaRecorder || !stream) return null;
+  var ws = null, mr, src, fin = '', confs = [], over = false, openOk, opened = new Promise(function(r){ openOk = r; }), chain = opened;
+  try{ src = stream.clone(); mr = new MediaRecorder(src); }catch(e){ return null; }
+  function push(fn){ chain = chain.then(fn).catch(function(){}); }
+  function sendRaw(x){ if(ws && ws.readyState === 1) ws.send(x); }
+  function close(){
+    try{ if(mr.state !== 'inactive') mr.stop(); }catch(e){}
+    try{ src.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+    try{ if(ws) ws.close(); }catch(e){}
+  }
+  function fail(why){ if(over) return; over = true; close(); h.onFail(why); }
+  mr.ondataavailable = function(e){ if(e.data && e.data.size){ var d = e.data; push(function(){ return d.arrayBuffer().then(sendRaw); }); } };
+  mr.onstop = function(){ try{ src.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} push(function(){ sendRaw(''); }); };   // empty frame = end of audio
+  try{ mr.start(120); }catch(e){ return null; }
+  fetch(apiBase.replace(/\/$/, '') + '/api/stt-key', {method:'POST'})
+    .then(function(r){ return r.ok ? r.json() : Promise.reject('key_' + r.status); })
+    .then(function(k){
+      if(over) return;
+      ws = new WebSocket(k.ws);
+      ws.onopen = function(){ sendRaw(JSON.stringify({api_key:k.apiKey, model:k.model, audio_format:'auto', language_hints:[lang]})); openOk(); };
+      ws.onmessage = function(ev){
+        var m; try{ m = JSON.parse(ev.data); }catch(e){ return; }
+        if(m.error_code != null || m.error_message != null){ fail('api_' + (m.error_code || 'error')); return; }
+        var inter = '';
+        (m.tokens || []).forEach(function(t){
+          if(!t.text || t.text === '<end>' || t.text === '<fin>') return;
+          if(t.is_final){ fin += t.text; if(t.confidence > 0) confs.push(t.confidence); } else inter += t.text;
+        });
+        h.onText(fin.replace(/\s+/g, ' ').trim(), inter.replace(/\s+/g, ' ').trim(), confs);
+        if(m.finished && !over){ over = true; close(); h.onDone(); }
+      };
+      ws.onerror = function(){ fail('ws'); };
+      ws.onclose = function(){ if(!over) fail('closed'); };
+    })
+    .catch(function(e){ fail(String(e)); });
+  return {
+    end: function(){ try{ if(mr.state !== 'inactive') mr.stop(); }catch(e){} },   // flushes the last chunk, then the end frame
+    cancel: function(){ over = true; close(); }
+  };
+}
 
 function start(mode, text, maxSec){
   var lang = profile.train;
@@ -753,7 +800,17 @@ function start(mode, text, maxSec){
       };
       try{ r.start(); }catch(e){ liveRecog = null; if(recording) setTimeout(spawn, 500); }
     }
-    spawn();
+    // Soniox first when our server is connected; the browser's own recogniser is the fallback
+    var sx = sonioxSession(PAY.api, stream, lang, {
+      onText: function(f, i, cs){
+        done = f ? [f] : []; interim = i; confs = cs.slice(); lastHeard = performance.now(); loudSince = 0; srErr = ''; setSr('');
+        wordLog.push({t:(performance.now()-t0)/1000, n:words((f+' '+i).trim()).length});
+        live.innerHTML = esc(f) + ' <span class="interim">'+esc(i)+'</span>';
+      },
+      onFail: function(why){ console.warn('soniox', why); sx = null; srErr = 'soniox'; if(recording) spawn(); else if(onDone) onDone(); },
+      onDone: function(){ if(onDone) onDone(); }
+    });
+    if(!sx) spawn();
 
     var nf = 1, lastT = 0;
     function loop(){
@@ -773,7 +830,7 @@ function start(mode, text, maxSec){
       // watchdog: we hear a voice but recognition returns nothing → restart it
       nf = rms < nf ? rms : nf*1.002;
       if(rms > Math.max(0.006, nf*4)) loudSince += dt;
-      if(SR && recording && !fatal && loudSince > 3 && performance.now() - lastHeard > 4500){
+      if(!sx && SR && recording && !fatal && loudSince > 3 && performance.now() - lastHeard > 4500){
         loudSince = 0; lastHeard = performance.now(); setSr('restart');
         var lr = liveRecog; if(lr){ try{ lr.abort(); }catch(e){} } else spawn();
       }
@@ -788,7 +845,7 @@ function start(mode, text, maxSec){
       cancelAnimationFrame(raf);
       releaseMic();
       recBtn.classList.remove('on'); recBtn.disabled = true;
-      if(abort){ releaseRecog(); return; }
+      if(abort){ if(sx) sx.cancel(); releaseRecog(); return; }
       st.textContent = L('analysing'); setSr('');
       var finished = false;
       var finish = function(){ if(finished) return; finished = true;
@@ -796,7 +853,8 @@ function start(mode, text, maxSec){
         releaseRecog();
         result(analyse({mode:mode, lang:lang, ref:mode==='read'?text:null, prompt:text, frames:frames, transcript:transcript, confs:confs, wordLog:wordLog, srErr:srErr, restarts:restarts}));
       };
-      if(liveRecog){ onDone = finish; try{ liveRecog.stop(); }catch(e){ finish(); } setTimeout(finish, 2500); } else finish();
+      if(sx){ onDone = finish; sx.end(); setTimeout(finish, 4000); }
+      else if(liveRecog){ onDone = finish; try{ liveRecog.stop(); }catch(e){ finish(); } setTimeout(finish, 2500); } else finish();
     }
     return stop;
   });

@@ -29,6 +29,10 @@ const CFG = {
   aiKey: env('ANTHROPIC_API_KEY', ''),                    // secret — server only; powers the AI coach
   aiModel: env('AI_MODEL', 'claude-sonnet-5-5'),
   aiDaily: +env('AI_DAILY_LIMIT', 40),                    // AI reviews per user per day
+  sonioxKey: env('SONIOX_API_KEY', ''),                    // secret — server only; the browser gets a short-lived key instead
+  sonioxModel: env('SONIOX_MODEL', 'stt-rt-v5'),
+  sttHourly: +env('STT_HOURLY_LIMIT', 60),                // speech sessions per IP per hour
+  sttDaily: +env('STT_DAILY_CAP', 20000),                 // all speech sessions per day, a cost ceiling
   devEcho: env('DEV_ECHO_CODES', '0') === '1'             // return login codes in the response (local testing only)
 };
 const PADDLE_API = CFG.paddleEnv === 'production' ? 'https://api.paddle.com' : 'https://sandbox-api.paddle.com';
@@ -338,6 +342,26 @@ async function coach(req, res, u) {
   send(res, 200, { text });
 }
 
+/* ---------- speech-to-text: Soniox real-time ----------
+   The browser streams audio straight to Soniox with a temporary key that lives 60 s and only opens one
+   transcription WebSocket. The real key never leaves this server. Open to anonymous visitors (the funnel's
+   10-second voice test runs before sign-up), so it is rate-limited per IP plus a daily cap on all sessions. */
+async function sttKey(req, res) {
+  if (!CFG.sonioxKey) return send(res, 503, { error: 'stt_off' });
+  if (limited('stt:' + ipOf(req), CFG.sttHourly, 3600e3)) return send(res, 429, { error: 'limit' });
+  if (limited('stt:all', CFG.sttDaily, 24 * 3600e3)) return send(res, 429, { error: 'cap' });
+  const r = await fetch((process.env.SONIOX_API_HOST || 'https://api.soniox.com') + '/v1/auth/temporary-api-key', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + CFG.sonioxKey },
+    body: JSON.stringify({ usage_type: 'transcribe_websocket', expires_in_seconds: 60 }),
+    signal: AbortSignal.timeout(8000)
+  }).catch(() => null);
+  if (!r || !r.ok) { console.error('stt upstream', r && r.status); return send(res, 502, { error: 'stt_upstream' }); }
+  const j = await r.json().catch(() => ({}));
+  if (!j.api_key) return send(res, 502, { error: 'stt_empty' });
+  send(res, 200, { apiKey: j.api_key, model: CFG.sonioxModel, ws: process.env.SONIOX_WS_URL || 'wss://stt-rt.soniox.com/transcribe-websocket' });
+}
+
 /* ---------- trial reminders: hourly, ~2 days before the trial ends ---------- */
 async function trialReminders() {
   const t = now();
@@ -380,6 +404,7 @@ const server = http.createServer(async (req, res) => {
     if (r === 'POST /api/auth/start') return await authStart(req, res);
     if (r === 'POST /api/auth/verify') return await authVerify(req, res);
     if (r === 'POST /api/events') return await events(req, res);
+    if (r === 'POST /api/stt-key') return await sttKey(req, res);
     if (r === 'POST /webhooks/paddle') return await paddleWebhook(req, res);
     if (r === 'GET /api/stats') return stats(req, res, url);
     if (url.pathname.startsWith('/api/')) {

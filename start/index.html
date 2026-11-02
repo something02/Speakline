@@ -364,34 +364,104 @@ function render(){
 function markF(s){ return esc(s).replace(/(Ну|э-э|типа|um|like|Енді|ээ|әлгі)/g, '<mark>$1</mark>'); }
 
 /* ---------- voice test: Web Speech API counts words and fillers for 10 s ---------- */
+/* Speakline server for speech-to-text (Soniox). Public address, safe to commit; empty = the browser's own recogniser only. */
+var API_BASE = '';
+/* ---------- Soniox real-time speech-to-text ----------
+   Our server hands out a 60-second key (the real key never reaches the browser); the audio then goes straight
+   to Soniox over a WebSocket. Works wherever the microphone works — also Safari, Firefox and in-app browsers,
+   where the browser's own SpeechRecognition is missing. Returns null when it cannot start, so the caller
+   falls back to SpeechRecognition. h.onText(final, interim, confidences) · h.onFail(reason) · h.onDone() */
+function sonioxSession(apiBase, stream, lang, h){
+  if(!apiBase || !window.WebSocket || !window.MediaRecorder || !stream) return null;
+  var ws = null, mr, src, fin = '', confs = [], over = false, openOk, opened = new Promise(function(r){ openOk = r; }), chain = opened;
+  try{ src = stream.clone(); mr = new MediaRecorder(src); }catch(e){ return null; }
+  function push(fn){ chain = chain.then(fn).catch(function(){}); }
+  function sendRaw(x){ if(ws && ws.readyState === 1) ws.send(x); }
+  function close(){
+    try{ if(mr.state !== 'inactive') mr.stop(); }catch(e){}
+    try{ src.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+    try{ if(ws) ws.close(); }catch(e){}
+  }
+  function fail(why){ if(over) return; over = true; close(); h.onFail(why); }
+  mr.ondataavailable = function(e){ if(e.data && e.data.size){ var d = e.data; push(function(){ return d.arrayBuffer().then(sendRaw); }); } };
+  mr.onstop = function(){ try{ src.getTracks().forEach(function(t){ t.stop(); }); }catch(e){} push(function(){ sendRaw(''); }); };   // empty frame = end of audio
+  try{ mr.start(120); }catch(e){ return null; }
+  fetch(apiBase.replace(/\/$/, '') + '/api/stt-key', {method:'POST'})
+    .then(function(r){ return r.ok ? r.json() : Promise.reject('key_' + r.status); })
+    .then(function(k){
+      if(over) return;
+      ws = new WebSocket(k.ws);
+      ws.onopen = function(){ sendRaw(JSON.stringify({api_key:k.apiKey, model:k.model, audio_format:'auto', language_hints:[lang]})); openOk(); };
+      ws.onmessage = function(ev){
+        var m; try{ m = JSON.parse(ev.data); }catch(e){ return; }
+        if(m.error_code != null || m.error_message != null){ fail('api_' + (m.error_code || 'error')); return; }
+        var inter = '';
+        (m.tokens || []).forEach(function(t){
+          if(!t.text || t.text === '<end>' || t.text === '<fin>') return;
+          if(t.is_final){ fin += t.text; if(t.confidence > 0) confs.push(t.confidence); } else inter += t.text;
+        });
+        h.onText(fin.replace(/\s+/g, ' ').trim(), inter.replace(/\s+/g, ' ').trim(), confs);
+        if(m.finished && !over){ over = true; close(); h.onDone(); }
+      };
+      ws.onerror = function(){ fail('ws'); };
+      ws.onclose = function(){ if(!over) fail('closed'); };
+    })
+    .catch(function(e){ fail(String(e)); });
+  return {
+    end: function(){ try{ if(mr.state !== 'inactive') mr.stop(); }catch(e){} },   // flushes the last chunk, then the end frame
+    cancel: function(){ over = true; close(); }
+  };
+}
+
 var TRAIN_CODES = ['en','ru','kk'], SR_LANG = {en:'en-US', ru:'ru-RU', kk:'kk-KZ'};
 function voice(){
   var lang = TRAIN_CODES[A.train || 0], rec = null, running = false, left = 10, tick = null, finalTxt = '', interim = '', t0 = 0;
   app.innerHTML = frame('<h1 class="h1">'+t('vt')+'</h1><p class="p">'+t('vtp')+'</p><div class="card"><p class="h2">'+esc(t('vq'))+'</p></div>'+
     '<div class="timer" id="tm">0:10</div><button class="mic" type="button" id="mic" aria-label="'+t('tap')+'">'+MIC+'</button>'+
-    '<p class="small center" id="hint">'+(SR ? t('tap') : t('nosr'))+'</p><p class="live" id="live"></p>'+
+    '<p class="small center" id="hint">'+(SR || API_BASE ? t('tap') : t('nosr'))+'</p><p class="live" id="live"></p>'+
     '<div class="spacer"></div><button class="link" type="button" id="sk">'+t('skip')+'</button>');
   bind();
   var mic = document.getElementById('mic'), tm = document.getElementById('tm'), hint = document.getElementById('hint'), live = document.getElementById('live');
   document.getElementById('sk').onclick = function(){ stop(true); A.score = null; A.fillers = null; A.wpm = null; save(); track('voice_skip'); next(); };
-  if(!SR){ mic.disabled = true; mic.style.opacity = .4; return; }
+  if(!SR && !API_BASE){ mic.disabled = true; mic.style.opacity = .4; return; }
+  var sx = null, media = null, after = null;
   function showLive(){ live.innerHTML = highlight((finalTxt+' '+interim).trim(), lang); }
+  function dropMedia(){ if(media){ media.getTracks().forEach(function(t){ t.stop(); }); media = null; } }
   function stop(silent){
     if(!running) return; running = false; clearInterval(tick); mic.classList.remove('rec');
+    var secs = Math.max(3, (Date.now()-t0)/1000), done = false;
+    var go = function(){ if(done) return; done = true; dropMedia(); if(!silent) finish((finalTxt+' '+interim).trim(), secs); };
+    if(sx){ if(silent){ sx.cancel(); dropMedia(); return; } after = go; sx.end(); setTimeout(go, 4000); return; }
     try{ rec.stop(); }catch(e){}
-    if(silent) return;
-    var txt = (finalTxt+' '+interim).trim(), secs = Math.max(3, (Date.now()-t0)/1000);
-    finish(txt, secs);
+    go();
   }
-  mic.onclick = function(){
-    if(running){ stop(); return; }
+  function startSR(){
+    if(!SR){ hint.textContent = t('nosr'); return false; }
     rec = new SR(); rec.lang = SR_LANG[lang]; rec.continuous = true; rec.interimResults = true;
     rec.onresult = function(e){ interim = ''; for(var i = e.resultIndex; i < e.results.length; i++){ if(e.results[i].isFinal) finalTxt += ' '+e.results[i][0].transcript; else interim += e.results[i][0].transcript; } showLive(); };
     rec.onerror = function(e){ if(e.error === 'not-allowed' || e.error === 'service-not-allowed'){ running = false; clearInterval(tick); mic.classList.remove('rec'); hint.textContent = t('denied'); } };
     rec.onend = function(){ if(running){ try{ rec.start(); }catch(e){} } };
-    try{ rec.start(); }catch(e){ hint.textContent = t('nosr'); return; }
-    running = true; t0 = Date.now(); left = 10; mic.classList.add('rec'); hint.textContent = t('rec'); track('voice_start');
+    try{ rec.start(); }catch(e){ hint.textContent = t('nosr'); return false; }
+    return true;
+  }
+  function begin(){
+    running = true; t0 = Date.now(); left = 10; mic.classList.add('rec'); hint.textContent = t('rec'); track('voice_start', {engine: sx ? 'soniox' : 'browser'});
     tick = setInterval(function(){ left--; tm.textContent = '0:'+String(Math.max(0,left)).padStart(2,'0'); if(left <= 0) stop(); }, 1000);
+  }
+  mic.onclick = function(){
+    if(running){ stop(); return; }
+    if(!API_BASE || !navigator.mediaDevices){ if(startSR()) begin(); return; }
+    mic.disabled = true;
+    navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}}).then(function(stream){
+      mic.disabled = false; media = stream;
+      sx = sonioxSession(API_BASE, stream, lang, {
+        onText: function(f, i){ finalTxt = f; interim = i; showLive(); },
+        onFail: function(why){ console.warn('soniox', why); sx = null; dropMedia(); if(running){ if(!startSR()) stop(); } else if(after) after(); },
+        onDone: function(){ if(after) after(); }
+      });
+      if(!sx){ dropMedia(); if(startSR()) begin(); return; }
+      begin();
+    }).catch(function(){ mic.disabled = false; hint.textContent = t('denied'); });
   };
 }
 function toks(txt){ return txt.toLowerCase().replace(/[^\p{L}\p{N}\s'’-]/gu,' ').split(/\s+/).filter(Boolean); }
