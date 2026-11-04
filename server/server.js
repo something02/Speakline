@@ -353,7 +353,9 @@ async function coach(req, res, u) {
     method: 'POST',
     headers: oa ? { 'content-type': 'application/json', authorization: 'Bearer ' + CFG.aiKey }
       : { 'content-type': 'application/json', 'x-api-key': CFG.aiKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: CFG.aiModel, max_tokens: 700, messages: [{ role: 'user', content: coachPrompt(b) }] }),
+    // DeepSeek models think by default and the reasoning would eat the 700-token budget: ask for the answer only
+    body: JSON.stringify(Object.assign({ model: CFG.aiModel, max_tokens: 700, messages: [{ role: 'user', content: coachPrompt(b) }] },
+      oa && /deepseek/i.test(aiUrl + CFG.aiModel) ? { thinking: { type: 'disabled' } } : {})),
     signal: AbortSignal.timeout(30000)
   }).catch(() => null);
   if (!r || !r.ok) { console.error('coach upstream', r && r.status); return send(res, 502, { error: 'ai_upstream' }); }

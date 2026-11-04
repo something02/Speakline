@@ -57,4 +57,5 @@ test('AI coach uses the OpenAI wire format with a Bearer key', async () => {
   assert.equal(s.xkey, undefined);
   assert.equal(s.body.model, 'deepseek-flash');
   assert.equal(s.body.messages[0].role, 'user');
+  assert.deepEqual(s.body.thinking, { type: 'disabled' });
 });
