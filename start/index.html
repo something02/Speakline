@@ -185,7 +185,7 @@ function guess(){
 var A = store.get('quiz', null) || {ui:guess(), goal:null, age:null, probs:[], when:null, train:null, mins:null, score:null, fillers:null, wpm:null, email:''};
 function save(){ store.set('quiz', A); }
 
-var PLANS = {week:{usd:4.99, days:7}, month:{usd:17.99, days:30}, quarter:{usd:29.99, days:91}};
+var PLANS = {week:{usd:9.99, days:7}, month:{usd:29.99, days:30}, quarter:{usd:59.99, days:91}};
 var T = {
  en:{
   start:'Start the quiz', next:'Continue', back:'Back', min2:'2 minutes · free',
@@ -210,9 +210,9 @@ var T = {
   demo_note:'Demo: the email stays in this browser and is not sent anywhere.',
   pw:'Your personal plan is ready', pws:function(n, t){ return 'You are at '+n+'% now. With 10 minutes a day you can reach '+t+'% for your goal.'; }, now:'Now', after:'After the plan',
   feats:[['10 minutes a day','Daily missions built for your goal'],['Real meeting prep','Add your meeting date — get a plan and a reminder'],['Instant feedback','Pace, pauses, intonation, fillers in red'],['5 levels of texts','From a short phrase to great speeches']],
-  plans:{week:['1-week trial','7 days, then $17.99 a month',''],month:['1 month','Cancel any time',''],quarter:['3 months','First 3 months, then $59.99','Most popular']},
-  consent:function(p){ return {week:'$4.99 today, then $17.99 every month until I cancel', month:'$17.99 today, then every month until I cancel', quarter:'$29.99 today, then $59.99 every 3 months until I cancel'}[p]; },
-  get:'Get my plan', legal:function(p){ return {week:'$4.99 for 7 days, then $17.99 every month until you cancel.', month:'$17.99 every month until you cancel.', quarter:'$29.99 for the first 3 months, then $59.99 every 3 months until you cancel.'}[p]+' Cancel in two taps in the app. We email you 2 days before each renewal.'; },
+  plans:{week:['1-week trial','7 days, then $29.99 a month',''],month:['1 month','Cancel any time',''],quarter:['3 months','Every 3 months, same price','Most popular']},
+  consent:function(p){ return {week:'$9.99 today, then $29.99 every month until I cancel', month:'$29.99 today, then every month until I cancel', quarter:'$59.99 today, then every 3 months until I cancel'}[p]; },
+  get:'Get my plan', legal:function(p){ return {week:'$9.99 for 7 days, then $29.99 every month until you cancel.', month:'$29.99 every month until you cancel.', quarter:'$59.99 every 3 months until you cancel.'}[p]+' Cancel in two taps in the app. We email you 2 days before each renewal.'; },
   trust:['Cancel any time','Reminder before renewal','Refunds: see Terms'],
   pay_t:'Checkout', pay_demo:'Demo payment: no card details are asked and no money is charged.', pay_btn:function(s){ return 'Pay '+s+' (demo)'; }, cancel:'Cancel', paid:'Paid',
   ok:'You are in!', okp:function(n, d){ return 'Speakline Premium · '+n+' is active until '+d+'.'; },
@@ -243,9 +243,9 @@ var T = {
   demo_note:'Демо: почта остаётся в этом браузере и никуда не отправляется.',
   pw:'Твой личный план готов', pws:function(n, t){ return 'Сейчас у тебя '+n+'%. С 10 минутами в день можно выйти на '+t+'% для твоей цели.'; }, now:'Сейчас', after:'После плана',
   feats:[['10 минут в день','Миссии под твою цель'],['Подготовка к встрече','Добавь дату — получишь план и напоминание'],['Разбор сразу','Темп, паузы, интонация, паразиты красным'],['5 уровней текстов','От короткой фразы до великих речей']],
-  plans:{week:['Пробная неделя','7 дней, затем $17.99 в месяц',''],month:['1 месяц','Отмена в любой момент',''],quarter:['3 месяца','Первые 3 месяца, затем $59.99','Популярный']},
-  consent:function(p){ return {week:'$4.99 сегодня, затем $17.99 каждый месяц, пока не отменю', month:'$17.99 сегодня, затем каждый месяц, пока не отменю', quarter:'$29.99 сегодня, затем $59.99 каждые 3 месяца, пока не отменю'}[p]; },
-  get:'Получить план', legal:function(p){ return {week:'$4.99 за 7 дней, затем $17.99 каждый месяц, пока не отменишь.', month:'$17.99 каждый месяц, пока не отменишь.', quarter:'$29.99 за первые 3 месяца, затем $59.99 каждые 3 месяца, пока не отменишь.'}[p]+' Отмена в два нажатия в приложении. Напомним письмом за 2 дня до списания.'; },
+  plans:{week:['Пробная неделя','7 дней, затем $29.99 в месяц',''],month:['1 месяц','Отмена в любой момент',''],quarter:['3 месяца','Каждые 3 месяца, та же цена','Популярный']},
+  consent:function(p){ return {week:'$9.99 сегодня, затем $29.99 каждый месяц, пока не отменю', month:'$29.99 сегодня, затем каждый месяц, пока не отменю', quarter:'$59.99 сегодня, затем каждые 3 месяца, пока не отменю'}[p]; },
+  get:'Получить план', legal:function(p){ return {week:'$9.99 за 7 дней, затем $29.99 каждый месяц, пока не отменишь.', month:'$29.99 каждый месяц, пока не отменишь.', quarter:'$59.99 каждые 3 месяца, пока не отменишь.'}[p]+' Отмена в два нажатия в приложении. Напомним письмом за 2 дня до списания.'; },
   trust:['Отмена в любой момент','Напоминание до списания','Возвраты — в условиях'],
   pay_t:'Оплата', pay_demo:'Демо-оплата: данные карты не нужны, деньги не списываются.', pay_btn:function(s){ return 'Оплатить '+s+' (демо)'; }, cancel:'Отмена', paid:'Оплачено',
   ok:'Готово!', okp:function(n, d){ return 'Speakline Premium · '+n+' активен до '+d+'.'; },
@@ -276,9 +276,9 @@ var T = {
   demo_note:'Демо: пошта осы браузерде қалады, ешқайда жіберілмейді.',
   pw:'Жеке жоспарың дайын', pws:function(n, t){ return 'Қазір сенде '+n+'%. Күніне 10 минутпен мақсатыңа '+t+'%-ға жетуге болады.'; }, now:'Қазір', after:'Жоспардан кейін',
   feats:[['Күніне 10 минут','Мақсатыңа арналған миссиялар'],['Кездесуге дайындық','Күнін қос — жоспар мен еске салу аласың'],['Бірден талдау','Қарқын, үзіліс, интонация, арам сөздер қызылмен'],['Мәтіннің 5 деңгейі','Қысқа фразадан ұлы сөздерге дейін']],
-  plans:{week:['Сынақ аптасы','7 күн, кейін айына $17.99',''],month:['1 ай','Кез келген уақытта тоқтатуға болады',''],quarter:['3 ай','Алғашқы 3 ай, кейін $59.99','Танымал']},
-  consent:function(p){ return {week:'Бүгін $4.99, кейін тоқтатқанша ай сайын $17.99', month:'Бүгін $17.99, кейін тоқтатқанша ай сайын', quarter:'Бүгін $29.99, кейін тоқтатқанша әр 3 ай сайын $59.99'}[p]; },
-  get:'Жоспарды алу', legal:function(p){ return {week:'7 күнге $4.99, кейін тоқтатқанша ай сайын $17.99.', month:'Тоқтатқанша ай сайын $17.99.', quarter:'Алғашқы 3 айға $29.99, кейін тоқтатқанша әр 3 ай сайын $59.99.'}[p]+' Қолданбада екі басумен тоқтатуға болады. Төлемнен 2 күн бұрын хат жібереміз.'; },
+  plans:{week:['Сынақ аптасы','7 күн, кейін айына $29.99',''],month:['1 ай','Кез келген уақытта тоқтатуға болады',''],quarter:['3 ай','Әр 3 ай сайын, сол баға','Танымал']},
+  consent:function(p){ return {week:'Бүгін $9.99, кейін тоқтатқанша ай сайын $29.99', month:'Бүгін $29.99, кейін тоқтатқанша ай сайын', quarter:'Бүгін $59.99, кейін тоқтатқанша әр 3 ай сайын'}[p]; },
+  get:'Жоспарды алу', legal:function(p){ return {week:'7 күнге $9.99, кейін тоқтатқанша ай сайын $29.99.', month:'Тоқтатқанша ай сайын $29.99.', quarter:'Тоқтатқанша әр 3 ай сайын $59.99.'}[p]+' Қолданбада екі басумен тоқтатуға болады. Төлемнен 2 күн бұрын хат жібереміз.'; },
   trust:['Кез келген уақытта тоқтату','Төлем алдында еске салу','Қайтару — шарттарда'],
   pay_t:'Төлем', pay_demo:'Демо-төлем: карта деректері керек емес, ақша алынбайды.', pay_btn:function(s){ return s+' төлеу (демо)'; }, cancel:'Болдырмау', paid:'Төленді',
   ok:'Дайын!', okp:function(n, d){ return 'Speakline Premium · '+n+' '+d+' дейін белсенді.'; },

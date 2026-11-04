@@ -113,9 +113,9 @@ const MAIL = {
     kk: (c) => ['Speakline-ға кіру коды: ' + c, 'Кіру кодың: ' + c + '\n\nОл 10 минут жарамды. Егер кодты сұрамаған болсаң, хатты елеме.\n\nSpeakline']
   },
   trial: {
-    ru: (d, url) => ['Пробная неделя Speakline заканчивается ' + d, 'Привет! Пробная неделя заканчивается ' + d + '. После этого подписка продлится на месяц за $17.99.\n\nЕсли не хочешь продолжать, отмени её в приложении: Настройки → Подписка → Управлять подпиской.\n' + url + '\n\nSpeakline'],
-    en: (d, url) => ['Your Speakline trial ends on ' + d, 'Hi! Your trial week ends on ' + d + '. After that the subscription renews monthly at $17.99.\n\nIf you don’t want to continue, cancel in the app: Settings → Subscription → Manage subscription.\n' + url + '\n\nSpeakline'],
-    kk: (d, url) => ['Speakline сынақ аптасы ' + d + ' аяқталады', 'Сәлем! Сынақ аптасы ' + d + ' аяқталады. Одан кейін жазылым айына $17.99-ға ұзартылады.\n\nЖалғастырғың келмесе, қосымшада тоқтат: Баптаулар → Жазылым → Жазылымды басқару.\n' + url + '\n\nSpeakline']
+    ru: (d, url) => ['Пробная неделя Speakline заканчивается ' + d, 'Привет! Пробная неделя заканчивается ' + d + '. После этого подписка продлится на месяц за $29.99.\n\nЕсли не хочешь продолжать, отмени её в приложении: Настройки → Подписка → Управлять подпиской.\n' + url + '\n\nSpeakline'],
+    en: (d, url) => ['Your Speakline trial ends on ' + d, 'Hi! Your trial week ends on ' + d + '. After that the subscription renews monthly at $29.99.\n\nIf you don’t want to continue, cancel in the app: Settings → Subscription → Manage subscription.\n' + url + '\n\nSpeakline'],
+    kk: (d, url) => ['Speakline сынақ аптасы ' + d + ' аяқталады', 'Сәлем! Сынақ аптасы ' + d + ' аяқталады. Одан кейін жазылым айына $29.99-ға ұзартылады.\n\nЖалғастырғың келмесе, қосымшада тоқтат: Баптаулар → Жазылым → Жазылымды басқару.\n' + url + '\n\nSpeakline']
   }
 };
 async function sendMail(to, subject, text) {
