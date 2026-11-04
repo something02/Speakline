@@ -660,7 +660,7 @@ function session(mode, o){
   app.innerHTML =
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><span class="small">'+LANG_NAMES[lang].n+'</span><span class="timer" id="tm">0:00</span></div>'+
     (o.mission!=null ? '<p class="mreward">'+ICX.medal.replace('width="72" height="72"','width="20" height="20"')+'<span>'+XL('mission')+' '+(o.mission+1)+' · '+esc(mTitle(o.mission))+'</span></p><p class="small">'+esc(XL('M')[o.mission][1])+'</p>' : '')+
-    (mode==='read' && o.mission==null ? '<p class="lvtag">'+(o.pro!=null ? 'Pro · '+esc(o.tag) : LX('tag')+' '+(lvl+1)+' · '+esc(LEVELS[lang][lvl].n))+'</p>' : '')+
+    (mode==='read' && o.mission==null ? '<p class="lvtag">'+(o.pro!=null ? esc(o.tag) : LX('tag')+' '+(lvl+1)+' · '+esc(LEVELS[lang][lvl].n))+'</p>' : '')+
     '<p class="label">'+(mode==='read' ? L('read_this') : L('speak_on'))+'</p>'+
     '<p class="prompt">'+(mode==='read' ? '«'+esc(text)+'»' : esc(text))+'</p>'+
     (lt && lt.src ? '<p class="src">'+esc(lt.src)+'</p>' : '')+
@@ -1082,7 +1082,7 @@ var X = {
   practice:'Свободная тренировка', history:'История', all_hist:'Вся история', hist_empty:'Здесь появятся твои записи: что ты сказал, где ошибся и как исправить.',
   meet:'Подготовка к встречам', meet_p:'Добавь реальную встречу — приложение подготовит тебя к ней и напомнит в день встречи.', meet_add:'Добавить встречу', meet_t:'Что за встреча?', meet_ph:'Например: защита кейса', meet_when:'Когда', meet_save:'Сохранить', meet_prep:'Подготовиться', meet_today:'Сегодня встреча', meet_min:'5 минут подготовки',
   prep_topic:function(t){ return 'Встреча: «'+t+'». Скажи за минуту главное, что хочешь донести, и чего ждёшь в итоге.'; },
-  scen:'Сценарии', scen_p:'10 готовых ситуаций: собеседование, питч, апдейт, сложный разговор.', pack:'Пакет «Подготовка к встрече»',
+  scen:'Сценарии', scen_p:'10 готовых ситуаций: собеседование, питч, апдейт, сложный разговор. Входит в пакет сценариев.', pack:'Пакет «Подготовка к встрече»',
   done_all:'Цель достигнута', new_goal:'Выбрать следующую цель', choose_goal:'Какую цель берём следующей?',
   cont:'Продолжить', again:'Ещё раз', closeX:'Закрыть',
   m_done:'Миссия выполнена!', badge_got:function(b){ return 'Новый значок: «'+b+'»'; }, next_m:function(t){ return 'Дальше: '+t; }, to_home:'К цели',
@@ -1092,8 +1092,8 @@ var X = {
   plans:[['week','Неделя','$4.99','7 дней, затем $17.99 в месяц',''],['month','Месяц','$17.99','Отмена в любой момент',''],['quarter','3 месяца','$29.99','Первые 3 месяца, затем $59.99','−44%']],
   acc_t:'Создай аккаунт', acc_p:'На эту почту оформим подписку. Потом по ней войдёшь в приложение на любом устройстве — телефоне или компьютере.', acc_go:'Перейти к оплате', acc_bad:'Проверь адрес почты.', pay_h:'Оплата', pay_test:'Тестовый режим: деньги не списываются. Карта 4242 4242 4242 4242, любой будущий срок, CVC 100.', pay_secure:'Данные карты вводятся в защищённой форме Paddle и не попадают в Speakline.', pay_err:'Не удалось загрузить оплату. Проверь интернет и попробуй ещё раз.', paid_t:'Подписка оформлена', paid_p:function(e){ return 'Аккаунт: '+e+'. Входи по этой почте в приложении на любом устройстве.'; }, login_t:'Вход', login_p:'Введи почту, на которую оформлена подписка. Пришлём код для входа.', code_send:'Получить код', code_t:'Код из письма', code_p:function(e){ return 'Отправили 6 цифр на '+e+'. Письмо может прийти через минуту — проверь «Спам».'; }, code_ok:'Войти', code_again:'Отправить код ещё раз', err_wait:'Слишком много попыток. Подожди немного и попробуй снова.', err_net:'Нет связи с сервером. Проверь интернет и попробуй ещё раз.', err_code:'Неверный код.', err_expired:'Код устарел — запроси новый.', already:'У тебя уже есть подписка — всё открыто.', manage:'Управлять подпиской', cancel_sched:'Отменена, доступ до конца периода', login:'Войти по почте', logout:'Выйти', has_sub:'Уже есть подписка? Войти', del:'Удалить аккаунт и данные', del_warn:'Подписка будет отменена, аккаунт и история тренировок удалятся без возможности восстановления.', del_yes:'Удалить', ck_t:'Cookies', ck_p:'Мы используем cookies для работы приложения и, с твоего согласия, для оценки рекламы.', ck_more:'Подробнее', ck_no:'Только нужные', ck_yes:'Принять', pw_legal:'Подписка продлевается автоматически, отменить можно в любой момент. Оформляя её, ты принимаешь <a href="terms.html" target="_blank">оферту</a>, <a href="privacy.html" target="_blank">политику конфиденциальности</a> и <a href="refund.html" target="_blank">условия возврата</a>.', pw_now:'Сейчас', pw_4w:'Нужно для звания', pw_go:'Продолжить', pw_later:'Не сейчас', pw_demo:'Демо для защиты кейса: оплата не списывается.',
   pay_t:'Подтверди покупку', pay_via:'В рабочей версии: App Store, Google Play или Kaspi. Сейчас — демо, деньги не списываются.', pay_btn:'Оплатить (демо)', pay_ok:'Premium активирован',
-  up_t:'Усиль подготовку', up_s:'Разовое предложение после покупки.', up_pack:['Пакет «Подготовка к встрече»','$9.99 разово','10 сценариев: собеседование, питч инвестору, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
-  up_pro:['Pro','+$10 в месяц','Сценарии из реальных компаний с готовыми текстами: собеседование в Google, презентация для Zimran, демо в Kaspi, переговоры о зарплате и другие.'], up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
+  up_t:'Усиль подготовку', up_s:'Подписка уже включает тренировки и подготовку к твоей дате. Пакет добавляет готовые сценарии.', up_pack:['Пакет сценариев','$9.99 разово, навсегда','10 ситуаций для свободной речи и 6 готовых текстов: собеседование, питч инвестору, демо продукта, апдейт руководителю, сложный разговор, переговоры о зарплате.'],
+  up_add:'Добавить', up_added:'Добавлено', up_skip:'Пропустить', up_done:'Готово',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Подписка', set_reset_buy:'Сбросить покупки (демо)', set_tour:'Показать подсказки заново', set_goal:'Сменить цель',
   locked:'Premium',
   tour_next:'Далее', tour_skip:'Пропустить', tour_tap:'Нажми на подсвеченное',
@@ -1130,7 +1130,7 @@ var X = {
   practice:'Free practice', history:'History', all_hist:'All history', hist_empty:'Your recordings will appear here: what you said, where you slipped and how to fix it.',
   meet:'Meeting prep', meet_p:'Add a real meeting — the app will prepare you for it and remind you on the day.', meet_add:'Add a meeting', meet_t:'What’s the meeting?', meet_ph:'e.g. case defence', meet_when:'When', meet_save:'Save', meet_prep:'Prepare', meet_today:'Meeting today', meet_min:'5-minute prep',
   prep_topic:function(t){ return 'Meeting: “'+t+'”. In one minute, say the main point you want to land and what outcome you expect.'; },
-  scen:'Scenarios', scen_p:'10 ready situations: interview, pitch, status update, tough conversation.', pack:'“Meeting prep” pack',
+  scen:'Scenarios', scen_p:'10 ready situations: interview, pitch, status update, tough conversation. Part of the Scenario pack.', pack:'“Meeting prep” pack',
   done_all:'Goal reached', new_goal:'Choose your next goal', choose_goal:'Which goal is next?',
   cont:'Continue', again:'Try again', closeX:'Close',
   m_done:'Mission complete!', badge_got:function(b){ return 'New badge: “'+b+'”'; }, next_m:function(t){ return 'Next: '+t; }, to_home:'Back to my goal',
@@ -1140,8 +1140,8 @@ var X = {
   plans:[['week','1 week','$4.99','7 days, then $17.99 a month',''],['month','1 month','$17.99','Cancel anytime',''],['quarter','3 months','$29.99','First 3 months, then $59.99','−44%']],
   acc_t:'Create your account', acc_p:'We’ll attach the subscription to this email. Use it to sign in on any device — phone or computer.', acc_go:'Continue to payment', acc_bad:'Check your email address.', pay_h:'Payment', pay_test:'Test mode: no money is charged. Card 4242 4242 4242 4242, any future expiry, CVC 100.', pay_secure:'Card details go into Paddle’s secure form and never reach Speakline.', pay_err:'Couldn’t load the payment form. Check your connection and try again.', paid_t:'You’re subscribed', paid_p:function(e){ return 'Account: '+e+'. Sign in with this email on any device.'; }, login_t:'Sign in', login_p:'Enter the email your subscription is on. We’ll send you a sign-in code.', code_send:'Get a code', code_t:'Code from the email', code_p:function(e){ return 'We sent 6 digits to '+e+'. It may take a minute — check spam too.'; }, code_ok:'Sign in', code_again:'Send the code again', err_wait:'Too many attempts. Wait a little and try again.', err_net:'Can’t reach the server. Check your connection and try again.', err_code:'Wrong code.', err_expired:'The code has expired — request a new one.', already:'You already have a subscription — everything is unlocked.', manage:'Manage subscription', cancel_sched:'Cancelled, access until the period ends', login:'Sign in with email', logout:'Sign out', has_sub:'Already subscribed? Sign in', del:'Delete account and data', del_warn:'Your subscription will be cancelled and your account and practice history deleted permanently.', del_yes:'Delete', ck_t:'Cookies', ck_p:'We use cookies to run the app and, with your consent, to measure ads.', ck_more:'Learn more', ck_no:'Essential only', ck_yes:'Accept', pw_legal:'The subscription renews automatically; cancel anytime. By subscribing you accept the <a href="terms-en.html" target="_blank">terms</a>, <a href="privacy-en.html" target="_blank">privacy policy</a> and <a href="refund-en.html" target="_blank">refund policy</a>.', pw_now:'Now', pw_4w:'Needed for the title', pw_go:'Continue', pw_later:'Not now', pw_demo:'Demo for the case defence: no money is charged.',
   pay_t:'Confirm purchase', pay_via:'In the real app: App Store, Google Play or Kaspi. This is a demo — nothing is charged.', pay_btn:'Pay (demo)', pay_ok:'Premium is on',
-  up_t:'Boost your prep', up_s:'One-time offer after purchase.', up_pack:['“Meeting prep” pack','$9.99 one-time','10 scenarios: interview, investor pitch, update to your manager, tough conversation, salary negotiation.'],
-  up_pro:['Pro','+$10 a month','Scenarios from real companies with ready texts: an interview at Google, a presentation for Zimran, a demo at Kaspi, a salary negotiation and more.'], up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
+  up_t:'Boost your prep', up_s:'Your subscription already covers daily practice and prep for your date. The pack adds ready-made scenarios.', up_pack:['Scenario pack','$9.99 one-time, yours to keep','10 situations to talk through and 6 ready scripts: job interview, investor pitch, product demo, update to your manager, tough conversation, salary negotiation.'],
+  up_add:'Add', up_added:'Added', up_skip:'Skip', up_done:'Done',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Subscription', set_reset_buy:'Reset purchases (demo)', set_tour:'Show hints again', set_goal:'Change goal',
   locked:'Premium',
   tour_next:'Next', tour_skip:'Skip', tour_tap:'Tap the highlighted item',
@@ -1178,7 +1178,7 @@ var X = {
   practice:'Еркін жаттығу', history:'Тарих', all_hist:'Барлық тарих', hist_empty:'Мұнда жазбаларың шығады: не айттың, қай жерде қателестің, қалай түзету керек.',
   meet:'Кездесуге дайындық', meet_p:'Нақты кездесуді қос — қосымша сені дайындап, сол күні еске салады.', meet_add:'Кездесу қосу', meet_t:'Қандай кездесу?', meet_ph:'Мысалы: кейс қорғау', meet_when:'Қашан', meet_save:'Сақтау', meet_prep:'Дайындалу', meet_today:'Бүгін кездесу', meet_min:'5 минут дайындық',
   prep_topic:function(t){ return 'Кездесу: «'+t+'». Бір минутта жеткізгің келетін басты ойды және күтетін нәтижені айт.'; },
-  scen:'Сценарийлер', scen_p:'10 дайын жағдай: сұхбат, питч, есеп беру, қиын әңгіме.', pack:'«Кездесуге дайындық» пакеті',
+  scen:'Сценарийлер', scen_p:'10 дайын жағдай: сұхбат, питч, есеп беру, қиын әңгіме. Сценарийлер пакетіне кіреді.', pack:'«Кездесуге дайындық» пакеті',
   done_all:'Мақсатқа жеттің', new_goal:'Келесі мақсатты таңдау', choose_goal:'Келесі мақсат қандай?',
   cont:'Жалғастыру', again:'Қайталау', closeX:'Жабу',
   m_done:'Миссия орындалды!', badge_got:function(b){ return 'Жаңа белгі: «'+b+'»'; }, next_m:function(t){ return 'Келесі: '+t; }, to_home:'Мақсатқа',
@@ -1188,8 +1188,8 @@ var X = {
   plans:[['week','Апта','$4.99','7 күн, кейін айына $17.99',''],['month','Ай','$17.99','Кез келген уақытта тоқтатуға болады',''],['quarter','3 ай','$29.99','Алғашқы 3 ай, кейін $59.99','−44%']],
   acc_t:'Аккаунт жаса', acc_p:'Жазылымды осы поштаға рәсімдейміз. Кейін осы поштамен кез келген құрылғыда кіресің.', acc_go:'Төлемге өту', acc_bad:'Пошта мекенжайын тексер.', pay_h:'Төлем', pay_test:'Тест режимі: ақша алынбайды. Карта 4242 4242 4242 4242, кез келген болашақ мерзім, CVC 100.', pay_secure:'Карта деректері Paddle-дің қорғалған формасына енгізіледі және Speakline-ға түспейді.', pay_err:'Төлем формасы жүктелмеді. Интернетті тексеріп, қайталап көр.', paid_t:'Жазылым рәсімделді', paid_p:function(e){ return 'Аккаунт: '+e+'. Осы поштамен кез келген құрылғыда кір.'; }, login_t:'Кіру', login_p:'Жазылым рәсімделген поштаны енгіз. Кіру кодын жібереміз.', code_send:'Код алу', code_t:'Хаттағы код', code_p:function(e){ return '6 санды '+e+' мекенжайына жібердік. Хат бір минутта келуі мүмкін — «Спам»-ды да тексер.'; }, code_ok:'Кіру', code_again:'Кодты қайта жіберу', err_wait:'Әрекет тым көп. Сәл күтіп, қайталап көр.', err_net:'Сервермен байланыс жоқ. Интернетті тексеріп, қайталап көр.', err_code:'Код қате.', err_expired:'Кодтың мерзімі өтті — жаңасын сұра.', already:'Сенде жазылым бар — бәрі ашық.', manage:'Жазылымды басқару', cancel_sched:'Тоқтатылды, кезең соңына дейін қолжетімді', login:'Поштамен кіру', logout:'Шығу', has_sub:'Жазылым бар ма? Кіру', del:'Аккаунт пен деректерді жою', del_warn:'Жазылым тоқтатылады, аккаунт пен жаттығу тарихы біржола жойылады.', del_yes:'Жою', ck_t:'Cookies', ck_p:'Біз cookies-ті қосымша жұмысы үшін және сенің келісіміңмен жарнаманы бағалау үшін қолданамыз.', ck_more:'Толығырақ', ck_no:'Тек қажеттілері', ck_yes:'Қабылдау', pw_legal:'Жазылым автоматты түрде ұзартылады, кез келген уақытта тоқтатуға болады. Рәсімдеу арқылы сен <a href="terms.html" target="_blank">офертаны</a>, <a href="privacy.html" target="_blank">құпиялылық саясатын</a> және <a href="refund.html" target="_blank">қайтару шарттарын</a> қабылдайсың.', pw_now:'Қазір', pw_4w:'Атақ үшін керек', pw_go:'Жалғастыру', pw_later:'Қазір емес', pw_demo:'Кейс қорғауға арналған демо: ақша алынбайды.',
   pay_t:'Сатып алуды раста', pay_via:'Нақты нұсқада: App Store, Google Play немесе Kaspi. Қазір демо — ақша алынбайды.', pay_btn:'Төлеу (демо)', pay_ok:'Premium қосылды',
-  up_t:'Дайындықты күшейт', up_s:'Сатып алудан кейінгі бір реттік ұсыныс.', up_pack:['«Кездесуге дайындық» пакеті','$9.99 бір рет','10 сценарий: сұхбат, инвесторға питч, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
-  up_pro:['Pro','айына +$10','Дайын мәтіндері бар нақты компаниялардың сценарийлері: Google-да сұхбат, Zimran-ға презентация, Kaspi-де демо, жалақы туралы келіссөз және т.б.'], up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
+  up_t:'Дайындықты күшейт', up_s:'Жазылым күнделікті жаттығу мен күніңе дайындықты қамтиды. Пакет дайын сценарийлер қосады.', up_pack:['Сценарийлер пакеті','$9.99 бір рет, мәңгі','Еркін сөйлеуге 10 жағдай және 6 дайын мәтін: сұхбат, инвесторға питч, өнім демосы, басшыға есеп, қиын әңгіме, жалақы туралы келіссөз.'],
+  up_add:'Қосу', up_added:'Қосылды', up_skip:'Өткізу', up_done:'Дайын',
   plan_free:'Free', plan_prem:'Premium', set_plan:'Жазылым', set_reset_buy:'Сатып алуларды тазалау (демо)', set_tour:'Кеңестерді қайта көрсету', set_goal:'Мақсатты өзгерту',
   locked:'Premium',
   tour_next:'Келесі', tour_skip:'Өткізу', tour_tap:'Белгіленгенді бас',
@@ -1236,25 +1236,25 @@ var SCEN = {
 /* ---------- Pro: scenarios from real companies, each with short ready texts to read aloud ----------
    Practice scripts written for Speakline (role-play, not statements by these companies). */
 var PRO_UI = {
- en:{t:'Pro scenarios', p:'Real interviews and presentations with ready texts — pick one and read.', lock:'Pro · +$10/mo', read:'Read aloud', texts:'3 texts', back:'Back'},
- ru:{t:'Pro-сценарии', p:'Реальные собеседования и презентации с готовыми текстами — выбери и читай.', lock:'Pro · +$10/мес', read:'Прочитать вслух', texts:'3 текста', back:'Назад'},
- kk:{t:'Pro-сценарийлер', p:'Дайын мәтіндері бар нақты сұхбаттар мен презентациялар — таңда да оқы.', lock:'Pro · айына +$10', read:'Дауыстап оқу', texts:'3 мәтін', back:'Артқа'}
+ en:{t:'Ready scripts', p:'Interviews and presentations with ready texts — pick one and read it aloud. Part of the Scenario pack.', lock:'Pack · $9.99', read:'Read aloud', texts:'3 texts', back:'Back'},
+ ru:{t:'Готовые тексты', p:'Собеседования и презентации с готовыми текстами — выбери и прочитай вслух. Входит в пакет сценариев.', lock:'Пакет · $9.99', read:'Прочитать вслух', texts:'3 текста', back:'Назад'},
+ kk:{t:'Дайын мәтіндер', p:'Дайын мәтіндері бар сұхбаттар мен презентациялар — таңда да дауыстап оқы. Сценарийлер пакетіне кіреді.', lock:'Пакет · $9.99', read:'Дауыстап оқу', texts:'3 мәтін', back:'Артқа'}
 };
-var PRO_META = [{ic:'G', c:'#1A73E8'}, {ic:'Z', c:'#6C47FF'}, {ic:'K', c:'#E4202F'}, {ic:'a', c:'#FF9900'}, {ic:'⚡', c:'#0E2E63'}, {ic:'$', c:'#1E9E57'}];
+var PRO_META = [{ic:'1', c:'#1A73E8'}, {ic:'2', c:'#6C47FF'}, {ic:'3', c:'#E4202F'}, {ic:'4', c:'#B26A00'}, {ic:'5', c:'#0E2E63'}, {ic:'6', c:'#1E9E57'}];
 var PRO_T = {
- en:[['Interview at Google','3 answers for the first round'],['Presentation for Zimran','Pitch a product idea'],['Product demo at Kaspi','Show a feature to the team'],['Interview at Amazon','Leadership principle stories'],['Demo Day pitch','60 seconds for investors'],['Salary negotiation','The offer call']],
- ru:[['Собеседование в Google','3 ответа для первого раунда'],['Презентация для Zimran','Питч продуктовой идеи'],['Демо продукта в Kaspi','Покажи фичу команде'],['Собеседование в Amazon','Истории о принципах лидерства'],['Питч на Demo Day','60 секунд для инвесторов'],['Переговоры о зарплате','Звонок с оффером']],
- kk:[['Google-да сұхбат','Бірінші кезеңге 3 жауап'],['Zimran-ға презентация','Өнім идеясының питчі'],['Kaspi-де өнім демосы','Командаға жаңа мүмкіндікті көрсет'],['Amazon-да сұхбат','Көшбасшылық қағидалары туралы әңгімелер'],['Demo Day питчі','Инвесторларға 60 секунд'],['Жалақы туралы келіссөз','Оффер қоңырауы']]
+ en:[['Tech company interview','3 answers for the first round'],['Product idea for leadership','Pitch a product idea'],['Product demo for the team','Show a feature to the team'],['Behavioural interview','Leadership principle stories'],['Demo Day pitch','60 seconds for investors'],['Salary negotiation','The offer call']],
+ ru:[['Собеседование в IT-компанию','3 ответа для первого раунда'],['Продуктовая идея руководству','Питч продуктовой идеи'],['Демо продукта команде','Покажи фичу команде'],['Поведенческое собеседование','Истории о принципах лидерства'],['Питч на Demo Day','60 секунд для инвесторов'],['Переговоры о зарплате','Звонок с оффером']],
+ kk:[['IT-компанияға сұхбат','Бірінші кезеңге 3 жауап'],['Басшылыққа өнім идеясы','Өнім идеясының питчі'],['Командаға өнім демосы','Командаға жаңа мүмкіндікті көрсет'],['Мінез-құлық сұхбаты','Көшбасшылық қағидалары туралы әңгімелер'],['Demo Day питчі','Инвесторларға 60 секунд'],['Жалақы туралы келіссөз','Оффер қоңырауы']]
 };
 var PRO_TX = {
  en:[
-  [['Tell me about yourself','I’m a product analyst who turns messy data into decisions. Last year my dashboard cut our weekly reporting from five hours to twenty minutes. I want to do the same at Google scale.'],
+  [['Tell me about yourself','I’m a product analyst who turns messy data into decisions. Last year my dashboard cut our weekly reporting from five hours to twenty minutes. I want to do the same at your scale.'],
    ['A time you failed','We launched a feature nobody used. I had skipped user interviews to move fast. Now I talk to five users before I write a single line of a spec.'],
-   ['Why Google?','Because the problems are big and the data is honest. I want to work where one good experiment helps a billion people find what they need a little faster.']],
+   ['Why this company?','Because the problems are big and the data is honest. I want to work where one good experiment helps a billion people find what they need a little faster.']],
   [['The hook','Every morning millions of people open a learning app, and every evening they forget why. Our idea brings them back with ten minutes that actually feel like progress.'],
    ['The numbers','In our test funnel, about two and a half percent of clicks became paying users. Each of them brings around fifty dollars a year. Better creatives move us from test to scale.'],
    ['The ask','We are asking for four weeks and eight thousand dollars of ad budget. If the numbers hold, we scale. If they don’t, you will know in fourteen days, not six months.']],
-  [['Open the demo','Paying for something should take one tap, not five screens. Today I’ll show you a checkout that saves every customer twelve seconds — and why twelve seconds matter at Kaspi scale.'],
+  [['Open the demo','Paying for something should take one tap, not five screens. Today I’ll show you a checkout that saves every customer twelve seconds — and why twelve seconds matter at our scale.'],
    ['The problem','Here is the problem in one sentence: people drop off at the delivery step. So we moved the address to the very first screen and pre-filled it from the last order.'],
    ['The ask','My ask is simple: two weeks and one A/B test. If conversion grows, we roll it out to everyone. If it doesn’t, we learn something important for free.']],
   [['Customer obsession','A customer emailed us at midnight because her order was stuck. I didn’t wait for the morning meeting. I fixed it, called her back, and we changed the process so it never happened again.'],
@@ -1268,13 +1268,13 @@ var PRO_TX = {
    ['Find another way','If the base is fixed, could we look at a signing bonus or a salary review in six months? I want to make this work for both of us.']]
  ],
  ru:[
-  [['Расскажите о себе','Я продуктовый аналитик и превращаю хаос в данных в решения. В прошлом году мой дашборд сократил еженедельную отчётность с пяти часов до двадцати минут. Хочу делать то же в масштабе Google.'],
+  [['Расскажите о себе','Я продуктовый аналитик и превращаю хаос в данных в решения. В прошлом году мой дашборд сократил еженедельную отчётность с пяти часов до двадцати минут. Хочу делать то же в вашем масштабе.'],
    ['История провала','Мы запустили функцию, которой никто не пользовался. Я пропустил интервью с пользователями, чтобы успеть быстрее. Теперь я говорю с пятью пользователями до того, как напишу первую строчку ТЗ.'],
-   ['Почему Google?','Потому что здесь большие задачи и честные данные. Я хочу работать там, где один удачный эксперимент помогает миллиарду людей чуть быстрее находить то, что им нужно.']],
+   ['Почему именно вы?','Потому что здесь большие задачи и честные данные. Я хочу работать там, где один удачный эксперимент помогает миллиарду людей чуть быстрее находить то, что им нужно.']],
   [['Крючок','Каждое утро миллионы людей открывают обучающее приложение, а вечером забывают зачем. Наша идея возвращает их десятью минутами, которые реально ощущаются как прогресс.'],
    ['Цифры','В тестовой воронке примерно два с половиной процента кликов стали платящими. Каждый приносит около пятидесяти долларов в год. Сильные креативы переведут нас из теста в масштаб.'],
    ['Просьба','Мы просим четыре недели и восемь тысяч долларов на рекламу. Если цифры подтвердятся — масштабируем. Если нет — вы узнаете это через четырнадцать дней, а не через полгода.']],
-  [['Начало демо','Оплата должна занимать одно касание, а не пять экранов. Сегодня покажу оплату, которая экономит каждому клиенту двенадцать секунд, — и почему двенадцать секунд важны в масштабе Kaspi.'],
+  [['Начало демо','Оплата должна занимать одно касание, а не пять экранов. Сегодня покажу оплату, которая экономит каждому клиенту двенадцать секунд, — и почему двенадцать секунд важны в нашем масштабе.'],
    ['Проблема','Проблема в одном предложении: люди уходят на шаге доставки. Поэтому мы перенесли адрес на самый первый экран и заполняем его из прошлого заказа.'],
    ['Просьба','Прошу немного: две недели и один A/B-тест. Если конверсия вырастет — раскатываем на всех. Если нет — бесплатно узнаём что-то важное.']],
   [['Одержимость клиентом','Клиентка написала нам в полночь: её заказ завис. Я не стал ждать утренней планёрки. Исправил ошибку, перезвонил ей, и мы поменяли процесс, чтобы это не повторилось.'],
@@ -1288,13 +1288,13 @@ var PRO_TX = {
    ['Найди другой путь','Если база фиксирована, можем ли мы обсудить бонус при выходе или пересмотр зарплаты через полгода? Я хочу, чтобы это сработало для нас обоих.']]
  ],
  kk:[
-  [['Өзіңіз туралы айтыңыз','Мен өнім талдаушысымын, шашыраңқы деректерді шешімге айналдырамын. Былтыр менің дашбордым апталық есепті бес сағаттан жиырма минутқа дейін қысқартты. Мұны Google ауқымында жасағым келеді.'],
+  [['Өзіңіз туралы айтыңыз','Мен өнім талдаушысымын, шашыраңқы деректерді шешімге айналдырамын. Былтыр менің дашбордым апталық есепті бес сағаттан жиырма минутқа дейін қысқартты. Мұны сіздің ауқымыңызда жасағым келеді.'],
    ['Сәтсіздік туралы оқиға','Біз ешкім қолданбаған функцияны шығардық. Жылдам болу үшін пайдаланушылармен сұхбатты өткізіп жібердім. Енді техникалық тапсырманың бірінші жолын жазбас бұрын бес пайдаланушымен сөйлесемін.'],
-   ['Неге Google?','Өйткені мұнда міндеттер үлкен, деректер шынайы. Бір сәтті эксперимент миллиард адамға керегін сәл жылдамырақ табуға көмектесетін жерде жұмыс істегім келеді.']],
+   ['Неге дәл сіздер?','Өйткені мұнда міндеттер үлкен, деректер шынайы. Бір сәтті эксперимент миллиард адамға керегін сәл жылдамырақ табуға көмектесетін жерде жұмыс істегім келеді.']],
   [['Ілмек','Күн сайын таңертең миллиондаған адам оқу қолданбасын ашады, ал кешке неге ашқанын ұмытады. Біздің идея оларды шынымен прогресс сияқты сезілетін он минутпен қайтарады.'],
    ['Сандар','Тест воронкасында кликтердің шамамен екі жарым пайызы төлеуші болды. Әрқайсысы жылына елу долларға жуық әкеледі. Күшті креативтер бізді тесттен ауқымға шығарады.'],
    ['Өтініш','Біз төрт апта және жарнамаға сегіз мың доллар сұраймыз. Сандар расталса — ауқымдаймыз. Расталмаса — мұны алты айдан кейін емес, он төрт күннен кейін білесіз.']],
-  [['Демоның басы','Төлем бес экран емес, бір рет басумен болуы керек. Бүгін әр клиентке он екі секунд үнемдейтін төлемді көрсетемін — және неге он екі секунд Kaspi ауқымында маңызды.'],
+  [['Демоның басы','Төлем бес экран емес, бір рет басумен болуы керек. Бүгін әр клиентке он екі секунд үнемдейтін төлемді көрсетемін — және неге он екі секунд біздің ауқымда маңызды.'],
    ['Мәселе','Мәселе бір сөйлеммен: адамдар жеткізу қадамында кетіп қалады. Сондықтан мекенжайды ең бірінші экранға көшіріп, алдыңғы тапсырыстан толтырдық.'],
    ['Өтініш','Сұрайтыным аз: екі апта және бір A/B тест. Конверсия өссе — бәріне қосамыз. Өспесе — маңызды бір нәрсені тегін білеміз.']],
   [['Клиентке берілгендік','Клиент түн ортасында жазды: тапсырысы тұрып қалған. Мен таңғы жиналысты күтпедім. Қатені түзеттім, оған қайта қоңырау шалдым, және бұл қайталанбас үшін процесті өзгерттік.'],
@@ -1310,8 +1310,8 @@ var PRO_TX = {
 };
 function proHome(){
   var U = PRO_UI[profile.ui] || PRO_UI.en, T2 = PRO_T[profile.ui] || PRO_T.en;
-  return '<section class="card" id="pro"><div class="mhead"><p class="label">'+U.t+'</p>'+(addons.pro?'':'<span class="lockpill">'+ICX.lock+' '+U.lock+'</span>')+'</div><p class="p">'+U.p+'</p><div class="pro-grid">'+
-    T2.map(function(t, i){ var m = PRO_META[i]; return '<button class="pro-tile'+(addons.pro?'':' dim')+'" type="button" data-pro="'+i+'"><span class="pro-ic" style="background:'+m.c+'">'+m.ic+'</span><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></button>'; }).join('')+
+  return '<section class="card" id="pro"><div class="mhead"><p class="label">'+U.t+'</p>'+(addons.pack?'':'<span class="lockpill">'+ICX.lock+' '+U.lock+'</span>')+'</div><p class="p">'+U.p+'</p><div class="pro-grid">'+
+    T2.map(function(t, i){ var m = PRO_META[i]; return '<button class="pro-tile'+(addons.pack?'':' dim')+'" type="button" data-pro="'+i+'"><span class="pro-ic" style="background:'+m.c+'">'+m.ic+'</span><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></button>'; }).join('')+
     '</div></section>';
 }
 function proScreen(i){
@@ -1438,7 +1438,7 @@ function home(tab){
     '<div id="mform" hidden><input class="input" id="mt" maxlength="60" placeholder="'+esc(XL('meet_ph'))+'" aria-label="'+esc(XL('meet_t'))+'"><input class="input" id="mw" type="datetime-local" aria-label="'+esc(XL('meet_when'))+'"><button class="btn heat" type="button" id="msave">'+XL('meet_save')+'</button></div>'+
     '<button class="btn ghost" type="button" id="madd">+ '+XL('meet_add')+'</button></section>';
 
-  var scenH = '<section class="card" id="scen"><div class="mhead"><p class="label">'+XL('scen')+'</p>'+(addons.pack?'':'<span class="lockpill">'+ICX.lock+' $9.99</span>')+'</div><p class="p">'+XL('scen_p')+'</p><div class="chips">'+
+  var scenH = '<section class="card" id="scen"><div class="mhead"><p class="label">'+XL('scen')+'</p>'+(addons.pack?'':'<span class="lockpill">'+ICX.lock+' '+(PRO_UI[profile.ui]||PRO_UI.en).lock+'</span>')+'</div><p class="p">'+XL('scen_p')+'</p><div class="chips">'+
     SCEN[profile.train].map(function(s, i){ var open = addons.pack || i < 2; return '<button class="chip'+(open?'':' dim')+'" type="button" data-scen="'+i+'">'+(open?'':'🔒 ')+esc(s[0])+'</button>'; }).join('')+'</div></section>';
 
   var histH = '<section class="card" id="hist"><div class="mhead"><p class="label">'+XL('history')+'</p>'+(mine.length?'<span class="small">'+XL('sessions_n')(mine.length)+'</span>':'')+'</div>'+
@@ -1477,7 +1477,7 @@ function home(tab){
   }; });
   app.querySelectorAll('[data-pro]').forEach(function(b){ b.onclick = function(){
     var i = +b.getAttribute('data-pro');
-    if(!addons.pro){ track('pro_lock', {s:i}); upsell(home); return; }
+    if(!addons.pack){ track('pack_lock', {s:i, from:'scripts'}); upsell(home, true); return; }
     proScreen(i);
   }; });
   app.querySelectorAll('[data-scen]').forEach(function(b){ b.onclick = function(){
@@ -1706,7 +1706,7 @@ function applyMe(m){
   account = {email:m.email, uid:m.uid}; store.set('account', account);
   plan = m.plan ? {id:m.plan.id, status:m.plan.status, trial_ends_at:m.plan.trial_ends_at, next_billed_at:m.plan.next_billed_at, cancel_scheduled:m.plan.cancel_scheduled, server:true} : null;
   store.set('plan', plan);
-  addons = {pack:!!m.addons.pack, pro:!!m.addons.pro}; store.set('addons', addons);
+  addons = {pack:!!m.addons.pack}; store.set('addons', addons);
   return m;
 }
 function syncMe(){
@@ -1836,7 +1836,7 @@ function payScreen(key, stepLabel, onPaid, onBack){
       paddleOn = null; var d = ev.data || {};
       track('checkout_done', {plan:key, value:PRICE_USD[key]});
       // optimistic unlock; the server confirms once Paddle's webhook arrives
-      if(key === 'pack' || key === 'pro'){ addons[key] = true; store.set('addons', addons); }
+      if(key === 'pack'){ addons[key] = true; store.set('addons', addons); }
       else { plan = {id:key, ts:Date.now(), email:account && account.email, tx:d.transaction_id || '', env:PAY.env, pending:!!PAY.api}; store.set('plan', plan); }
       if(PAY.api){ setTimeout(syncMe, 4000); setTimeout(syncMe, 12000); }
       setTimeout(function(){ try{ Paddle.Checkout.close(); }catch(e){} onPaid(d.transaction_id || ''); }, 1200);
@@ -1885,8 +1885,8 @@ function upsell(onDone, packOnly){
     var item = function(key, t){ var on = !!addons[key]; return '<div class="upc'+(on?' on':'')+'"><div class="mhead"><b>'+t[0]+'</b><strong>'+t[1]+'</strong></div><p class="p">'+t[2]+'</p><button class="btn '+(on?'ghost':'white')+'" type="button" data-add="'+key+'"'+(on?' disabled':'')+'>'+(on?ICX.check+' '+XL('up_added'):XL('up_add'))+'</button></div>'; };
     app.innerHTML = '<div class="top"><span></span><span></span><button class="icon-btn" type="button" id="x" aria-label="'+XL('closeX')+'"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>'+
       '<h1 class="h1">'+XL('up_t')+'</h1><p class="p">'+(packOnly?XL('scen_p'):XL('up_s'))+'</p>'+
-      item('pack', XL('up_pack'))+(packOnly?'':item('pro', XL('up_pro')))+
-      '<button class="btn heat" type="button" id="udone">'+((addons.pack||addons.pro)?XL('up_done'):XL('up_skip'))+'</button><p class="small center">'+XL('pw_demo')+'</p>';
+      item('pack', XL('up_pack'))+
+      '<button class="btn heat" type="button" id="udone">'+(addons.pack?XL('up_done'):XL('up_skip'))+'</button><p class="small center">'+XL('pw_demo')+'</p>';
     app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){
       var k = b.getAttribute('data-add'); track('upsell_add', {item:k});
       if(payReady(k)) payScreen(k, XL('up_t'), function(){ addons[k] = true; store.set('addons', addons); upsell(onDone, packOnly); }, function(){ upsell(onDone, packOnly); });
@@ -1905,7 +1905,7 @@ function settings(){
     '<div class="top"><button class="icon-btn" type="button" id="bk" aria-label="'+L('home')+'">'+IC.back+'</button><b>'+L('settings')+'</b><span style="width:40px"></span></div><i data-tabscreen hidden></i>'+
     '<div class="card"><p class="label">'+XL('set_plan')+'</p>'+(account?'<p class="small">'+esc(account.email)+(PAY.env==='sandbox' && PAY.token?' · sandbox':'')+'</p>':'')+'<div class="payrow"><span><b>'+(plan?'Premium · '+pn[1]:'Free')+'</b><small>'+(plan?(plan.cancel_scheduled?XL('cancel_sched'):pn[3]):XL('pw_f').map(function(f){ return f[0]; }).slice(0,2).join(' · '))+'</small></span>'+(plan?'<strong>'+pn[2]+'</strong>':'')+'</div>'+
       (plan && plan.src==='web' ? '<p class="small">'+(WEB[profile.ui]||WEB.en).src+' · '+(WEB[profile.ui]||WEB.en).next.toLowerCase()+': '+nextPay()+'</p>' : '')+
-      (addons.pack||addons.pro ? '<p class="small">+ '+[addons.pack?XL('up_pack')[0]:'', addons.pro?'Pro':''].filter(Boolean).join(', ')+'</p>' : '')+
+      (addons.pack ? '<p class="small">+ '+XL('up_pack')[0]+'</p>' : '')+
       (plan && PAY.api && API.token ? '<button class="btn ghost" type="button" id="manage">'+XL('manage')+'</button>' : '')+
       (plan && !PAY.api ? '<button class="btn ghost" type="button" id="unbuy">'+XL('set_reset_buy')+'</button>' : '')+
       (!plan ? '<button class="btn heat" type="button" id="buy">'+XL('plan_prem')+'</button>' : '')+

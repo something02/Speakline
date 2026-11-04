@@ -20,7 +20,7 @@ const CFG = {
   paddleSecret: env('PADDLE_WEBHOOK_SECRET', ''),         // secret — server only
   prices: {
     week: env('PRICE_WEEK', ''), month: env('PRICE_MONTH', ''), quarter: env('PRICE_QUARTER', ''),
-    pack: env('PRICE_PACK', ''), pro: env('PRICE_PRO', '')
+    pack: env('PRICE_PACK', '')
   },
   smtp: env('SMTP_URL', ''),                              // smtps://user:pass@smtp.example.com:465
   mailFrom: env('MAIL_FROM', 'Speakline <no-reply@example.com>'),
@@ -174,17 +174,16 @@ async function authVerify(req, res) {
 const LIVE = new Set(['active', 'trialing', 'past_due']);
 function me(u) {
   const subs = q('SELECT * FROM subscriptions WHERE user_id = ?').all(u.id);
-  let plan = null, pro = false;
+  let plan = null;
   for (const s of subs) {
     if (!LIVE.has(s.status)) continue;
     const ids = JSON.parse(s.price_ids || '[]');
     for (const id of ids) {
       if (PLAN_OF[id] && (!plan || (s.status !== 'past_due'))) plan = { id: PLAN_OF[id], status: s.status, sub: s.id, trial_ends_at: s.trial_ends_at, next_billed_at: s.next_billed_at, period_ends_at: s.period_ends_at, cancel_scheduled: !!(s.scheduled_change && JSON.parse(s.scheduled_change).action === 'cancel') };
-      if (id === CFG.prices.pro) pro = true;
     }
   }
   const pack = !!q("SELECT 1 FROM purchases WHERE user_id = ? AND status = 'completed' AND price_ids LIKE ?").get(u.id, '%"' + (CFG.prices.pack || '__none__') + '"%');
-  return { uid: u.id, email: u.email, premium: !!plan, plan, addons: { pack, pro } };
+  return { uid: u.id, email: u.email, premium: !!plan, plan, addons: { pack } };
 }
 
 /* ---------- Paddle webhooks ---------- */
