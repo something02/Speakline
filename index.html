@@ -1671,11 +1671,17 @@ function demoCheckout(id, onClose){
   sh.querySelector('#pcan').onclick = close;
   sh.querySelector('#pay').onclick = function(){
     var b = sh.querySelector('#pay'); b.disabled = true; b.innerHTML = '<span class="spin"></span>';
-    setTimeout(function(){
-      plan = {id:id, ts:Date.now()}; store.set('plan', plan);
+    var done = function(){
       b.innerHTML = ICX.check+' '+XL('pay_ok'); b.classList.add('okbtn');
+      track('checkout_done', {plan:id, value:PRICE_USD[id], demo:true});
       setTimeout(function(){ close(); upsell(onClose); }, 800);
-    }, 900);
+    };
+    if(PAY.api && API.token){   // server demo mode: the server records the plan, so the AI coach unlocks
+      api('POST', '/api/demo/subscribe', {plan:id}).then(function(m){ applyMe(m); done(); })
+        .catch(function(){ b.disabled = false; b.textContent = XL('pay_btn'); toast(XL('err_net')); });
+      return;
+    }
+    setTimeout(function(){ plan = {id:id, ts:Date.now()}; store.set('plan', plan); done(); }, 900);
   };
 }
 /* ---------- accounts, payments, analytics ----------
@@ -1762,7 +1768,7 @@ function loadPaddle(){
 }
 function checkout(id, onClose){
   track('plan_select', {plan:id});
-  if(!payReady(id)){ demoCheckout(id, onClose); return; }
+  if(!payReady(id) && !(PAY.api && !API.token)){ demoCheckout(id, onClose); return; }
   signIn({buy:id}, onClose);
 }
 
@@ -1814,6 +1820,7 @@ function signIn(o, onClose){
   function afterAuth(){
     if(!buy){ home(); window.scrollTo(0,0); return; }
     if(PAY.api && isPremium()){ toast(XL('already')); home(); return; }
+    if(!payReady(buy)){ demoCheckout(buy, onClose); return; }
     payScreen(buy, PAY.api ? '3 / 3' : '2 / 2', function(){ paidScreen(function(){ upsell(onClose); }); }, function(){ signIn(o, onClose); });
   }
   emailScreen();
@@ -1890,6 +1897,7 @@ function upsell(onDone, packOnly){
     app.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){
       var k = b.getAttribute('data-add'); track('upsell_add', {item:k});
       if(payReady(k)) payScreen(k, XL('up_t'), function(){ addons[k] = true; store.set('addons', addons); upsell(onDone, packOnly); }, function(){ upsell(onDone, packOnly); });
+      else if(PAY.api && API.token){ api('POST', '/api/demo/subscribe', {pack:true}).then(function(m){ applyMe(m); render(); }).catch(function(){ toast(XL('err_net')); }); }
       else { addons[k] = true; store.set('addons', addons); render(); }
     }; });
     document.getElementById('x').onclick = onDone; document.getElementById('udone').onclick = onDone;

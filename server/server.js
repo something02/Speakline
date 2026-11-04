@@ -26,15 +26,18 @@ const CFG = {
   mailFrom: env('MAIL_FROM', 'Speakline <no-reply@example.com>'),
   appUrl: env('APP_URL', 'http://localhost:8080/'),
   adminKey: env('ADMIN_KEY', ''),
-  aiKey: env('ANTHROPIC_API_KEY', ''),                    // secret — server only; powers the AI coach
+  aiKey: env('AI_API_KEY', env('ANTHROPIC_API_KEY', '')), // secret — server only; powers the AI coach
+  aiUrl: env('AI_API_URL', 'https://api.anthropic.com/v1/messages'), // Anthropic format, or any OpenAI-format …/chat/completions (e.g. DeepSeek)
   aiModel: env('AI_MODEL', 'claude-sonnet-5-5'),
   aiDaily: +env('AI_DAILY_LIMIT', 3),                     // AI reviews per user per day: caps AI cost at ~90 a month ($0.77)
   sonioxKey: env('SONIOX_API_KEY', ''),                    // secret — server only; the browser gets a short-lived key instead
   sonioxModel: env('SONIOX_MODEL', 'stt-rt-v5'),
   sttHourly: +env('STT_HOURLY_LIMIT', 60),                // speech sessions per IP per hour
   sttDaily: +env('STT_DAILY_CAP', 20000),                 // all speech sessions per day, a cost ceiling
+  demo: env('DEMO_MODE', '0') === '1',                    // no Paddle contract yet: purchases are recorded by the demo sheet, not by Paddle
   devEcho: env('DEV_ECHO_CODES', '0') === '1'             // return login codes in the response (local testing only)
 };
+if (CFG.demo && !CFG.smtp) CFG.devEcho = true;            // demo without mail: the sign-in code is shown on screen
 const PADDLE_API = CFG.paddleEnv === 'production' ? 'https://api.paddle.com' : 'https://sandbox-api.paddle.com';
 const PLAN_OF = {};
 for (const k of ['week', 'month', 'quarter']) if (CFG.prices[k]) PLAN_OF[CFG.prices[k]] = k;
@@ -54,6 +57,7 @@ CREATE TABLE IF NOT EXISTS purchases (txn_id TEXT PRIMARY KEY, user_id TEXT, cus
 CREATE TABLE IF NOT EXISTS webhook_events (event_id TEXT PRIMARY KEY, type TEXT, received_at INTEGER);
 CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER, anon_id TEXT, user_id TEXT, name TEXT, props TEXT);
 CREATE TABLE IF NOT EXISTS hits (k TEXT, ts INTEGER);
+CREATE TABLE IF NOT EXISTS demo_plans (user_id TEXT PRIMARY KEY, plan TEXT, pack INTEGER DEFAULT 0, ts INTEGER);
 CREATE INDEX IF NOT EXISTS hits_k ON hits(k, ts);
 CREATE INDEX IF NOT EXISTS events_name ON events(name, ts);
 `);
@@ -182,7 +186,12 @@ function me(u) {
       if (PLAN_OF[id] && (!plan || (s.status !== 'past_due'))) plan = { id: PLAN_OF[id], status: s.status, sub: s.id, trial_ends_at: s.trial_ends_at, next_billed_at: s.next_billed_at, period_ends_at: s.period_ends_at, cancel_scheduled: !!(s.scheduled_change && JSON.parse(s.scheduled_change).action === 'cancel') };
     }
   }
-  const pack = !!q("SELECT 1 FROM purchases WHERE user_id = ? AND status = 'completed' AND price_ids LIKE ?").get(u.id, '%"' + (CFG.prices.pack || '__none__') + '"%');
+  let pack = !!q("SELECT 1 FROM purchases WHERE user_id = ? AND status = 'completed' AND price_ids LIKE ?").get(u.id, '%"' + (CFG.prices.pack || '__none__') + '"%');
+  if (CFG.demo) {
+    const d = q('SELECT * FROM demo_plans WHERE user_id = ?').get(u.id);
+    if (d && d.plan && !plan) plan = { id: d.plan, status: 'active', demo: true, cancel_scheduled: false };
+    if (d && d.pack) pack = true;
+  }
   return { uid: u.id, email: u.email, premium: !!plan, plan, addons: { pack } };
 }
 
@@ -303,7 +312,7 @@ function stats(req, res, url) {
   send(res, 200, { since: new Date(since).toISOString(), funnel, subscriptions: subs, users: q('SELECT COUNT(*) AS n FROM users').get().n });
 }
 
-/* ---------- AI coach: the server builds the prompt from validated numbers and calls Claude ----------
+/* ---------- AI coach: the server builds the prompt from validated numbers and calls the AI model (Claude or DeepSeek) ----------
    The key never reaches the browser. Premium only, rate-limited per user. */
 const LANGS = { ru: 'Russian', en: 'English', kk: 'Kazakh' };
 const METRIC_KEYS = ['words', 'seconds', 'wpm', 'fillers', 'hesitation_sounds', 'fillers_per_min', 'pauses', 'avg_pause_s', 'long_pauses', 'pitch_sd_semitones', 'read_accuracy', 'score'];
@@ -321,21 +330,36 @@ function coachPrompt(b) {
     (b.mode === 'read' ? '3) one sentence on how to deliver the hardest part of the text.' : '3) a rewritten version of what they said — clearer, no fillers, same meaning, in ' + tr + '.') +
     ' Do not invent metrics that are not listed.';
 }
+/* DEMO_MODE only: the demo payment sheet records the plan here instead of a Paddle webhook */
+async function demoSubscribe(req, res, u) {
+  if (!CFG.demo) return send(res, 404, { error: 'not_found' });
+  const b = json(await readBody(req, 1024)) || {};
+  const planId = ['week', 'month', 'quarter'].includes(b.plan) ? b.plan : null;
+  if (!planId && !b.pack) return send(res, 400, { error: 'bad_request' });
+  const cur = q('SELECT * FROM demo_plans WHERE user_id = ?').get(u.id) || {};
+  q('INSERT OR REPLACE INTO demo_plans (user_id, plan, pack, ts) VALUES (?, ?, ?, ?)').run(u.id, planId || cur.plan || null, b.pack || cur.pack ? 1 : 0, now());
+  send(res, 200, me(u));
+}
+
 async function coach(req, res, u) {
   if (!CFG.aiKey) return send(res, 503, { error: 'ai_off' });
   if (!me(u).premium) return send(res, 402, { error: 'premium' });
   if (limited('coach:' + u.id, CFG.aiDaily, 24 * 3600e3)) return send(res, 429, { error: 'limit' });
   const b = json(await readBody(req, 16 * 1024));
   if (!b || !LANGS[b.lang] || !LANGS[b.ui] || !['read', 'free'].includes(b.mode) || !String(b.transcript || '').trim()) return send(res, 400, { error: 'bad_request' });
-  const r = await fetch(process.env.AI_API_URL || 'https://api.anthropic.com/v1/messages', {
+  const aiUrl = env('AI_API_URL', CFG.aiUrl);
+  const oa = /\/chat\/completions\/?$/.test(aiUrl);       // OpenAI wire format (DeepSeek and others)
+  const r = await fetch(aiUrl, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': CFG.aiKey, 'anthropic-version': '2023-06-01' },
+    headers: oa ? { 'content-type': 'application/json', authorization: 'Bearer ' + CFG.aiKey }
+      : { 'content-type': 'application/json', 'x-api-key': CFG.aiKey, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: CFG.aiModel, max_tokens: 700, messages: [{ role: 'user', content: coachPrompt(b) }] }),
     signal: AbortSignal.timeout(30000)
   }).catch(() => null);
   if (!r || !r.ok) { console.error('coach upstream', r && r.status); return send(res, 502, { error: 'ai_upstream' }); }
   const j = await r.json().catch(() => ({}));
-  const text = (j.content || []).map(c => c.text || '').join('').trim();
+  const text = (oa ? ((j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '')
+    : (j.content || []).map(c => c.text || '').join('')).trim();
   if (!text) return send(res, 502, { error: 'ai_empty' });
   q('INSERT INTO events (ts, anon_id, user_id, name, props) VALUES (?, ?, ?, ?, ?)').run(now(), '', u.id, 'ai_coach', JSON.stringify({ lang: b.lang, mode: b.mode }));
   send(res, 200, { text });
@@ -412,6 +436,7 @@ const server = http.createServer(async (req, res) => {
       if (r === 'GET /api/me') return send(res, 200, me(u));
       if (r === 'POST /api/portal') return await portal(req, res, u);
       if (r === 'POST /api/coach') return await coach(req, res, u);
+      if (r === 'POST /api/demo/subscribe') return await demoSubscribe(req, res, u);
       if (r === 'POST /api/logout') { q('DELETE FROM sessions WHERE token_hash = ?').run(sha(String(req.headers.authorization).slice(7).trim())); return send(res, 200, { ok: true }); }
       if (r === 'DELETE /api/account') return await deleteAccount(req, res, u);
       return send(res, 404, { error: 'not_found' });
