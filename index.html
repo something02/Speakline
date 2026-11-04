@@ -1694,7 +1694,7 @@ var PAY = {
   env: 'sandbox',                 // 'sandbox' for tests → 'production' for real money
   token: '',                      // Paddle client-side token: test_… (sandbox) or live_…
   prices: { week:'', month:'', quarter:'', pack:'', pro:'' },   // pri_… IDs from Paddle → Catalog
-  api: '',                        // Speakline server, e.g. https://speakline.kz (empty = no server)
+  api: 'https://34-9-203-156.sslip.io',   // Speakline server, e.g. https://speakline.kz (empty = no server)
   pixel: ''                       // Meta Pixel ID (empty = off)
 };
 var account = store.get('account', null);   // {email, uid}
