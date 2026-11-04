@@ -28,7 +28,7 @@ const CFG = {
   adminKey: env('ADMIN_KEY', ''),
   aiKey: env('ANTHROPIC_API_KEY', ''),                    // secret — server only; powers the AI coach
   aiModel: env('AI_MODEL', 'claude-sonnet-5-5'),
-  aiDaily: +env('AI_DAILY_LIMIT', 40),                    // AI reviews per user per day
+  aiDaily: +env('AI_DAILY_LIMIT', 3),                     // AI reviews per user per day: caps AI cost at ~90 a month ($0.77)
   sonioxKey: env('SONIOX_API_KEY', ''),                    // secret — server only; the browser gets a short-lived key instead
   sonioxModel: env('SONIOX_MODEL', 'stt-rt-v5'),
   sttHourly: +env('STT_HOURLY_LIMIT', 60),                // speech sessions per IP per hour

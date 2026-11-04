@@ -366,7 +366,7 @@ var T = {
   pace:'Темп', wpm:'сл/мин', fillers:'Паразиты', per_min:'в минуту', pauses:'Паузы', avg:'средняя', inton:'Интонация', st:'полутонов', acc:'Точность', clar:'Разборчивость',
   target:'цель', fast:'быстро', slow:'медленно', ok:'в норме', mono:'монотонно', lively:'живо', none:'нет', long_p:function(n){ return n+' '+plural(n,'долгая','долгие','долгих'); },
   tips:'Что улучшить', transcript:'Что я услышал', ref_hint:'Оранжевым — слова из фразы, которые не распознались', got_xp:function(x){ return '+'+x+' опыта'; },
-  again:'Ещё раз', home:'Домой', ai_t:'ИИ-коуч', ai_wait:'ИИ-коуч разбирает твою речь…', ai_err:'ИИ-коуч сейчас недоступен — советы выше всё равно работают.', ai_lock:'Личный разбор твоих слов и чистая версия ответа — в Premium', ai_demo:'В рабочей версии здесь появится разбор от ИИ-коуча: он работает на сервере Speakline, а в этом демо сервер не подключён.',
+  again:'Ещё раз', home:'Домой', ai_t:'ИИ-коуч', ai_wait:'ИИ-коуч разбирает твою речь…', ai_err:'ИИ-коуч сейчас недоступен — советы выше всё равно работают.', ai_limit:'На сегодня 3 разбора от ИИ-коуча уже использованы — завтра будут новые. Советы выше работают и сейчас.', ai_lock:'Личный разбор твоих слов и чистая версия ответа — в Premium', ai_demo:'В рабочей версии здесь появится разбор от ИИ-коуча: он работает на сервере Speakline, а в этом демо сервер не подключён.',
   settings:'Настройки', save:'Сохранить', reset:'Сбросить прогресс',
   hint_um:'Распознавание речи выкидывает «э-э» и «м-м» из текста, поэтому такие заминки я ловлю по звуку: ровный протяжный звук дольше 0,35 с.', minutes:'мин', badge:'Новый значок' },
  en:{ hello:'Let’s set you up', hello_p:'Pick the app language, the language you want to train and your goal — it takes 10 seconds.',
@@ -382,7 +382,7 @@ var T = {
   pace:'Pace', wpm:'wpm', fillers:'Fillers', per_min:'per minute', pauses:'Pauses', avg:'average', inton:'Intonation', st:'semitones', acc:'Accuracy', clar:'Clarity',
   target:'goal', fast:'fast', slow:'slow', ok:'on target', mono:'flat', lively:'lively', none:'none', long_p:function(n){ return n+' long'; },
   tips:'What to improve', transcript:'What I heard', ref_hint:'Orange — words from the sentence that weren’t recognised', got_xp:function(x){ return '+'+x+' XP'; },
-  again:'Try again', home:'Home', ai_t:'AI coach', ai_wait:'The AI coach is reviewing your speech…', ai_err:'The AI coach is unavailable right now — the tips above still apply.', ai_lock:'A personal review of your words and a cleaner version of your answer — in Premium', ai_demo:'In the live version the AI coach review appears here. It runs on the Speakline server, which is not connected in this demo.',
+  again:'Try again', home:'Home', ai_t:'AI coach', ai_wait:'The AI coach is reviewing your speech…', ai_err:'The AI coach is unavailable right now — the tips above still apply.', ai_limit:'You have used today’s 3 AI coach reviews — new ones tomorrow. The tips above still apply.', ai_lock:'A personal review of your words and a cleaner version of your answer — in Premium', ai_demo:'In the live version the AI coach review appears here. It runs on the Speakline server, which is not connected in this demo.',
   settings:'Settings', save:'Save', reset:'Reset progress',
   hint_um:'Speech recognition drops “um” and “uh” from the text, so I catch them from the sound: a flat, drawn-out sound longer than 0.35 s.', minutes:'min', badge:'New badge' },
  kk:{ hello:'Өзіңе бейімдейік', hello_p:'Қосымша тілін, жаттығу тілін және мақсатыңды таңда — 10 секунд қана.',
@@ -398,7 +398,7 @@ var T = {
   pace:'Қарқын', wpm:'сөз/мин', fillers:'Арам сөздер', per_min:'минутына', pauses:'Үзілістер', avg:'орташа', inton:'Интонация', st:'жартылай тон', acc:'Дәлдік', clar:'Анықтық',
   target:'мақсат', fast:'жылдам', slow:'баяу', ok:'қалыпты', mono:'бірсарынды', lively:'жанды', none:'жоқ', long_p:function(n){ return n+' ұзақ'; },
   tips:'Нені жақсарту керек', transcript:'Мен не естідім', ref_hint:'Қызғылт сарымен — танылмаған сөздер', got_xp:function(x){ return '+'+x+' тәжірибе'; },
-  again:'Қайталау', home:'Басты бет', ai_t:'ЖИ-коуч', ai_wait:'ЖИ-коуч сөйлеуіңді талдап жатыр…', ai_err:'ЖИ-коуч қазір қолжетімсіз — жоғарыдағы кеңестер бәрібір жарайды.', ai_lock:'Сөздеріңді жеке талдау және жауаптың таза нұсқасы — Premium-да', ai_demo:'Жұмыс нұсқасында мұнда ЖИ-коуч талдауы шығады. Ол Speakline серверінде жұмыс істейді, ал бұл демода сервер қосылмаған.',
+  again:'Қайталау', home:'Басты бет', ai_t:'ЖИ-коуч', ai_wait:'ЖИ-коуч сөйлеуіңді талдап жатыр…', ai_err:'ЖИ-коуч қазір қолжетімсіз — жоғарыдағы кеңестер бәрібір жарайды.', ai_limit:'Бүгінгі 3 ЖИ-коуч талдауы пайдаланылды — ертең жаңалары болады. Жоғарыдағы кеңестер қазір де жарайды.', ai_lock:'Сөздеріңді жеке талдау және жауаптың таза нұсқасы — Premium-да', ai_demo:'Жұмыс нұсқасында мұнда ЖИ-коуч талдауы шығады. Ол Speakline серверінде жұмыс істейді, ал бұл демода сервер қосылмаған.',
   settings:'Баптаулар', save:'Сақтау', reset:'Прогресті тазалау',
   hint_um:'Тану «ээ» мен «мм»-ді мәтіннен алып тастайды, сондықтан оларды дыбыс бойынша ұстаймын: 0,35 с-тан ұзақ біркелкі созылған дыбыс.', minutes:'мин', badge:'Жаңа белгі' }
 };
@@ -1053,7 +1053,7 @@ function aiReview(r){
     pauses:r.pauses, avg_pause_s:+r.avgP.toFixed(2), long_pauses:r.longP, pitch_sd_semitones:r.sd==null?null:+r.sd.toFixed(1), read_accuracy:r.acc, score:r.score};
   api('POST', '/api/coach', {lang:r.lang, ui:profile.ui, mode:r.mode, task:r.prompt, transcript:r.raw.join(' '), metrics:metrics})
     .then(function(j){ out.textContent = j.text || L('ai_err'); track('ai_coach_view'); })
-    .catch(function(){ out.textContent = L('ai_err'); });
+    .catch(function(e){ out.textContent = L(e && e.status === 429 ? 'ai_limit' : 'ai_err'); });
 }
 
 /* ================= journey: goal → missions → rewards, tours, plans ================= */
