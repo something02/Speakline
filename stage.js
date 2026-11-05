@@ -29,7 +29,7 @@
      p:'$9.99 trial week, then $29.99 a month · $29.99 a month · $59.99 every 3 months. Renewal terms are shown before the button.',
      w:'Primary metric of our paywall test: payers ÷ paywall views. Guardrails: refunds and disputes.'},
     {k:'checkout', n:'Checkout', h:'Paddle, merchant of record',
-     p:'The email is confirmed with a code, then Paddle’s own card form opens inside the page. Card data never touches our code.',
+     p:'Right after the email, Paddle’s own card form opens inside the page: no sign-up step. Card data never touches our code.',
      w:'Paddle is the merchant of record: it collects and pays VAT and sales tax and handles chargebacks. This demo runs in Paddle test mode.',
      note:'Test card: 4242 4242 4242 4242 · any future date · CVC 100'},
     {k:'handoff', n:'Into the app', h:'Web2app hand-off',

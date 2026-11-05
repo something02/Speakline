@@ -59,3 +59,18 @@ test('AI coach uses the OpenAI wire format with a Bearer key', async () => {
   assert.equal(s.body.messages[0].role, 'user');
   assert.deepEqual(s.body.thinking, { type: 'disabled' });
 });
+
+test('quick sign-up: a new email gets an account without a code; a known email needs the code', async () => {
+  const r = await call('POST', '/api/auth/quick', { email: 'New.Buyer@example.com', anon_id: 'a_quick' });
+  assert.equal(r.status, 200);
+  const j = await r.json();
+  assert.ok(j.token); assert.equal(j.me.email, 'new.buyer@example.com'); assert.equal(j.me.premium, false); assert.match(j.me.uid, /^u_/);
+  assert.equal((await (await call('GET', '/api/me', undefined, j.token)).json()).uid, j.me.uid);
+  assert.equal((await call('POST', '/api/auth/quick', { email: 'new.buyer@example.com' })).status, 409);
+  assert.equal((await call('POST', '/api/auth/quick', { email: 'demo@example.com' })).status, 409);   // signed up earlier with a code
+  assert.equal((await call('POST', '/api/auth/quick', { email: 'not-an-email' })).status, 400);
+  // the code still opens the same account later
+  const s = await (await call('POST', '/api/auth/start', { email: 'new.buyer@example.com' })).json();
+  const v = await (await call('POST', '/api/auth/verify', { email: 'new.buyer@example.com', code: s.dev_code })).json();
+  assert.equal(v.me.uid, j.me.uid);
+});

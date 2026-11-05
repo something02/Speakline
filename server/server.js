@@ -32,6 +32,7 @@ const CFG = {
   aiDaily: +env('AI_DAILY_LIMIT', 3),                     // AI reviews per user per day: caps AI cost at ~90 a month ($0.77)
   sonioxKey: env('SONIOX_API_KEY', ''),                    // secret — server only; the browser gets a short-lived key instead
   sonioxModel: env('SONIOX_MODEL', 'stt-rt-v5'),
+  authIpHourly: +env('AUTH_IP_HOURLY_LIMIT', 200),         // sign-ups and code requests per IP per hour (a room on one Wi-Fi shares an IP)
   sttHourly: +env('STT_HOURLY_LIMIT', 60),                // speech sessions per IP per hour
   sttDaily: +env('STT_DAILY_CAP', 20000),                 // all speech sessions per day, a cost ceiling
   demo: env('DEMO_MODE', '0') === '1',                    // no Paddle contract yet: purchases are recorded by the demo sheet, not by Paddle
@@ -142,9 +143,9 @@ function userByToken(req) {
 async function authStart(req, res) {
   const b = json(await readBody(req)); if (!b) return send(res, 400, { error: 'bad_json' });
   const email = String(b.email || '').trim().toLowerCase();
-  const lang = ['ru', 'en', 'kk'].includes(b.lang) ? b.lang : 'ru';
+  const lang = ['ru', 'en', 'kk'].includes(b.lang) ? b.lang : 'en';
   if (!EMAIL_RE.test(email)) return send(res, 400, { error: 'bad_email' });
-  if (limited('start:' + email, 5, 3600e3) || limited('start-ip:' + ipOf(req), 20, 3600e3)) return send(res, 429, { error: 'too_many' });
+  if (limited('start:' + email, 5, 3600e3) || limited('start-ip:' + ipOf(req), CFG.authIpHourly, 3600e3)) return send(res, 429, { error: 'too_many' });
   const prev = q('SELECT sent_at FROM codes WHERE email = ?').get(email);
   if (prev && now() - prev.sent_at < 30e3) return send(res, 429, { error: 'wait', retry_in: 30 });
   const code = String(crypto.randomInt(0, 1e6)).padStart(6, '0');
@@ -165,13 +166,29 @@ async function authVerify(req, res) {
   q('DELETE FROM codes WHERE email = ?').run(email);
   let u = q('SELECT * FROM users WHERE email = ?').get(email);
   if (!u) {
-    u = { id: 'u_' + crypto.randomBytes(9).toString('hex'), email, lang: ['ru', 'en', 'kk'].includes(b.lang) ? b.lang : 'ru', created_at: now() };
+    u = { id: 'u_' + crypto.randomBytes(9).toString('hex'), email, lang: ['ru', 'en', 'kk'].includes(b.lang) ? b.lang : 'en', created_at: now() };
     q('INSERT INTO users (id, email, lang, created_at) VALUES (?, ?, ?, ?)').run(u.id, u.email, u.lang, u.created_at);
   }
+  send(res, 200, newSession(u, b.anon_id));
+}
+function newSession(u, anonId) {
   const token = crypto.randomBytes(32).toString('base64url');
   q('INSERT INTO sessions (token_hash, user_id, created_at, last_seen) VALUES (?, ?, ?, ?)').run(sha(token), u.id, now(), now());
-  if (b.anon_id) q('UPDATE events SET user_id = ? WHERE anon_id = ? AND user_id IS NULL').run(u.id, String(b.anon_id).slice(0, 64));
-  send(res, 200, { token, me: me(u) });
+  if (anonId) q('UPDATE events SET user_id = ? WHERE anon_id = ? AND user_id IS NULL').run(u.id, String(anonId).slice(0, 64));
+  return { token, me: me(u) };
+}
+/* Checkout without a code: a NEW email gets an account at once, so the funnel goes straight from the email to the
+   card form. An email that already has an account still needs the code (409 'exists'), so nobody can open someone
+   else's account by typing their address. The email is confirmed later, the first time the user signs in elsewhere. */
+async function authQuick(req, res) {
+  const b = json(await readBody(req)); if (!b) return send(res, 400, { error: 'bad_json' });
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) return send(res, 400, { error: 'bad_email' });
+  if (limited('quick-ip:' + ipOf(req), CFG.authIpHourly, 3600e3)) return send(res, 429, { error: 'too_many' });
+  if (q('SELECT 1 FROM users WHERE email = ?').get(email)) return send(res, 409, { error: 'exists' });
+  const u = { id: 'u_' + crypto.randomBytes(9).toString('hex'), email, lang: ['ru', 'en', 'kk'].includes(b.lang) ? b.lang : 'en', created_at: now() };
+  q('INSERT INTO users (id, email, lang, created_at) VALUES (?, ?, ?, ?)').run(u.id, u.email, u.lang, u.created_at);
+  send(res, 200, newSession(u, b.anon_id));
 }
 
 /* ---------- entitlements ---------- */
@@ -428,6 +445,7 @@ const server = http.createServer(async (req, res) => {
     if (r === 'GET /api/health') return send(res, 200, { ok: true, env: CFG.paddleEnv });
     if (r === 'POST /api/auth/start') return await authStart(req, res);
     if (r === 'POST /api/auth/verify') return await authVerify(req, res);
+    if (r === 'POST /api/auth/quick') return await authQuick(req, res);
     if (r === 'POST /api/events') return await events(req, res);
     if (r === 'POST /api/stt-key') return await sttKey(req, res);
     if (r === 'POST /webhooks/paddle') return await paddleWebhook(req, res);

@@ -207,8 +207,8 @@ var T = {
   em:'Where should we send your plan?', emp:'Your progress will be saved to this email.', emph:'name@example.com', em_bad:'Please enter a valid email',
   agree:'I agree to the <a href="../terms-en.html" target="_blank" rel="noopener">Terms</a> and <a href="../privacy-en.html" target="_blank" rel="noopener">Privacy Policy</a>',
   demo_note:'Demo: the email stays in this browser and is not sent anywhere.',
-  srv_note:'We will send a 6-digit code to this email to save your plan and purchases.',
-  code_t:'Enter the code', code_p:function(e){ return 'We sent a 6-digit code to '+e+'.'; }, code_ok:'Confirm and pay', err_code:'Wrong code, try again', err_net:'No connection to the server. Try again.', err_wait:'Too many tries. Wait a minute.',
+  srv_note:'Your plan and purchases are saved to this email.',
+  code_t:'Enter the code', code_p:function(e){ return 'You already have an account with '+e+'. We sent a 6-digit code to confirm it is you.'; }, code_ok:'Confirm and pay', err_code:'Wrong code, try again', err_net:'No connection to the server. Try again.', err_wait:'Too many tries. Wait a minute.',
   pay_test:'Test mode: card 4242 4242 4242 4242, any future date, CVC 100. No money is charged.',
   pw:'Your personal plan is ready', pws:function(n, t){ return 'You are at '+n+'% now. With 10 minutes a day you can reach '+t+'% for your goal.'; }, now:'Now', after:'After the plan',
   feats:[['10 minutes a day','Daily missions built for your goal'],['Real meeting prep','Add your meeting date — get a plan and a reminder'],['Instant feedback','Pace, pauses, intonation, fillers in red'],['5 levels of texts','From a short phrase to great speeches']],
@@ -558,6 +558,14 @@ function realCheckout(k, title, sub, price, onPaid){
   var acc0 = store.get('account', null);
   if(store.get('token', '') && acc0 && acc0.uid && acc0.email === A.email){ card(); return; }
   sb.innerHTML = head+'<p class="small center"><span class="spin dark"></span></p>';
+  // new email → account at once, straight to the card form; an email we already know → confirm it with a code
+  api('POST', '/api/auth/quick', {email:A.email, lang:A.ui, anon_id:anonId}).then(function(v){
+    store.set('token', v.token); store.set('account', {email:v.me.email, uid:v.me.uid}); card();
+  }).catch(function(e){
+    if(e.message === 'exists') codeStep();
+    else sb.innerHTML = head+'<p class="small" style="color:var(--bad)">'+t(e.message === 'too_many' ? 'err_wait' : 'err_net')+'</p>';
+  });
+  function codeStep(){
   api('POST', '/api/auth/start', {email:A.email, lang:A.ui}).then(function(r){
     sb.innerHTML = head+'<b>'+t('code_t')+'</b><p class="small">'+esc(t('code_p')(A.email))+'</p>'+
       '<input class="input code" id="cd" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="'+esc(t('code_t'))+'">'+
@@ -574,6 +582,7 @@ function realCheckout(k, title, sub, price, onPaid){
     };
     cd.focus();
   }).catch(function(e){ sb.innerHTML = head+'<p class="small" style="color:var(--bad)">'+t(e.message === 'wait' || e.message === 'too_many' ? 'err_wait' : 'err_net')+'</p>'; });
+  }
 }
 function checkout(k){
   if(paddleOn()){ var pp = t('plans')[k]; realCheckout(k, pp[0], pp[1], '$'+PLANS[k].usd, function(){ activate(k, true); success(k); }); return; }
