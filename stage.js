@@ -16,8 +16,8 @@
   var ROOT = me ? me.replace(/stage\.js(\?.*)?$/, '') : location.href.replace(/[^/]*$/, '');
 
   var STAGES = [
-    {k:'quiz',  n:'Quiz', h:'6 quick questions',
-     p:'Goal, age, what gets in the way, the date of the next important conversation, language, minutes a day.',
+    {k:'quiz',  n:'Quiz', h:'5 quick questions',
+     p:'Goal, age, what gets in the way, the date of the next important conversation, minutes a day.',
      w:'Every answer comes back later on the plan and the paywall, so the offer feels made for this person.'},
     {k:'voice', n:'Voice test', h:'10 seconds out loud',
      p:'The user answers one question. Speech-to-text (Soniox) counts filler words and words per minute live.',

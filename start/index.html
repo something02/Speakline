@@ -180,13 +180,9 @@ var store = {
 var app = document.getElementById('app');
 var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function guess(){
-  var q = (location.search.match(/[?&]lang=(en|ru|kk)/) || [])[1]; if(q) return q;
-  var ls = (navigator.languages || [navigator.language || 'en']).map(function(x){ return String(x).toLowerCase(); });
-  for(var i = 0; i < ls.length; i++){ if(ls[i].indexOf('kk')===0) return 'kk'; if(ls[i].indexOf('ru')===0) return 'ru'; if(ls[i].indexOf('en')===0) return 'en'; }
-  return 'en';
-}
+function guess(){ return 'en'; }   // US launch: English only
 var A = store.get('quiz', null) || {ui:guess(), goal:null, age:null, probs:[], when:null, train:null, mins:null, score:null, fillers:null, wpm:null, email:''};
+A.ui = 'en'; A.train = 0;
 function save(){ store.set('quiz', A); }
 
 var PLANS = {week:{usd:9.99, days:7}, month:{usd:29.99, days:30}, quarter:{usd:59.99, days:91}};
@@ -199,7 +195,6 @@ var T = {
   q2:'What gets in the way when you speak?', q2p:'Choose all that apply',
   probs:[['🗯️','Filler words','“um”, “like”, “so”'],['⏩','I speak too fast',''],['〰️','Monotone voice',''],['😶','My mind goes blank',''],['✋','People interrupt me',''],['🌍','Accent','']],
   q3:'When is your next important conversation?', whens:[['📅','This week'],['🗓️','In 1–2 weeks'],['🕐','Within a month'],['✨','No date yet — I just want to improve']],
-  q4:'Which language do you want to train?', trains:[['🇬🇧','English'],['🇷🇺','Русский'],['🇰🇿','Қазақша']],
   q5:'How much time can you give it a day?', mins:[['5 min','Light'],['10 min','Recommended'],['15 min','Intensive']],
   f1:'Most people never hear their own fillers', f1p:'Others notice them right away. A 10-second test shows you what they hear — before you pay anything.',
   vt:'10-second voice test', vtp:'Tap the microphone and answer out loud:', vq:'What do you do at work, and what is the hardest part?',
@@ -225,86 +220,12 @@ var T = {
   ok:'You are in!', okp:function(n, d){ return 'Speakline Premium · '+n+' is active until '+d+'.'; },
   how:['Open the app — your plan is already there','Your first mission is ready: 10 minutes','Add your meeting date to get a reminder'],
   up_t:'Add the Scenario pack?', up_p:'Your subscription already covers daily practice and prep for your date. The pack adds 10 situations and 6 ready scripts: interview, investor pitch, product demo, tough conversation, salary negotiation. $9.99 one-time, yours to keep.', up_yes:'Add for $9.99 (demo)', up_no:'No, thanks', up_ok:'“Meeting prep” pack added',
-  open:'Open Speakline', planNames:{week:'Trial week', month:'1 month', quarter:'3 months'}, loc:'en-GB', restart:'Start over'
- },
- ru:{
-  start:'Пройти тест', next:'Дальше', back:'Назад', min2:'2 минуты · бесплатно',
-  q0:'Звучи уверенно на следующем важном разговоре', q0p:'Где тебе важно звучать уверенно?',
-  goals:[['💼','Встречи и созвоны'],['🎯','Собеседования'],['📊','Презентации'],['☕','Small talk']],
-  q1:'Сколько тебе лет?', ages:['18–24','25–34','35–44','45+'],
-  q2:'Что мешает, когда ты говоришь?', q2p:'Выбери всё, что подходит',
-  probs:[['🗯️','Слова-паразиты','«ну», «типа», «короче»'],['⏩','Говорю слишком быстро',''],['〰️','Монотонный голос',''],['😶','Теряю мысль',''],['✋','Меня перебивают',''],['🌍','Акцент','']],
-  q3:'Когда твой следующий важный разговор?', whens:[['📅','На этой неделе'],['🗓️','Через 1–2 недели'],['🕐','В течение месяца'],['✨','Даты нет — хочу просто прокачаться']],
-  q4:'На каком языке хочешь тренироваться?', trains:[['🇬🇧','English'],['🇷🇺','Русский'],['🇰🇿','Қазақша']],
-  q5:'Сколько времени в день готов уделять?', mins:[['5 минут','Легко'],['10 минут','Рекомендуем'],['15 минут','Интенсив']],
-  f1:'Свои паразиты почти никто не слышит', f1p:'А другие замечают сразу. Тест на 10 секунд покажет, что слышат они, — ещё до оплаты.',
-  vt:'Голосовой тест на 10 секунд', vtp:'Нажми на микрофон и ответь вслух:', vq:'Чем ты занимаешься на работе и что в ней самое сложное?',
-  tap:'Нажми, чтобы начать', rec:'Слушаю… нажми, чтобы закончить', nosr:'Этот браузер не распознаёт речь. Открой страницу в Chrome или Safari либо пропусти тест.', skip:'Пропустить тест', denied:'Нет доступа к микрофону. Разреши его в настройках браузера или пропусти тест.',
-  an:'Делаем твой индивидуальный план', ans:['Анализируем голос','Подбираем упражнения под цель','Расписываем дни до твоей даты'], ready:'План готов', see:'Показать результат', get_t:'В твоём плане будет',
-  gets:function(d, nodate, f){ return [(nodate ? 'План на '+d+' дней до 80%' : 'План на '+d+' дней до твоей даты'), 'Миссии по 10 минут каждый день под твою цель', 'Главный фокус: '+f, 'Разбор сразу: темп, паузы, паразиты', 'Напоминание за час до встречи']; },
-  res:'Так ты звучишь сейчас', res_t:'Цель для твоей задачи', fil:'Паразиты', pace:'Слов/мин', fix:'Главный фокус', wpmu:'сл/мин',
-  focus:{fillers:'Меньше паразитов', fast:'Спокойнее темп', slow:'Больше энергии', mono:'Живее интонация', ok:'Паузы и структура'},
-  plan_t:function(d){ return 'Твой план: '+d+' дней до 80%'; }, today:'Сегодня', goalday:'Твоя дата', est:'Оценка по твоему тесту и ответам. Результат у всех разный.',
-  em:'Куда отправить твой план?', emp:'Прогресс сохранится на эту почту.', emph:'name@example.com', em_bad:'Введи правильный email',
-  agree:'Я согласен с <a href="../terms.html" target="_blank" rel="noopener">условиями</a> и <a href="../privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a>',
-  demo_note:'Демо: почта остаётся в этом браузере и никуда не отправляется.',
-  srv_note:'Пришлём на эту почту код из 6 цифр, чтобы сохранить план и покупки.',
-  code_t:'Введи код', code_p:function(e){ return 'Мы отправили код из 6 цифр на '+e+'.'; }, code_ok:'Подтвердить и оплатить', err_code:'Неверный код, попробуй ещё раз', err_net:'Нет связи с сервером. Попробуй ещё раз.', err_wait:'Слишком много попыток. Подожди минуту.',
-  pay_test:'Тестовый режим: карта 4242 4242 4242 4242, любая будущая дата, CVC 100. Деньги не списываются.',
-  pw:'Твой личный план готов', pws:function(n, t){ return 'Сейчас у тебя '+n+'%. С 10 минутами в день можно выйти на '+t+'% для твоей цели.'; }, now:'Сейчас', after:'После плана',
-  feats:[['10 минут в день','Миссии под твою цель'],['Подготовка к встрече','Добавь дату — получишь план и напоминание'],['Разбор сразу','Темп, паузы, интонация, паразиты красным'],['5 уровней текстов','От короткой фразы до великих речей']],
-  plans:{week:['Пробная неделя','7 дней, затем $29.99 в месяц',''],month:['1 месяц','Отмена в любой момент',''],quarter:['3 месяца','Каждые 3 месяца, та же цена','Популярный']},
-  consent:function(p){ return {week:'$9.99 сегодня, затем $29.99 каждый месяц, пока не отменю', month:'$29.99 сегодня, затем каждый месяц, пока не отменю', quarter:'$59.99 сегодня, затем каждые 3 месяца, пока не отменю'}[p]; },
-  get:'Получить план', legal:function(p){ return {week:'$9.99 за 7 дней, затем $29.99 каждый месяц, пока не отменишь.', month:'$29.99 каждый месяц, пока не отменишь.', quarter:'$59.99 каждые 3 месяца, пока не отменишь.'}[p]+' Отмена в два нажатия в приложении. Напомним письмом за 2 дня до списания.'; },
-  trust:['Отмена в любой момент','Напоминание до списания','Возвраты — в условиях'],
-  pay_t:'Оплата', pay_demo:'Демо-оплата: данные карты не нужны, деньги не списываются.', pay_btn:function(s){ return 'Оплатить '+s+' (демо)'; }, cancel:'Отмена', paid:'Оплачено',
-  ok:'Готово!', okp:function(n, d){ return 'Speakline Premium · '+n+' активен до '+d+'.'; },
-  how:['Открой приложение — план уже там','Первая миссия готова: 10 минут','Добавь дату встречи — напомним заранее'],
-  up_t:'Добавить пакет сценариев?', up_p:'Подписка уже включает тренировки и подготовку к твоей дате. Пакет добавляет 10 ситуаций и 6 готовых текстов: собеседование, питч инвестору, демо продукта, сложный разговор, переговоры о зарплате. $9.99 разово, навсегда.', up_yes:'Добавить за $9.99 (демо)', up_no:'Нет, спасибо', up_ok:'Пакет «Подготовка к встрече» добавлен',
-  open:'Открыть Speakline', planNames:{week:'Пробная неделя', month:'1 месяц', quarter:'3 месяца'}, loc:'ru-RU', restart:'Начать заново'
- },
- kk:{
-  start:'Тестті бастау', next:'Әрі қарай', back:'Артқа', min2:'2 минут · тегін',
-  q0:'Келесі маңызды әңгімеде сенімді естіл', q0p:'Қай жерде сенімді естілу маңызды?',
-  goals:[['💼','Кездесулер мен қоңыраулар'],['🎯','Сұхбаттар'],['📊','Презентациялар'],['☕','Small talk']],
-  q1:'Жасың нешеде?', ages:['18–24','25–34','35–44','45+'],
-  q2:'Сөйлегенде не кедергі келтіреді?', q2p:'Сәйкес келетіннің бәрін таңда',
-  probs:[['🗯️','Арам сөздер','«енді», «ээ», «әлгі»'],['⏩','Тым жылдам сөйлеймін',''],['〰️','Бірсарынды дауыс',''],['😶','Ойым шашырап кетеді',''],['✋','Сөзімді бөледі',''],['🌍','Акцент','']],
-  q3:'Келесі маңызды әңгіме қашан?', whens:[['📅','Осы аптада'],['🗓️','1–2 аптадан кейін'],['🕐','Бір ай ішінде'],['✨','Күні жоқ — жай жетілгім келеді']],
-  q4:'Қай тілде жаттыққың келеді?', trains:[['🇬🇧','English'],['🇷🇺','Русский'],['🇰🇿','Қазақша']],
-  q5:'Күніне қанша уақыт бөле аласың?', mins:[['5 минут','Жеңіл'],['10 минут','Ұсынамыз'],['15 минут','Қарқынды']],
-  f1:'Өз арам сөздерін ешкім дерлік естімейді', f1p:'Ал басқалар бірден байқайды. 10 секундтық тест олардың не еститінін көрсетеді — төлемге дейін.',
-  vt:'10 секундтық дауыс тесті', vtp:'Микрофонды бас та, дауыстап жауап бер:', vq:'Жұмыста немен айналысасың және ең қиыны не?',
-  tap:'Бастау үшін бас', rec:'Тыңдап тұрмын… аяқтау үшін бас', nosr:'Бұл браузер сөзді тани алмайды. Бетті Chrome не Safari-де аш немесе тесттен өт.', skip:'Тесттен өту', denied:'Микрофонға рұқсат жоқ. Браузер баптауынан рұқсат бер немесе тесттен өт.',
-  an:'Жеке жоспарыңды жасап жатырмыз', ans:['Дауысыңды талдаймыз','Мақсатқа жаттығулар таңдаймыз','Күніңе дейінгі күндерді жоспарлаймыз'], ready:'Жоспар дайын', see:'Нәтижені көру', get_t:'Жоспарыңда болады',
-  gets:function(d, nodate, f){ return [d+' күндік жоспар', 'Мақсатыңа күн сайын 10 минуттық миссиялар', 'Басты назар: '+f, 'Бірден талдау: қарқын, үзіліс, арам сөздер', 'Кездесуден бір сағат бұрын еске салу']; },
-  res:'Қазір осылай естілесің', res_t:'Мақсатыңа керек деңгей', fil:'Арам сөздер', pace:'Сөз/мин', fix:'Басты назар', wpmu:'сөз/мин',
-  focus:{fillers:'Арам сөз азырақ', fast:'Баяуырақ қарқын', slow:'Көбірек қуат', mono:'Жанды интонация', ok:'Үзіліс пен құрылым'},
-  plan_t:function(d){ return 'Жоспарың: 80%-ға дейін '+d+' күн'; }, today:'Бүгін', goalday:'Сенің күнің', est:'Тест пен жауаптарыңа негізделген болжам. Нәтиже әркімде әртүрлі.',
-  em:'Жоспарды қайда жіберейік?', emp:'Прогресс осы поштаға сақталады.', emph:'name@example.com', em_bad:'Дұрыс email енгіз',
-  agree:'<a href="../terms.html" target="_blank" rel="noopener">Шарттармен</a> және <a href="../privacy.html" target="_blank" rel="noopener">құпиялық саясатымен</a> келісемін',
-  demo_note:'Демо: пошта осы браузерде қалады, ешқайда жіберілмейді.',
-  srv_note:'Жоспар мен сатып алуларды сақтау үшін осы поштаға 6 таңбалы код жібереміз.',
-  code_t:'Кодты енгіз', code_p:function(e){ return '6 таңбалы код '+e+' поштасына жіберілді.'; }, code_ok:'Растау және төлеу', err_code:'Код қате, қайтадан көр', err_net:'Сервермен байланыс жоқ. Қайтадан көр.', err_wait:'Тым көп әрекет. Бір минут күт.',
-  pay_test:'Тест режимі: карта 4242 4242 4242 4242, кез келген болашақ күн, CVC 100. Ақша алынбайды.',
-  pw:'Жеке жоспарың дайын', pws:function(n, t){ return 'Қазір сенде '+n+'%. Күніне 10 минутпен мақсатыңа '+t+'%-ға жетуге болады.'; }, now:'Қазір', after:'Жоспардан кейін',
-  feats:[['Күніне 10 минут','Мақсатыңа арналған миссиялар'],['Кездесуге дайындық','Күнін қос — жоспар мен еске салу аласың'],['Бірден талдау','Қарқын, үзіліс, интонация, арам сөздер қызылмен'],['Мәтіннің 5 деңгейі','Қысқа фразадан ұлы сөздерге дейін']],
-  plans:{week:['Сынақ аптасы','7 күн, кейін айына $29.99',''],month:['1 ай','Кез келген уақытта тоқтатуға болады',''],quarter:['3 ай','Әр 3 ай сайын, сол баға','Танымал']},
-  consent:function(p){ return {week:'Бүгін $9.99, кейін тоқтатқанша ай сайын $29.99', month:'Бүгін $29.99, кейін тоқтатқанша ай сайын', quarter:'Бүгін $59.99, кейін тоқтатқанша әр 3 ай сайын'}[p]; },
-  get:'Жоспарды алу', legal:function(p){ return {week:'7 күнге $9.99, кейін тоқтатқанша ай сайын $29.99.', month:'Тоқтатқанша ай сайын $29.99.', quarter:'Тоқтатқанша әр 3 ай сайын $59.99.'}[p]+' Қолданбада екі басумен тоқтатуға болады. Төлемнен 2 күн бұрын хат жібереміз.'; },
-  trust:['Кез келген уақытта тоқтату','Төлем алдында еске салу','Қайтару — шарттарда'],
-  pay_t:'Төлем', pay_demo:'Демо-төлем: карта деректері керек емес, ақша алынбайды.', pay_btn:function(s){ return s+' төлеу (демо)'; }, cancel:'Болдырмау', paid:'Төленді',
-  ok:'Дайын!', okp:function(n, d){ return 'Speakline Premium · '+n+' '+d+' дейін белсенді.'; },
-  how:['Қолданбаны аш — жоспар сонда','Бірінші миссия дайын: 10 минут','Кездесу күнін қос — алдын ала еске саламыз'],
-  up_t:'Сценарийлер пакетін қосасың ба?', up_p:'Жазылым күнделікті жаттығу мен күніңе дайындықты қамтиды. Пакет 10 жағдай және 6 дайын мәтін қосады: сұхбат, инвесторға питч, өнім демосы, қиын әңгіме, жалақы туралы келіссөз. $9.99 бір рет, мәңгі.', up_yes:'$9.99-ға қосу (демо)', up_no:'Жоқ, рақмет', up_ok:'«Кездесуге дайындық» пакеті қосылды',
-  open:'Speakline-ды ашу', planNames:{week:'Сынақ аптасы', month:'1 ай', quarter:'3 ай'}, loc:'kk-KZ', restart:'Қайта бастау'
+  open:'Open Speakline', planNames:{week:'Trial week', month:'1 month', quarter:'3 months'}, loc:'en-US', restart:'Start over'
  }
 };
 function t(k){ return T[A.ui][k]; }
 var FILLERS = {
-  en:['um','umm','uh','uhh','er','erm','like','basically','actually','literally','so','you know','i mean','kind of','sort of'],
-  ru:['ну','э','ээ','эм','мм','типа','короче','как бы','вот','это самое','значит','в общем','собственно'],
-  kk:['енді','ээ','әлгі','яғни','мынау','сосын','анау','мм','э']
+  en:['um','umm','uh','uhh','er','erm','like','basically','actually','literally','so','you know','i mean','kind of','sort of']
 };
 var CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var LOGO = '<span class="logo"><i><svg width="14" height="14" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 11h2M7 7v8M11 4v14M15 8v6M19 10v2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></i>Speakline</span>';
@@ -312,7 +233,7 @@ var BACK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hid
 var MIC = '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
 
 /* ---------- step list; the progress bar counts quiz steps only ---------- */
-var STEPS = ['goal','age','probs','when','train','mins','fact','voice','analyse','result','email','paywall'];
+var STEPS = ['goal','age','probs','when','mins','fact','voice','analyse','result','email','paywall'];
 var step = Math.max(0, Math.min(STEPS.indexOf(store.get('qstep', 'goal')), STEPS.length-1));
 function go(i){ step = i; store.set('qstep', STEPS[i]); render(); window.scrollTo(0,0); }
 function next(){ go(step+1); }
@@ -323,13 +244,12 @@ function frame(inner, opts){
   var qn = STEPS.indexOf('voice'), pct = Math.round(Math.min(step, qn+1)/(qn+1)*100);
   return '<div class="top">'+(step > 0 && !opts.noBack ? '<button class="icon-btn" type="button" id="bk" aria-label="'+t('back')+'">'+BACK+'</button>' : LOGO)+
     (step > 0 && !opts.noBack ? LOGO : '')+
-    '<div class="langs" role="group" aria-label="Language">'+['en','ru','kk'].map(function(c){ return '<button class="lang" type="button" data-l="'+c+'" aria-pressed="'+(A.ui===c)+'">'+({en:'Eng',ru:'Рус',kk:'Қаз'})[c]+'</button>'; }).join('')+'</div></div>'+
+    (step > 0 && !opts.noBack ? '<span style="width:40px"></span>' : '')+'</div>'+
     (opts.noProg ? '' : '<div class="prog" aria-hidden="true"><i style="width:'+pct+'%"></i></div>')+
     '<div class="fade" style="display:grid;gap:16px;flex:1;align-content:start">'+inner+'</div>';
 }
 function bind(){
   var bk = document.getElementById('bk'); if(bk) bk.onclick = function(){ go(Math.max(0, step-1 - (STEPS[step-1]==='analyse' ? 1 : 0))); };
-  app.querySelectorAll('[data-l]').forEach(function(b){ b.onclick = function(){ A.ui = b.getAttribute('data-l'); document.documentElement.lang = A.ui; save(); render(); }; });
 }
 function single(key, items, title, sub, render1){
   app.innerHTML = frame((title ? '<h1 class="h1">'+title+'</h1>' : '')+(sub ? '<p class="p">'+sub+'</p>' : '')+
@@ -345,7 +265,7 @@ function render(){
   if(window.SL_POST) SL_POST({step:s});
   if(s === 'goal'){
     app.innerHTML = frame('<div class="hero"><p class="label" style="color:#F2B53A">'+t('min2')+'</p><h1 class="h1 big">'+t('q0')+'</h1>'+
-      '<p class="bubble">'+markF({en:'So, um, I’d like to, like, show you three ideas…', ru:'Ну, э-э, я хотел, типа, показать три идеи…', kk:'Енді, мен, ээ, әлгі үш идеяны көрсеткім…'}[A.ui])+'</p></div>'+
+      '<p class="bubble">'+markF({en:'So, um, I’d like to, like, show you three ideas…'}[A.ui])+'</p></div>'+
       '<p class="h2">'+t('q0p')+'</p><div class="opts">'+t('goals').map(function(g, i){ return optH(i, A.goal===i, g[0], g[1], '', true); }).join('')+'</div>', {noProg:true});
     bind();
     app.querySelectorAll('[data-i]').forEach(function(b){ b.onclick = function(){ A.goal = +b.getAttribute('data-i'); save(); track('quiz_start', {goal:A.goal}); b.setAttribute('aria-pressed','true'); setTimeout(next, 220); }; });
@@ -359,10 +279,6 @@ function render(){
     document.getElementById('nx').onclick = next;
   }
   else if(s === 'when') single('when', t('whens'), t('q3'), '', function(w, i, on){ return optH(i, on, w[0], w[1], '', true); });
-  else if(s === 'train'){
-    if(A.train == null) A.train = ['en','ru','kk'].indexOf(A.ui);
-    single('train', t('trains'), t('q4'), '', function(w, i, on){ return optH(i, on, w[0], w[1], '', true); });
-  }
   else if(s === 'mins') single('mins', t('mins'), t('q5'), '', function(m, i, on){ return optH(i, on, '', m[0], m[1], true); });
   else if(s === 'fact'){
     app.innerHTML = frame('<div class="fact"><div class="ico" aria-hidden="true">👂</div><h1 class="h1">'+t('f1')+'</h1><p class="p">'+t('f1p')+'</p></div>'+
@@ -375,7 +291,7 @@ function render(){
   else if(s === 'email') email();
   else if(s === 'paywall') paywall();
 }
-function markF(s){ return esc(s).replace(/(Ну|э-э|типа|um|like|Енді|ээ|әлгі)/g, '<mark>$1</mark>'); }
+function markF(s){ return esc(s).replace(/(um|like)/g, '<mark>$1</mark>'); }
 
 /* ---------- voice test: Web Speech API counts words and fillers for 10 s ---------- */
 /* Speakline server for speech-to-text (Soniox). Public address, safe to commit; empty = the browser's own recogniser only. */
@@ -434,7 +350,7 @@ function sonioxSession(apiBase, stream, lang, h){
   };
 }
 
-var TRAIN_CODES = ['en','ru','kk'], SR_LANG = {en:'en-US', ru:'ru-RU', kk:'kk-KZ'};
+var TRAIN_CODES = ['en','ru','kk'], SR_LANG = {en:'en-US'};
 function voice(){
   var lang = TRAIN_CODES[A.train || 0], rec = null, running = false, left = 10, tick = null, finalTxt = '', interim = '', t0 = 0;
   app.innerHTML = frame('<h1 class="h1">'+t('vt')+'</h1><p class="p">'+t('vtp')+'</p><div class="card"><p class="h2">'+esc(t('vq'))+'</p></div>'+
@@ -510,7 +426,7 @@ function finish(txt, secs){
 /* ---------- analysing → result ---------- */
 /* loading screen: a ring that fills, the stages, and what the plan will include — built from the answers */
 function analyse(){
-  var d = planDays(), fk = focusKey(), goal = t('goals')[A.goal || 0][1], lang = t('trains')[A.train || 0][1], mins = t('mins')[A.mins == null ? 1 : A.mins][0];
+  var d = planDays(), fk = focusKey(), goal = t('goals')[A.goal || 0][1], lang = 'English', mins = t('mins')[A.mins == null ? 1 : A.mins][0];
   var gets = t('gets')(d, A.when === 3, t('focus')[fk]), R = 52, C = 2*Math.PI*R, DUR = 6500;
   app.innerHTML = frame('<div class="ld"><div class="ld-ring"><svg viewBox="0 0 120 120" width="148" height="148" aria-hidden="true"><circle cx="60" cy="60" r="'+R+'" fill="none" stroke="var(--line)" stroke-width="10"/>'+
       '<circle id="lr" cx="60" cy="60" r="'+R+'" fill="none" stroke="var(--a)" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+C.toFixed(1)+'" transform="rotate(-90 60 60)"/></svg><b id="lp">0%</b></div>'+
@@ -636,7 +552,7 @@ function realCheckout(k, title, sub, price, onPaid){
     loadPaddle().then(function(){
       var cd = {app:'speakline', plan:k}; if(acc.uid) cd.uid = acc.uid;
       Paddle.Checkout.open({items:[{priceId:PAY.prices[k], quantity:1}], customer:{email:A.email}, customData:cd,
-        settings:{displayMode:'inline', frameTarget:'checkout-frame', frameInitialHeight:450, frameStyle:'width:100%;min-width:280px;background-color:transparent;border:none;', locale:{ru:'ru', en:'en', kk:'ru'}[A.ui], allowLogout:false}});
+        settings:{displayMode:'inline', frameTarget:'checkout-frame', frameInitialHeight:450, frameStyle:'width:100%;min-width:280px;background-color:transparent;border:none;', locale:{en:'en'}[A.ui], allowLogout:false}});
     }).catch(function(){ var ps = sb.querySelector('#pst'); if(ps) ps.textContent = t('err_net'); });
   }
   var acc0 = store.get('account', null);
@@ -694,7 +610,7 @@ function success(k){
   var addons = store.get('addons', {});
   app.innerHTML = '<div class="top">'+LOGO+'<span></span></div><div class="done fade"><div class="medal" aria-hidden="true"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3A2600" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
     '<h1 class="h1 big">'+t('ok')+'</h1><p class="p">'+esc(t('okp')(t('planNames')[k], until))+'</p>'+
-    (!addons.pack ? '<div class="upsell" id="up"><b class="h2">'+t('up_t')+'</b><p class="p">'+t('up_p')+'</p><div class="row"><button class="btn ghost" type="button" id="uno">'+t('up_no')+'</button><button class="btn" type="button" id="uyes">'+(paddleOn() ? t('up_yes').replace(/ \((demo|демо)\)/, '') : t('up_yes'))+'</button></div></div>' : '')+
+    (!addons.pack ? '<div class="upsell" id="up"><b class="h2">'+t('up_t')+'</b><p class="p">'+t('up_p')+'</p><div class="row"><button class="btn ghost" type="button" id="uno">'+t('up_no')+'</button><button class="btn" type="button" id="uyes">'+(paddleOn() ? t('up_yes').replace(/ \(demo\)/, '') : t('up_yes'))+'</button></div></div>' : '')+
     '<div class="steps">'+t('how').map(function(x, i){ return '<div class="step"><b>'+(i+1)+'</b><span>'+x+'</span></div>'; }).join('')+'</div>'+
     '<a class="btn" href="../" id="open" style="text-decoration:none">'+t('open')+'</a></div>';
   var u = document.getElementById('up');
