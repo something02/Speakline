@@ -1,306 +1,306 @@
-Speakline — Capstone unit economics (Team 2),,,,,,,,,,,,,,,
-"One column = one scenario. Pitch = US only: Worst, Worst CTR only, Base, Best, More best (columns B–F). Later levers (G–L) and expansion markets (M–O) are kept for reference, not in the pitch. Inputs in block 2; everything else is formulas.",,,,,,,,,,,,,,,
-"Tags in the last column: D = course default, S = found a source, A = our assumption (reason given). Money in USD, shares 0–1.",,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-1. Results,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,Later lever (not in pitch): + checkout 28%,Later lever: + voice step 80%,Later lever: + trial→month 50%,Later lever: + retention,Later lever: + refunds 3%,Later lever: + pack 25%,Expansion (not in pitch): UK,Expansion: Germany,Expansion: Spain,How to read
-"CAC — cost of one payer, $",=B70,=C70,=D70,=E70,=F70,=G70,=H70,=I70,=J70,=K70,=L70,=M70,=N70,=O70,Block 3
-"12-month LTV per payer (net), $",=B223,=C223,=D223,=E223,=F223,=G223,=H223,=I223,=J223,=K223,=L223,=M223,=N223,=O223,"Block 7, month 12"
-"LTV / CAC, 12 months",=ROUND(B223/B70;2),=ROUND(C223/C70;2),=ROUND(D223/D70;2),=ROUND(E223/E70;2),=ROUND(F223/F70;2),=ROUND(G223/G70;2),=ROUND(H223/H70;2),=ROUND(I223/I70;2),=ROUND(J223/J70;2),=ROUND(K223/K70;2),=ROUND(L223/L70;2),=ROUND(M223/M70;2),=ROUND(N223/N70;2),=ROUND(O223/O70;2),≥1.5 scale · 1–1.5 test · <1 don't buy
-"24-month LTV per payer (net), $",=B235,=C235,=D235,=E235,=F235,=G235,=H235,=I235,=J235,=K235,=L235,=M235,=N235,=O235,"Block 7, month 24"
-"LTV / CAC, 24 months",=ROUND(B235/B70;2),=ROUND(C235/C70;2),=ROUND(D235/D70;2),=ROUND(E235/E70;2),=ROUND(F235/F70;2),=ROUND(G235/G70;2),=ROUND(H235/H70;2),=ROUND(I235/I70;2),=ROUND(J235/J70;2),=ROUND(K235/K70;2),=ROUND(L235/L70;2),=ROUND(M235/M70;2),=ROUND(N235/N70;2),=ROUND(O235/O70;2),If retention continues
-Payback month (cumulative net ≥ CAC),"=IFERROR(MATCH(TRUE;INDEX(B212:B235>=B70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(C212:C235>=C70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(D212:D235>=D70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(E212:E235>=E70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(F212:F235>=F70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(G212:G235>=G70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(H212:H235>=H70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(I212:I235>=I70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(J212:J235>=J70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(K212:K235>=K70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(L212:L235>=L70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(M212:M235>=M70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(N212:N235>=N70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(O212:O235>=O70;0);0);""none"")","""none"" = not within 24 months"
-"Revenue per payer, 12 months (before deductions), $",=ROUND(SUM(B186:B197);2),=ROUND(SUM(C186:C197);2),=ROUND(SUM(D186:D197);2),=ROUND(SUM(E186:E197);2),=ROUND(SUM(F186:F197);2),=ROUND(SUM(G186:G197);2),=ROUND(SUM(H186:H197);2),=ROUND(SUM(I186:I197);2),=ROUND(SUM(J186:J197);2),=ROUND(SUM(K186:K197);2),=ROUND(SUM(L186:L197);2),=ROUND(SUM(M186:M197);2),=ROUND(SUM(N186:N197);2),=ROUND(SUM(O186:O197);2),Benchmark: web median ≈ $67 (FunnelFox 2026)
-"Max CAC to scale (LTV12 / 1.5), $","=ROUND(B223/1,5;2)","=ROUND(C223/1,5;2)","=ROUND(D223/1,5;2)","=ROUND(E223/1,5;2)","=ROUND(F223/1,5;2)","=ROUND(G223/1,5;2)","=ROUND(H223/1,5;2)","=ROUND(I223/1,5;2)","=ROUND(J223/1,5;2)","=ROUND(K223/1,5;2)","=ROUND(L223/1,5;2)","=ROUND(M223/1,5;2)","=ROUND(N223/1,5;2)","=ROUND(O223/1,5;2)",Safety margin for forecast error and rising CAC
-Decision,"=IF(B8>=1,5;""scale"";IF(B8>=1;""test"";""don't buy""))","=IF(C8>=1,5;""scale"";IF(C8>=1;""test"";""don't buy""))","=IF(D8>=1,5;""scale"";IF(D8>=1;""test"";""don't buy""))","=IF(E8>=1,5;""scale"";IF(E8>=1;""test"";""don't buy""))","=IF(F8>=1,5;""scale"";IF(F8>=1;""test"";""don't buy""))","=IF(G8>=1,5;""scale"";IF(G8>=1;""test"";""don't buy""))","=IF(H8>=1,5;""scale"";IF(H8>=1;""test"";""don't buy""))","=IF(I8>=1,5;""scale"";IF(I8>=1;""test"";""don't buy""))","=IF(J8>=1,5;""scale"";IF(J8>=1;""test"";""don't buy""))","=IF(K8>=1,5;""scale"";IF(K8>=1;""test"";""don't buy""))","=IF(L8>=1,5;""scale"";IF(L8>=1;""test"";""don't buy""))","=IF(M8>=1,5;""scale"";IF(M8>=1;""test"";""don't buy""))","=IF(N8>=1,5;""scale"";IF(N8>=1;""test"";""don't buy""))","=IF(O8>=1,5;""scale"";IF(O8>=1;""test"";""don't buy""))",
-,,,,,,,,,,,,,,,
-2. Inputs,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,Later lever (not in pitch): + checkout 28%,Later lever: + voice step 80%,Later lever: + trial→month 50%,Later lever: + retention,Later lever: + refunds 3%,Later lever: + pack 25%,Expansion (not in pitch): UK,Expansion: Germany,Expansion: Spain,Source / tag
-"CPM — cost of 1,000 impressions, $",45,30,30,30,30,30,30,30,30,30,30,20,18,11,"US: S Affect Group (Q4 2025 Sales objective, average $20–30; average-max $30–45) → base $30 = top of Q4 average (mentor: $23 too low), worst $45, best $23 = Superads all-industry median. Europe A cautious (4 Nov 2026): UK $20, DE $18, ES $11 — about ×1.45 above Adamigo 2026 medians × 1.3 ($13.45 / $13.11 / $7.57); medians $10.31 / $10.05 / $5.80 (Lebesgue 2026: UK $11.81, DE $9.05, ES $6.65)"
-Meta location fee (from 1 Jul 2026),0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,2%,0%,3%,"S Aimerce: UK 2%, ES 3%, DE 0%, US 0%"
-"CTR (all clicks, Meta default column) — share of impressions that click","1,2%","1,2%","1,8%","1,9%",2%,"1,8%","1,8%","1,8%","1,8%","1,8%","1,8%","1,8%","1,8%","1,8%","S Databox 2026 (2,800+ companies): median CTR all 1.90%, link CTR 1.18% (link ≈ 62% of all clicks → our click → quiz 60% matches); WordStream 2025 US traffic campaigns 1.71% (education 1.45%); Lebesgue: image 0.91% vs video 1.0%; ATTN 2026: static 1.1% vs video 1.9%. A Base 1.8% (just under the median, mentor 5 Nov 2026: 1.8–2.2% normal), Best 1.9% = median, More best 2.0% = strong video + static mix, Worst 1.2% = weak static only"
-Click → starts quiz,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,A our funnel
-Starts → finishes the 5-question quiz,55%,55%,55%,55%,55%,55%,55%,55%,55%,55%,55%,55%,55%,55%,"A 55% (kept from the 6-question version, cautious)"
-Finishes quiz → does 10-s voice test,70%,70%,70%,70%,70%,70%,80%,80%,80%,80%,80%,70%,70%,70%,A main risk; ladder 3 = 80%
-Voice test → leaves email,75%,75%,75%,75%,75%,75%,75%,75%,75%,75%,75%,75%,75%,75%,A
-Email → sees paywall,95%,95%,95%,95%,95%,95%,95%,95%,95%,95%,95%,95%,95%,95%,A
-Paywall → presses Pay (checkout),"18,65%","23,31%","23,31%","23,31%","23,31%","27,97%","27,97%","27,97%","27,97%","27,97%","27,97%","23,31%","23,31%","23,31%","A cautious (4 Nov 2026): 23.3% = 27.4% × 0.85 — prices roughly doubled, so 15% fewer press Pay (27.4% = our 15% paid ÷ Money Map payment success 54.7%). Worst 18.7%; ladder 2 = 28.0% (×1.2) to MEASURE in test 2 (block 9)"
-Payment: bank approves (authorization),65%,65%,65%,65%,65%,65%,65%,65%,65%,65%,65%,65%,65%,65%,A Money Map Section 1: 65% when Paddle charges the cards; same in all markets (not checked per country)
-Payment: passes 3-D Secure,100%,100%,100%,100%,100%,100%,100%,100%,100%,100%,100%,85%,85%,85%,"D 85% where 3DS is mandatory (UK, EU: SCA rules); US 100% A: no SCA in the US (mentor feedback 3 Nov 2026)"
-Payment: money captured,99%,99%,99%,99%,99%,99%,99%,99%,99%,99%,99%,99%,99%,99%,D course default 99%
-"Trial week price, local currency","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","7,99","9,99","7,99","A ours (4 Nov 2026): 7-day AI plan to your date. S RiseGuide App Store week $9.99; Vocal Image $4.99. UK £7.99, DE €9.99, ES €7.99"
-"Monthly price, local currency","29,99","29,99","29,99","29,99","29,99","29,99","29,99","29,99","29,99","29,99","29,99","24,99","29,99","19,99","A ours: $29.99 = RiseGuide App Store month (S); RiseGuide web charges $41.99 every 28 days (S BBB complaints); Vocal Image $17.99. UK £24.99, DE €29.99, ES €19.99. Price is UNTESTED: short US price test first (test 3, block 9)"
-"First 3 months, local","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","49,99","59,99","39,99","A ours: $59.99 = $20 a month, a third off monthly; preselected on the paywall"
-"Next 3 months, local","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","59,99","49,99","59,99","39,99",A same as first payment: no renewal jump (RiseGuide BBB complaints are about the $19.99 → $41.99 jump)
-"Scenario pack (one-time), local","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","9,99","7,99","9,99","6,99",S median web2app upsell ≈ $9.31 (FunnelFox 2026); ours $9.99. The only upsell: 10 situations + 6 ready scripts
-"Pro add-on per month, local (removed)",10,10,10,10,10,10,10,10,10,10,10,8,10,7,Pro removed 4 Nov 2026: two near-equal offers confused users; kept at 0% take rate below
-VAT included in price,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,20%,19%,21%,"S standard rates: UK 20%, DE 19%, ES 21%; US sales tax is added on top, so 0% here"
-Exchange rate to USD,1,1,1,1,1,1,1,1,1,1,1,"1,3337","1,117","1,117","S Pound Sterling Live, 27 Oct 2026: GBP 1.3337, EUR 1.1170"
-Plan mix: trial week → monthly,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,"A 30%: the paywall preselects 3 months, so 3 months gets the biggest share (40%); real mix comes from test 2"
-Plan mix: monthly,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,30%,A 30%
-Trial week → pays for month,35%,45%,45%,45%,45%,45%,45%,50%,50%,50%,50%,45%,45%,45%,"A; RevenueCat Education weekly first renewal 58% at the same price; ours jumps ×3 ($9.99 → $29.99), kept at 45%"
-Monthly: first renewal,48%,56%,56%,56%,56%,56%,56%,56%,60%,60%,60%,56%,56%,56%,S RevenueCat 2026 Education median 56% (48–66%)
-Monthly: still paying in month 12,7%,10%,10%,10%,10%,10%,10%,10%,12%,12%,12%,10%,10%,10%,S FunnelFox 2026: ≈10% for monthly web subscriptions
-3 months: first renewal,35%,35%,35%,35%,35%,35%,35%,35%,35%,35%,35%,35%,35%,35%,A
-3 months: later renewals,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,60%,A
-"Refunds, share of revenue",8%,6%,6%,6%,6%,6%,6%,6%,6%,3%,3%,6%,6%,6%,S Adapty: Education 4.9–5.1%; ours 6% (paid trial week) A
-"Paddle fee, % of each payment",5%,5%,5%,5%,5%,5%,5%,5%,5%,5%,5%,5%,5%,5%,S Paddle pricing 5% + $0.50
-"Paddle fixed fee per payment, $","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5","0,5",S Paddle pricing
-"Disputes, share of payments","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%",D course default (Money Map)
-"Fee per dispute, $",15,15,15,15,15,15,15,15,15,15,15,15,15,15,D course default (Money Map)
-"RDR alerts, share of revenue",1%,1%,1%,1%,1%,1%,1%,1%,1%,1%,1%,1%,1%,1%,D course default (Money Map)
-Speech-to-text: minutes of audio per active month,40,40,40,40,40,40,40,40,40,40,40,40,40,40,A upper bound: 40 recordings × max 60 s (app limit)
-"Soniox real-time price per minute of audio, $","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002","0,002",S Soniox pricing page: $0.12 per hour real-time (2 Nov 2026)
-"Hosting per active month, $",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"0: hosting is a fixed cost, not per user (Google Cloud e2-micro Always Free = $0). AI coach and speech-to-text stay per user"
-"AI coach: price per 1M input tokens, $","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","0,3","S DeepSeek deepseek-flash, peak price ¥2 per 1M input (api-docs.deepseek.com, 4 Nov 2026) ÷ 6.6781 CNY/USD (Pound Sterling Live, 22 Oct 2026); thinking mode off. Claude Sonnet 5.5 would be $2"
-"AI coach: price per 1M output tokens, $","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2","1,2",S DeepSeek peak ¥8 per 1M output ÷ 6.6781; Claude Sonnet 5.5 would be $10
-AI coach: input tokens per review,800,800,800,800,800,800,800,800,800,800,800,800,800,800,"A upper bound: prompt ≈ 3,100 characters incl. 2,000-character transcript cap (server.js)"
-AI coach: output tokens per review,700,700,700,700,700,700,700,700,700,700,700,700,700,700,A upper bound = max_tokens 700 in server.js
-AI reviews per active month,40,40,40,40,40,40,40,40,40,40,40,40,40,40,"A 2 recordings × 20 practice days; server cap 3 per day, so worst case 90 reviews = $0.10 a month"
-Buy the Scenario pack after paying,8%,15%,15%,15%,15%,15%,15%,15%,15%,15%,25%,15%,15%,15%,A no benchmark found for take rate; ladder 7 = 25%. Without any upsell base LTV/CAC drops 1.02 → 1.00
-Upgrade to Pro (removed),0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0%,0% in all scenarios: Pro removed
-Plan mix: 3 months (remainder),=ARRAYFORMULA(1-B37:O37-B38:O38),,,,,,,,,,,,,,Remainder to 100%
-Paywall → pays (incl. failed payments),=ARRAYFORMULA(ROUND(B25:O25*B26:O26*B27:O27*B28:O28;6)),,,,,,,,,,,,,,Checkout × authorization × 3DS × capture
-,,,,,,,,,,,,,,,
-3. Funnel: what each step costs,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,Later lever (not in pitch): + checkout 28%,Later lever: + voice step 80%,Later lever: + trial→month 50%,Later lever: + retention,Later lever: + refunds 3%,Later lever: + pack 25%,Expansion (not in pitch): UK,Expansion: Germany,Expansion: Spain,How it is calculated
-"Cost per click (CPC), $",=ARRAYFORMULA(ROUND(B17:O17*(1+B18:O18)/(1000*B19:O19);4)),,,,,,,,,,,,,,CPM × (1 + location fee) / (1000 × CTR)
-"Cost per started quiz, $",=ARRAYFORMULA(ROUND(B64:O64/B20:O20;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-"Cost per finished quiz, $",=ARRAYFORMULA(ROUND(B65:O65/B21:O21;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-"Cost per voice test, $",=ARRAYFORMULA(ROUND(B66:O66/B22:O22;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-"Cost per email, $",=ARRAYFORMULA(ROUND(B67:O67/B23:O23;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-"Cost per paywall view, $",=ARRAYFORMULA(ROUND(B68:O68/B24:O24;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-"CAC — cost per payer, $",=ARRAYFORMULA(ROUND(B69:O69/B61:O61;4)),,,,,,,,,,,,,,Previous step ÷ step conversion
-Click → payer conversion,=ARRAYFORMULA(ROUND(B20:O20*B21:O21*B22:O22*B23:O23*B24:O24*B61:O61;6)),,,,,,,,,,,,,,Product of step conversions; web2app benchmark ≈ 3% (FunnelFox)
-,,,,,,,,,,,,,,,
-4. Prices after VAT and costs per active month,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,Later lever (not in pitch): + checkout 28%,Later lever: + voice step 80%,Later lever: + trial→month 50%,Later lever: + retention,Later lever: + refunds 3%,Later lever: + pack 25%,Expansion (not in pitch): UK,Expansion: Germany,Expansion: Spain,
-Price factor: local → USD after VAT,=ARRAYFORMULA(ROUND(B36:O36/(1+B35:O35);6)),,,,,,,,,,,,,,FX / (1 + VAT)
-"Trial week, $ net",=ARRAYFORMULA(ROUND(B29:O29*B74:O74;4)),,,,,,,,,,,,,,
-"Monthly, $ net",=ARRAYFORMULA(ROUND(B30:O30*B74:O74;4)),,,,,,,,,,,,,,
-"First 3 months, $ net",=ARRAYFORMULA(ROUND(B31:O31*B74:O74;4)),,,,,,,,,,,,,,
-"Next 3 months, $ net",=ARRAYFORMULA(ROUND(B32:O32*B74:O74;4)),,,,,,,,,,,,,,
-"Pack, $ net",=ARRAYFORMULA(ROUND(B33:O33*B74:O74;4)),,,,,,,,,,,,,,
-"Pro add-on, $ net",=ARRAYFORMULA(ROUND(B34:O34*B74:O74;4)),,,,,,,,,,,,,,
-Payment fee on net price (fee is charged on price incl. VAT),=ARRAYFORMULA(ROUND(B45:O45*(1+B35:O35);6)),,,,,,,,,,,,,,
-"AI coach cost per active month, $",=ARRAYFORMULA(ROUND(B57:O57*(B55:O55*B53:O53+B56:O56*B54:O54)/1000000;4)),,,,,,,,,,,,,,Reviews × (input tokens × price + output tokens × price)
-"Speech-to-text cost per active month, $",=ARRAYFORMULA(ROUND(B50:O50*B51:O51;4)),,,,,,,,,,,,,,Minutes × Soniox price
-"All running costs per active month, $",=ARRAYFORMULA(B52:O52+B83:O83+B82:O82),,,,,,,,,,,,,,Hosting + speech-to-text + AI coach
-,,,,,,,,,,,,,,,
-5. Retention: share of payers still paying in month m,,,,,,,,,,,,,,,"Monthly: month 1 = all, month 2 = first renewal, then constant share q; 3-month plan renews in months 4, 7, 10…"
-q — monthly renewal after month 2,=ARRAYFORMULA(ROUND((B41:O41/B40:O40)^(1/10);6)),,,,,,,,,,,,,,q chosen so month 12 = input
-"Monthly plan, month 1",1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-"Monthly plan, month 2",=ARRAYFORMULA(B40:O40),,,,,,,,,,,,,,
-"Monthly plan, month 3",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^1;6)),,,,,,,,,,,,,,
-"Monthly plan, month 4",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^2;6)),,,,,,,,,,,,,,
-"Monthly plan, month 5",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^3;6)),,,,,,,,,,,,,,
-"Monthly plan, month 6",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^4;6)),,,,,,,,,,,,,,
-"Monthly plan, month 7",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^5;6)),,,,,,,,,,,,,,
-"Monthly plan, month 8",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^6;6)),,,,,,,,,,,,,,
-"Monthly plan, month 9",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^7;6)),,,,,,,,,,,,,,
-"Monthly plan, month 10",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^8;6)),,,,,,,,,,,,,,
-"Monthly plan, month 11",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^9;6)),,,,,,,,,,,,,,
-"Monthly plan, month 12",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^10;6)),,,,,,,,,,,,,,
-"Monthly plan, month 13",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^11;6)),,,,,,,,,,,,,,
-"Monthly plan, month 14",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^12;6)),,,,,,,,,,,,,,
-"Monthly plan, month 15",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^13;6)),,,,,,,,,,,,,,
-"Monthly plan, month 16",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^14;6)),,,,,,,,,,,,,,
-"Monthly plan, month 17",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^15;6)),,,,,,,,,,,,,,
-"Monthly plan, month 18",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^16;6)),,,,,,,,,,,,,,
-"Monthly plan, month 19",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^17;6)),,,,,,,,,,,,,,
-"Monthly plan, month 20",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^18;6)),,,,,,,,,,,,,,
-"Monthly plan, month 21",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^19;6)),,,,,,,,,,,,,,
-"Monthly plan, month 22",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^20;6)),,,,,,,,,,,,,,
-"Monthly plan, month 23",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^21;6)),,,,,,,,,,,,,,
-"Monthly plan, month 24",=ARRAYFORMULA(ROUND(B40:O40*B87:O87^22;6)),,,,,,,,,,,,,,
-"3-month plan, month 1",1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-"3-month plan, month 2",1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-"3-month plan, month 3",1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-"3-month plan, month 4",=ARRAYFORMULA(B42:O42),,,,,,,,,,,,,,
-"3-month plan, month 5",=ARRAYFORMULA(B42:O42),,,,,,,,,,,,,,
-"3-month plan, month 6",=ARRAYFORMULA(B42:O42),,,,,,,,,,,,,,
-"3-month plan, month 7",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^1;6)),,,,,,,,,,,,,,
-"3-month plan, month 8",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^1;6)),,,,,,,,,,,,,,
-"3-month plan, month 9",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^1;6)),,,,,,,,,,,,,,
-"3-month plan, month 10",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^2;6)),,,,,,,,,,,,,,
-"3-month plan, month 11",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^2;6)),,,,,,,,,,,,,,
-"3-month plan, month 12",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^2;6)),,,,,,,,,,,,,,
-"3-month plan, month 13",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^3;6)),,,,,,,,,,,,,,
-"3-month plan, month 14",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^3;6)),,,,,,,,,,,,,,
-"3-month plan, month 15",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^3;6)),,,,,,,,,,,,,,
-"3-month plan, month 16",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^4;6)),,,,,,,,,,,,,,
-"3-month plan, month 17",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^4;6)),,,,,,,,,,,,,,
-"3-month plan, month 18",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^4;6)),,,,,,,,,,,,,,
-"3-month plan, month 19",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^5;6)),,,,,,,,,,,,,,
-"3-month plan, month 20",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^5;6)),,,,,,,,,,,,,,
-"3-month plan, month 21",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^5;6)),,,,,,,,,,,,,,
-"3-month plan, month 22",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^6;6)),,,,,,,,,,,,,,
-"3-month plan, month 23",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^6;6)),,,,,,,,,,,,,,
-"3-month plan, month 24",=ARRAYFORMULA(ROUND(B42:O42*B43:O43^6;6)),,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-"6. One payer by month: active months, payments, revenue",,,,,,,,,,,,,,,
-"Active, month 1","=ARRAYFORMULA(ROUND(B37:O37*(0,25+0,75*B39:O39)+B38:O38*B88:O88+B60:O60*B112:O112;6))",,,,,,,,,,,,,,A trial week = 0.25 of a month
-"Active, month 2",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B89:O89+B38:O38*B89:O89+B60:O60*B113:O113;6)),,,,,,,,,,,,,,
-"Active, month 3",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B90:O90+B38:O38*B90:O90+B60:O60*B114:O114;6)),,,,,,,,,,,,,,
-"Active, month 4",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B91:O91+B38:O38*B91:O91+B60:O60*B115:O115;6)),,,,,,,,,,,,,,
-"Active, month 5",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B92:O92+B38:O38*B92:O92+B60:O60*B116:O116;6)),,,,,,,,,,,,,,
-"Active, month 6",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B93:O93+B38:O38*B93:O93+B60:O60*B117:O117;6)),,,,,,,,,,,,,,
-"Active, month 7",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B94:O94+B38:O38*B94:O94+B60:O60*B118:O118;6)),,,,,,,,,,,,,,
-"Active, month 8",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B95:O95+B38:O38*B95:O95+B60:O60*B119:O119;6)),,,,,,,,,,,,,,
-"Active, month 9",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B96:O96+B38:O38*B96:O96+B60:O60*B120:O120;6)),,,,,,,,,,,,,,
-"Active, month 10",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B97:O97+B38:O38*B97:O97+B60:O60*B121:O121;6)),,,,,,,,,,,,,,
-"Active, month 11",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B98:O98+B38:O38*B98:O98+B60:O60*B122:O122;6)),,,,,,,,,,,,,,
-"Active, month 12",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B99:O99+B38:O38*B99:O99+B60:O60*B123:O123;6)),,,,,,,,,,,,,,
-"Active, month 13",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B100:O100+B38:O38*B100:O100+B60:O60*B124:O124;6)),,,,,,,,,,,,,,
-"Active, month 14",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B101:O101+B38:O38*B101:O101+B60:O60*B125:O125;6)),,,,,,,,,,,,,,
-"Active, month 15",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B102:O102+B38:O38*B102:O102+B60:O60*B126:O126;6)),,,,,,,,,,,,,,
-"Active, month 16",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B103:O103+B38:O38*B103:O103+B60:O60*B127:O127;6)),,,,,,,,,,,,,,
-"Active, month 17",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B104:O104+B38:O38*B104:O104+B60:O60*B128:O128;6)),,,,,,,,,,,,,,
-"Active, month 18",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B105:O105+B38:O38*B105:O105+B60:O60*B129:O129;6)),,,,,,,,,,,,,,
-"Active, month 19",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B106:O106+B38:O38*B106:O106+B60:O60*B130:O130;6)),,,,,,,,,,,,,,
-"Active, month 20",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B107:O107+B38:O38*B107:O107+B60:O60*B131:O131;6)),,,,,,,,,,,,,,
-"Active, month 21",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B108:O108+B38:O38*B108:O108+B60:O60*B132:O132;6)),,,,,,,,,,,,,,
-"Active, month 22",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B109:O109+B38:O38*B109:O109+B60:O60*B133:O133;6)),,,,,,,,,,,,,,
-"Active, month 23",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B110:O110+B38:O38*B110:O110+B60:O60*B134:O134;6)),,,,,,,,,,,,,,
-"Active, month 24",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B111:O111+B38:O38*B111:O111+B60:O60*B135:O135;6)),,,,,,,,,,,,,,
-"Payments, month 1",=ARRAYFORMULA(ROUND(B37:O37*(1+B39:O39)+B38:O38+B60:O60+B58:O58;6)),,,,,,,,,,,,,,Each payment pays Paddle $0.50 + dispute cost
-"Payments, month 2",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B89:O89+B38:O38*B89:O89;6)),,,,,,,,,,,,,,
-"Payments, month 3",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B90:O90+B38:O38*B90:O90;6)),,,,,,,,,,,,,,
-"Payments, month 4",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B91:O91+B38:O38*B91:O91+B60:O60*B115:O115;6)),,,,,,,,,,,,,,
-"Payments, month 5",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B92:O92+B38:O38*B92:O92;6)),,,,,,,,,,,,,,
-"Payments, month 6",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B93:O93+B38:O38*B93:O93;6)),,,,,,,,,,,,,,
-"Payments, month 7",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B94:O94+B38:O38*B94:O94+B60:O60*B118:O118;6)),,,,,,,,,,,,,,
-"Payments, month 8",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B95:O95+B38:O38*B95:O95;6)),,,,,,,,,,,,,,
-"Payments, month 9",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B96:O96+B38:O38*B96:O96;6)),,,,,,,,,,,,,,
-"Payments, month 10",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B97:O97+B38:O38*B97:O97+B60:O60*B121:O121;6)),,,,,,,,,,,,,,
-"Payments, month 11",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B98:O98+B38:O38*B98:O98;6)),,,,,,,,,,,,,,
-"Payments, month 12",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B99:O99+B38:O38*B99:O99;6)),,,,,,,,,,,,,,
-"Payments, month 13",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B100:O100+B38:O38*B100:O100+B60:O60*B124:O124;6)),,,,,,,,,,,,,,
-"Payments, month 14",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B101:O101+B38:O38*B101:O101;6)),,,,,,,,,,,,,,
-"Payments, month 15",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B102:O102+B38:O38*B102:O102;6)),,,,,,,,,,,,,,
-"Payments, month 16",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B103:O103+B38:O38*B103:O103+B60:O60*B127:O127;6)),,,,,,,,,,,,,,
-"Payments, month 17",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B104:O104+B38:O38*B104:O104;6)),,,,,,,,,,,,,,
-"Payments, month 18",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B105:O105+B38:O38*B105:O105;6)),,,,,,,,,,,,,,
-"Payments, month 19",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B106:O106+B38:O38*B106:O106+B60:O60*B130:O130;6)),,,,,,,,,,,,,,
-"Payments, month 20",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B107:O107+B38:O38*B107:O107;6)),,,,,,,,,,,,,,
-"Payments, month 21",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B108:O108+B38:O38*B108:O108;6)),,,,,,,,,,,,,,
-"Payments, month 22",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B109:O109+B38:O38*B109:O109+B60:O60*B133:O133;6)),,,,,,,,,,,,,,
-"Payments, month 23",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B110:O110+B38:O38*B110:O110;6)),,,,,,,,,,,,,,
-"Payments, month 24",=ARRAYFORMULA(ROUND(B37:O37*B39:O39*B111:O111+B38:O38*B111:O111;6)),,,,,,,,,,,,,,
-"Revenue, month 1, $",=ARRAYFORMULA(ROUND(B37:O37*(B75:O75+B39:O39*B76:O76)+B38:O38*B76:O76+B60:O60*B77:O77+B58:O58*B79:O79+B59:O59*B80:O80*B138:O138;6)),,,,,,,,,,,,,,Plans + pack (month 1) + Pro
-"Revenue, month 2, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B89:O89+B59:O59*B80:O80*B139:O139;6)),,,,,,,,,,,,,,
-"Revenue, month 3, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B90:O90+B59:O59*B80:O80*B140:O140;6)),,,,,,,,,,,,,,
-"Revenue, month 4, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B91:O91+B60:O60*B78:O78*B115:O115+B59:O59*B80:O80*B141:O141;6)),,,,,,,,,,,,,,
-"Revenue, month 5, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B92:O92+B59:O59*B80:O80*B142:O142;6)),,,,,,,,,,,,,,
-"Revenue, month 6, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B93:O93+B59:O59*B80:O80*B143:O143;6)),,,,,,,,,,,,,,
-"Revenue, month 7, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B94:O94+B60:O60*B78:O78*B118:O118+B59:O59*B80:O80*B144:O144;6)),,,,,,,,,,,,,,
-"Revenue, month 8, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B95:O95+B59:O59*B80:O80*B145:O145;6)),,,,,,,,,,,,,,
-"Revenue, month 9, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B96:O96+B59:O59*B80:O80*B146:O146;6)),,,,,,,,,,,,,,
-"Revenue, month 10, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B97:O97+B60:O60*B78:O78*B121:O121+B59:O59*B80:O80*B147:O147;6)),,,,,,,,,,,,,,
-"Revenue, month 11, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B98:O98+B59:O59*B80:O80*B148:O148;6)),,,,,,,,,,,,,,
-"Revenue, month 12, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B99:O99+B59:O59*B80:O80*B149:O149;6)),,,,,,,,,,,,,,
-"Revenue, month 13, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B100:O100+B60:O60*B78:O78*B124:O124+B59:O59*B80:O80*B150:O150;6)),,,,,,,,,,,,,,
-"Revenue, month 14, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B101:O101+B59:O59*B80:O80*B151:O151;6)),,,,,,,,,,,,,,
-"Revenue, month 15, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B102:O102+B59:O59*B80:O80*B152:O152;6)),,,,,,,,,,,,,,
-"Revenue, month 16, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B103:O103+B60:O60*B78:O78*B127:O127+B59:O59*B80:O80*B153:O153;6)),,,,,,,,,,,,,,
-"Revenue, month 17, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B104:O104+B59:O59*B80:O80*B154:O154;6)),,,,,,,,,,,,,,
-"Revenue, month 18, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B105:O105+B59:O59*B80:O80*B155:O155;6)),,,,,,,,,,,,,,
-"Revenue, month 19, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B106:O106+B60:O60*B78:O78*B130:O130+B59:O59*B80:O80*B156:O156;6)),,,,,,,,,,,,,,
-"Revenue, month 20, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B107:O107+B59:O59*B80:O80*B157:O157;6)),,,,,,,,,,,,,,
-"Revenue, month 21, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B108:O108+B59:O59*B80:O80*B158:O158;6)),,,,,,,,,,,,,,
-"Revenue, month 22, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B109:O109+B60:O60*B78:O78*B133:O133+B59:O59*B80:O80*B159:O159;6)),,,,,,,,,,,,,,
-"Revenue, month 23, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B110:O110+B59:O59*B80:O80*B160:O160;6)),,,,,,,,,,,,,,
-"Revenue, month 24, $",=ARRAYFORMULA(ROUND((B37:O37*B39:O39+B38:O38)*B76:O76*B111:O111+B59:O59*B80:O80*B161:O161;6)),,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-"7. One payer: cumulative net money by month, $",,,,,,,,,,,,,,,Net = revenue × (1 − refunds − fee − disputes − RDR) − ($0.50 + disputes × $15) × payments − running costs × active months
-"Cumulative net, month 1",=ARRAYFORMULA(ROUND(B186:O186*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B162:O162-B84:O84*B138:O138;4)),,,,,,,,,,,,,,
-"Cumulative net, month 2",=ARRAYFORMULA(ROUND(B212:O212+B187:O187*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B163:O163-B84:O84*B139:O139;4)),,,,,,,,,,,,,,
-"Cumulative net, month 3",=ARRAYFORMULA(ROUND(B213:O213+B188:O188*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B164:O164-B84:O84*B140:O140;4)),,,,,,,,,,,,,,
-"Cumulative net, month 4",=ARRAYFORMULA(ROUND(B214:O214+B189:O189*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B165:O165-B84:O84*B141:O141;4)),,,,,,,,,,,,,,
-"Cumulative net, month 5",=ARRAYFORMULA(ROUND(B215:O215+B190:O190*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B166:O166-B84:O84*B142:O142;4)),,,,,,,,,,,,,,
-"Cumulative net, month 6",=ARRAYFORMULA(ROUND(B216:O216+B191:O191*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B167:O167-B84:O84*B143:O143;4)),,,,,,,,,,,,,,
-"Cumulative net, month 7",=ARRAYFORMULA(ROUND(B217:O217+B192:O192*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B168:O168-B84:O84*B144:O144;4)),,,,,,,,,,,,,,
-"Cumulative net, month 8",=ARRAYFORMULA(ROUND(B218:O218+B193:O193*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B169:O169-B84:O84*B145:O145;4)),,,,,,,,,,,,,,
-"Cumulative net, month 9",=ARRAYFORMULA(ROUND(B219:O219+B194:O194*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B170:O170-B84:O84*B146:O146;4)),,,,,,,,,,,,,,
-"Cumulative net, month 10",=ARRAYFORMULA(ROUND(B220:O220+B195:O195*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B171:O171-B84:O84*B147:O147;4)),,,,,,,,,,,,,,
-"Cumulative net, month 11",=ARRAYFORMULA(ROUND(B221:O221+B196:O196*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B172:O172-B84:O84*B148:O148;4)),,,,,,,,,,,,,,
-"Cumulative net, month 12",=ARRAYFORMULA(ROUND(B222:O222+B197:O197*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B173:O173-B84:O84*B149:O149;4)),,,,,,,,,,,,,,
-"Cumulative net, month 13",=ARRAYFORMULA(ROUND(B223:O223+B198:O198*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B174:O174-B84:O84*B150:O150;4)),,,,,,,,,,,,,,
-"Cumulative net, month 14",=ARRAYFORMULA(ROUND(B224:O224+B199:O199*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B175:O175-B84:O84*B151:O151;4)),,,,,,,,,,,,,,
-"Cumulative net, month 15",=ARRAYFORMULA(ROUND(B225:O225+B200:O200*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B176:O176-B84:O84*B152:O152;4)),,,,,,,,,,,,,,
-"Cumulative net, month 16",=ARRAYFORMULA(ROUND(B226:O226+B201:O201*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B177:O177-B84:O84*B153:O153;4)),,,,,,,,,,,,,,
-"Cumulative net, month 17",=ARRAYFORMULA(ROUND(B227:O227+B202:O202*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B178:O178-B84:O84*B154:O154;4)),,,,,,,,,,,,,,
-"Cumulative net, month 18",=ARRAYFORMULA(ROUND(B228:O228+B203:O203*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B179:O179-B84:O84*B155:O155;4)),,,,,,,,,,,,,,
-"Cumulative net, month 19",=ARRAYFORMULA(ROUND(B229:O229+B204:O204*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B180:O180-B84:O84*B156:O156;4)),,,,,,,,,,,,,,
-"Cumulative net, month 20",=ARRAYFORMULA(ROUND(B230:O230+B205:O205*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B181:O181-B84:O84*B157:O157;4)),,,,,,,,,,,,,,
-"Cumulative net, month 21",=ARRAYFORMULA(ROUND(B231:O231+B206:O206*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B182:O182-B84:O84*B158:O158;4)),,,,,,,,,,,,,,
-"Cumulative net, month 22",=ARRAYFORMULA(ROUND(B232:O232+B207:O207*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B183:O183-B84:O84*B159:O159;4)),,,,,,,,,,,,,,
-"Cumulative net, month 23",=ARRAYFORMULA(ROUND(B233:O233+B208:O208*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B184:O184-B84:O84*B160:O160;4)),,,,,,,,,,,,,,
-"Cumulative net, month 24",=ARRAYFORMULA(ROUND(B234:O234+B209:O209*(1-B44:O44-B81:O81-B47:O47-B49:O49)-(B46:O46+B47:O47*B48:O48)*B185:O185-B84:O84*B161:O161;4)),,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,
-"8. Money Map, month 6 (Base US) — Gross → Net",,,,,,,,,,,,,,,Money Map homework; one plan at $17.99 to keep the map simple
-Paying users in month 6,484,,,,,,,,,,,,,,"A 214 new ($8,670 spend ÷ CAC $40.51 in HW1) + 270 renewals"
-"Gross revenue, $","=B238*17,99",,,,,,,,,,,,,,484 × $17.99
-"Cost of revenue, share","16,25%",,,,,,,,,,,,,,Money Map: refunds 6% + chargebacks 1.47% + RDR 1% + Paddle 7.78%
-"Net revenue per month, $",=ROUND(B239*(1-B240);0),,,,,,,,,,,,,,"Money Map as submitted (HW1 CAC $40.51). Mentor fix: 214 new pay the $4.99 trial week, so Gross $5,925, CoR 17.86%, Net $4,867; capstone rows below use the real plan mix"
-"Capstone update: monthly ad spend, $",8670,,,,,,,,,,,,,,"A test budget $289 a day (CAC × 50 / 7, HW1)"
-New payers per month at Base CAC,=ROUND(B242/D70;1),,,,,,,,,,,,,,Spend ÷ Base (US) CAC from block 3 (column D)
-Payments in month 6,=ROUND(B243*SUM(D162:D167);0),,,,,,,,,,,,,,"6 monthly cohorts, Base (US) column D"
-"Gross revenue in month 6, $",=ROUND(B243*SUM(D186:D191);0),,,,,,,,,,,,,,Real plan mix instead of one $17.99 plan
-"Net in month 6 after payment and running costs, $",=ROUND(B243*D217;0),,,,,,,,,,,,,,New payers × cumulative net per payer at month 6
-"Net minus ad spend in month 6, $",=B246-B242,,,,,,,,,,,,,,Negative = still buying growth
-,,,,,,,,,,,,,,,
-9. Tests: how much traffic and money each test needs,,,,,,,,,,,,,,,"Two-proportion test, α 0.05 two-sided, power 80%. MDE = the ladder target, set by the business"
-Test 1 · CTR (creatives): baseline,=D19,,,,,,,,,,,,,,Base (US) CTR
-Test 1 · CTR: target (MDE),=F19,,,,,,,,,,,,,,More best: strong creatives (+11%)
-Test 1 · impressions per variant,"=ROUND(((1,96*SQRT(2*((B250+B251)/2)*(1-(B250+B251)/2))+0,8416*SQRT(B250*(1-B250)+B251*(1-B251)))/(B251-B250))^2;0)",,,,,,,,,,,,,,
-"Test 1 · cost in the US (2 variants), $",=ROUND(2*B252*D17/1000;0),,,,,,,,,,,,,,2 × impressions × US CPM
-Test 2 · price: control pays (old prices),=D61,,,,,,,,,,,,,,"Paywall → pays, Base (US). Primary metric: revenue per paywall view; guardrails refunds and renewals"
-Test 2 · price: break-even share of payers,"0,64",,,,,,,,,,,,,,New prices win while payers ≥ 64% of control: net per payer old ÷ new = $52.52 ÷ $82.53
-Test 2 · price: paywall views per variant,"=ROUND(((1,96*SQRT(2*((B254+B254*B255)/2)*(1-(B254+B254*B255)/2))+0,8416*SQRT(B254*(1-B254)+B254*B255*(1-B254*B255)))/(B254*B255-B254))^2;0)",,,,,,,,,,,,,,
-"Test 2 · price: cost in the US (2 variants), $",=ROUND(2*B256*D69;0),,,,,,,,,,,,,,2 × views × US cost per paywall view (block 3)
-Test 3 · paywall → pays: baseline,=D61,,,,,,,,,,,,,,"Base (US), no 3DS"
-Test 3 · paywall: target (MDE),=G61,,,,,,,,,,,,,,Later lever: checkout 28% (×1.2)
-Test 3 · paywall views per variant,"=ROUND(((1,96*SQRT(2*((B258+B259)/2)*(1-(B258+B259)/2))+0,8416*SQRT(B258*(1-B258)+B259*(1-B259)))/(B259-B258))^2;0)",,,,,,,,,,,,,,
-"Test 3 · cost in the US (2 variants), $",=ROUND(2*B260*D69;0),,,,,,,,,,,,,,2 × views × US cost per paywall view (block 3)
-"Daily test budget, $",289,,,,,,,,,,,,,,A HW1 budget
-Test 1 · days in the US,=ROUND(B253/B262;0),,,,,,,,,,,,,,
-Test 2 · days in the US,=ROUND(B257/B262;0),,,,,,,,,,,,,,Run full weeks; no peeking before the sample is reached
-Test 3 · days in the US,=ROUND(B261/B262;0),,,,,,,,,,,,,,Too long at $289 a day: needs a bigger daily budget or a bigger effect
-,,,,,,,,,,,,,,,
-"10. Cash at a steady ad budget — ads and variable costs only, no salaries",Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,Later lever (not in pitch): + checkout 28%,Later lever: + voice step 80%,Later lever: + trial→month 50%,Later lever: + retention,Later lever: + refunds 3%,Later lever: + pack 25%,Expansion (not in pitch): UK,Expansion: Germany,Expansion: Spain,Cash after M months = new payers × (K1 + … + KM) − spend × M; same cohort logic as block 8
-"Ad spend per month, $",8670,8670,8670,8670,8670,8670,8670,8670,8670,8670,8670,8670,8670,8670,"A Money Map budget, $289 a day"
-New payers per month,=ARRAYFORMULA(ROUND(B268:O268/B70:O70;1)),,,,,,,,,,,,,,Spend ÷ CAC
-"Cash after month 1, $",=ARRAYFORMULA(ROUND(B269:O269*B212:O212-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 2, $",=ARRAYFORMULA(ROUND(B270:O270+B269:O269*B213:O213-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 3, $",=ARRAYFORMULA(ROUND(B271:O271+B269:O269*B214:O214-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 4, $",=ARRAYFORMULA(ROUND(B272:O272+B269:O269*B215:O215-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 5, $",=ARRAYFORMULA(ROUND(B273:O273+B269:O269*B216:O216-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 6, $",=ARRAYFORMULA(ROUND(B274:O274+B269:O269*B217:O217-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 7, $",=ARRAYFORMULA(ROUND(B275:O275+B269:O269*B218:O218-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 8, $",=ARRAYFORMULA(ROUND(B276:O276+B269:O269*B219:O219-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 9, $",=ARRAYFORMULA(ROUND(B277:O277+B269:O269*B220:O220-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 10, $",=ARRAYFORMULA(ROUND(B278:O278+B269:O269*B221:O221-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 11, $",=ARRAYFORMULA(ROUND(B279:O279+B269:O269*B222:O222-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 12, $",=ARRAYFORMULA(ROUND(B280:O280+B269:O269*B223:O223-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 13, $",=ARRAYFORMULA(ROUND(B281:O281+B269:O269*B224:O224-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 14, $",=ARRAYFORMULA(ROUND(B282:O282+B269:O269*B225:O225-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 15, $",=ARRAYFORMULA(ROUND(B283:O283+B269:O269*B226:O226-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 16, $",=ARRAYFORMULA(ROUND(B284:O284+B269:O269*B227:O227-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 17, $",=ARRAYFORMULA(ROUND(B285:O285+B269:O269*B228:O228-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 18, $",=ARRAYFORMULA(ROUND(B286:O286+B269:O269*B229:O229-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 19, $",=ARRAYFORMULA(ROUND(B287:O287+B269:O269*B230:O230-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 20, $",=ARRAYFORMULA(ROUND(B288:O288+B269:O269*B231:O231-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 21, $",=ARRAYFORMULA(ROUND(B289:O289+B269:O269*B232:O232-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 22, $",=ARRAYFORMULA(ROUND(B290:O290+B269:O269*B233:O233-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 23, $",=ARRAYFORMULA(ROUND(B291:O291+B269:O269*B234:O234-B268:O268;0)),,,,,,,,,,,,,,
-"Cash after month 24, $",=ARRAYFORMULA(ROUND(B292:O292+B269:O269*B235:O235-B268:O268;0)),,,,,,,,,,,,,,
-"Most cash needed (lowest point), $",=-MIN(B270:B293),=-MIN(C270:C293),=-MIN(D270:D293),=-MIN(E270:E293),=-MIN(F270:F293),=-MIN(G270:G293),=-MIN(H270:H293),=-MIN(I270:I293),=-MIN(J270:J293),=-MIN(K270:K293),=-MIN(L270:L293),=-MIN(M270:M293),=-MIN(N270:N293),=-MIN(O270:O293),
-Cash break-even month,"=IFERROR(MATCH(TRUE;INDEX(B270:B293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(C270:C293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(D270:D293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(E270:E293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(F270:F293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(G270:G293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(H270:H293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(I270:I293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(J270:J293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(K270:K293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(L270:L293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(M270:M293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(N270:N293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(O270:O293>=0;0);0);""none"")","""none"" = not within 24 months"
-,,,,,,,,,,,,,,,
-11. Market size check,,,,,,,,,,,,,,,"S BLS: 62,972,000 hires in the US in 2025 (hires, not unique people interviewed)"
-US hires per year,62972000,,,,,,,,,,,,,,"S BLS TED, 2026"
-"Target annual revenue, $",100000000,,,,,,,,,,,,,,Mentor question
-"LTV per payer used for sizing, $",150,,,,,,,,,,,,,,Mentor figure; our 24-month net LTV is in block 1
-Payers needed per year,=ROUND(B299/B300;0),,,,,,,,,,,,,,Revenue ÷ LTV
-Share of US hires,=ROUND(B301/B298;4),,,,,,,,,,,,,,"≈1%, not 2%"
-"Revenue per person at 2% share, $","=ROUND(B299/(0,02*B298);2)",,,,,,,,,,,,,,2% × hires → $ each must bring
-"Ad spend per year at Base (US) CAC, $",=ROUND(B301*D70;0),,,,,,,,,,,,,,Payers × Base CAC
-,,,,,,,,,,,,,,,
-"Sources: Affect Group (US Meta CPM by objective, Q4 2025 / Q1 2026), Superads (US Meta CPM median Jul 2025–Jul 2026), Lebesgue (CPM by country 2026), BLS (US hires 2025), Adamigo (Meta CPM by country 2026), Soniox pricing (2 Nov 2026), Aimerce (Meta location fees), Databox (Meta CTR medians 2026), WordStream (Facebook ads benchmarks 2025), Lebesgue and ATTN (CTR by format), FunnelFox State of Web2App 2026, RevenueCat State of Subscription Apps 2026, Adapty (refunds), Paddle pricing, DeepSeek API pricing (deepseek-flash, 4 Nov 2026), Pound Sterling Live (USD/CNY 22 Oct 2026), Pound Sterling Live (FX 27 Oct 2026), Vocal Image funnel (19 Oct 2026).",,,,,,,,,,,,,,,
+Speakline — Capstone unit economics (Team 2),,,,,,,
+"One column = one scenario, US only: Worst, Worst CTR only, Base, Best, More best (B–F) and More best + retention (G). First make the US work, then everything else: no other levers or markets are modelled. Inputs in block 2; everything else is formulas.",,,,,,,
+"Tags in the last column: D = course default, S = found a source, A = our assumption (reason given). Money in USD, shares 0–1.",,,,,,,
+,,,,,,,
+1. Results,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,More best + retention (US): calendar keeps payers,How to read
+"CAC — cost of one payer, $",=B70,=C70,=D70,=E70,=F70,=G70,Block 3
+"12-month LTV per payer (net), $",=B223,=C223,=D223,=E223,=F223,=G223,"Block 7, month 12"
+"LTV / CAC, 12 months",=ROUND(B223/B70;2),=ROUND(C223/C70;2),=ROUND(D223/D70;2),=ROUND(E223/E70;2),=ROUND(F223/F70;2),=ROUND(G223/G70;2),≥1.5 scale · 1–1.5 test · <1 don't buy
+"24-month LTV per payer (net), $",=B235,=C235,=D235,=E235,=F235,=G235,"Block 7, month 24"
+"LTV / CAC, 24 months",=ROUND(B235/B70;2),=ROUND(C235/C70;2),=ROUND(D235/D70;2),=ROUND(E235/E70;2),=ROUND(F235/F70;2),=ROUND(G235/G70;2),If retention continues
+Payback month (cumulative net ≥ CAC),"=IFERROR(MATCH(TRUE;INDEX(B212:B235>=B70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(C212:C235>=C70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(D212:D235>=D70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(E212:E235>=E70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(F212:F235>=F70;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(G212:G235>=G70;0);0);""none"")","""none"" = not within 24 months"
+"Revenue per payer, 12 months (before deductions), $",=ROUND(SUM(B186:B197);2),=ROUND(SUM(C186:C197);2),=ROUND(SUM(D186:D197);2),=ROUND(SUM(E186:E197);2),=ROUND(SUM(F186:F197);2),=ROUND(SUM(G186:G197);2),Benchmark: web median ≈ $67 (FunnelFox 2026)
+"Max CAC to scale (LTV12 / 1.5), $","=ROUND(B223/1,5;2)","=ROUND(C223/1,5;2)","=ROUND(D223/1,5;2)","=ROUND(E223/1,5;2)","=ROUND(F223/1,5;2)","=ROUND(G223/1,5;2)",Safety margin for forecast error and rising CAC
+Decision,"=IF(B8>=1,5;""scale"";IF(B8>=1;""test"";""don't buy""))","=IF(C8>=1,5;""scale"";IF(C8>=1;""test"";""don't buy""))","=IF(D8>=1,5;""scale"";IF(D8>=1;""test"";""don't buy""))","=IF(E8>=1,5;""scale"";IF(E8>=1;""test"";""don't buy""))","=IF(F8>=1,5;""scale"";IF(F8>=1;""test"";""don't buy""))","=IF(G8>=1,5;""scale"";IF(G8>=1;""test"";""don't buy""))",
+,,,,,,,
+2. Inputs,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,More best + retention (US): calendar keeps payers,Source / tag
+"CPM — cost of 1,000 impressions, $",45,30,30,30,30,30,"US: S Affect Group (Q4 2025 Sales objective, average $20–30; average-max $30–45) → base $30 = top of Q4 average (mentor: $23 too low), worst $45, best $23 = Superads all-industry median."
+Meta location fee (from 1 Jul 2026),0%,0%,0%,0%,0%,0%,S Aimerce: US 0%
+"CTR (all clicks, Meta default column) — share of impressions that click","1,2%","1,2%","1,8%","1,9%",2%,2%,"S Databox 2026 (2,800+ companies): median CTR all 1.90%, link CTR 1.18% (link ≈ 62% of all clicks → our click → quiz 60% matches); WordStream 2025 US traffic campaigns 1.71% (education 1.45%); Lebesgue: image 0.91% vs video 1.0%; ATTN 2026: static 1.1% vs video 1.9%. A Base 1.8% (just under the median, mentor 5 Nov 2026: 1.8–2.2% normal), Best 1.9% = median, More best 2.0% = strong creatives, 60% static / 40% video, Worst 1.2% = weak static only"
+Click → starts quiz,60%,60%,60%,60%,60%,60%,A our funnel
+Starts → finishes the 5-question quiz,55%,55%,55%,55%,55%,55%,"A 55% (kept from the 6-question version, cautious)"
+Finishes quiz → does 10-s voice test,70%,70%,70%,70%,70%,70%,A main risk of the funnel
+Voice test → leaves email,75%,75%,75%,75%,75%,75%,A
+Email → sees paywall,95%,95%,95%,95%,95%,95%,A
+Paywall → presses Pay (checkout),"18,65%","23,31%","23,31%","23,31%","23,31%","23,31%","A cautious (4 Nov 2026): 23.3% = 27.4% × 0.85 — prices roughly doubled, so 15% fewer press Pay (27.4% = our 15% paid ÷ Money Map payment success 54.7%). Worst 18.7%. Paywall test target ×1.2 (test 2, block 9)"
+Payment: bank approves (authorization),65%,65%,65%,65%,65%,65%,A Money Map Section 1: 65% when Paddle charges the cards; same in all markets (not checked per country)
+Payment: passes 3-D Secure,100%,100%,100%,100%,100%,100%,A 100%: no 3-D Secure mandate (SCA) in the US (mentor feedback 3 Nov 2026)
+Payment: money captured,99%,99%,99%,99%,99%,99%,D course default 99%
+"Trial week price, local currency","9,99","9,99","9,99","9,99","9,99","9,99",A ours (4 Nov 2026): 7-day AI plan to your date. S RiseGuide App Store week $9.99; Vocal Image $4.99.
+"Monthly price, local currency","29,99","29,99","29,99","29,99","29,99","29,99",A ours: $29.99 = RiseGuide App Store month (S); RiseGuide web charges $41.99 every 28 days (S BBB complaints); Vocal Image $17.99. Price is untested: watch payers per paywall view and refunds from day one
+"First 3 months, local","59,99","59,99","59,99","59,99","59,99","59,99","A ours: $59.99 = $20 a month, a third off monthly; preselected on the paywall"
+"Next 3 months, local","59,99","59,99","59,99","59,99","59,99","59,99",A same as first payment: no renewal jump (RiseGuide BBB complaints are about the $19.99 → $41.99 jump)
+"Scenario pack (one-time), local","9,99","9,99","9,99","9,99","9,99","9,99",S median web2app upsell ≈ $9.31 (FunnelFox 2026); ours $9.99. The only upsell: 10 situations + 6 ready scripts
+"Pro add-on per month, local (removed)",10,10,10,10,10,10,Pro removed 4 Nov 2026: two near-equal offers confused users; kept at 0% take rate below
+VAT included in price,0%,0%,0%,0%,0%,0%,"US sales tax is added on top of the price, so 0% here"
+Exchange rate to USD,1,1,1,1,1,1,USD
+Plan mix: trial week → monthly,30%,30%,30%,30%,30%,30%,"A 30%: the paywall preselects 3 months, so 3 months gets the biggest share (40%); real mix is measured after launch"
+Plan mix: monthly,30%,30%,30%,30%,30%,30%,A 30%
+Trial week → pays for month,35%,45%,45%,45%,45%,45%,"A; RevenueCat Education weekly first renewal 58% at the same price; ours jumps ×3 ($9.99 → $29.99), kept at 45%"
+Monthly: first renewal,48%,56%,56%,56%,56%,60%,"S RevenueCat 2026 Education median 56% (48–66%). G: 60% A, goal of the retention work (calendar + reminder before each meeting), test 3 in block 9"
+Monthly: still paying in month 12,7%,10%,10%,10%,10%,12%,S FunnelFox 2026: ≈10% for monthly web subscriptions. G: 12% A (same retention goal)
+3 months: first renewal,35%,35%,35%,35%,35%,35%,A
+3 months: later renewals,60%,60%,60%,60%,60%,60%,A
+"Refunds, share of revenue",8%,6%,6%,6%,6%,6%,S Adapty: Education 4.9–5.1%; ours 6% (paid trial week) A
+"Paddle fee, % of each payment",5%,5%,5%,5%,5%,5%,S Paddle pricing 5% + $0.50
+"Paddle fixed fee per payment, $","0,5","0,5","0,5","0,5","0,5","0,5",S Paddle pricing
+"Disputes, share of payments","0,8%","0,8%","0,8%","0,8%","0,8%","0,8%",D course default (Money Map)
+"Fee per dispute, $",15,15,15,15,15,15,D course default (Money Map)
+"RDR alerts, share of revenue",1%,1%,1%,1%,1%,1%,D course default (Money Map)
+Speech-to-text: minutes of audio per active month,40,40,40,40,40,40,A upper bound: 40 recordings × max 60 s (app limit)
+"Soniox real-time price per minute of audio, $","0,002","0,002","0,002","0,002","0,002","0,002",S Soniox pricing page: $0.12 per hour real-time (2 Nov 2026)
+"Hosting per active month, $",0,0,0,0,0,0,"0: hosting is a fixed cost, not per user (Google Cloud e2-micro Always Free = $0). AI coach and speech-to-text stay per user"
+"AI coach: price per 1M input tokens, $","0,3","0,3","0,3","0,3","0,3","0,3","S DeepSeek deepseek-flash, peak price ¥2 per 1M input (api-docs.deepseek.com, 4 Nov 2026) ÷ 6.6781 CNY/USD (Pound Sterling Live, 22 Oct 2026); thinking mode off. Claude Sonnet 5.5 would be $2"
+"AI coach: price per 1M output tokens, $","1,2","1,2","1,2","1,2","1,2","1,2",S DeepSeek peak ¥8 per 1M output ÷ 6.6781; Claude Sonnet 5.5 would be $10
+AI coach: input tokens per review,800,800,800,800,800,800,"A upper bound: prompt ≈ 3,100 characters incl. 2,000-character transcript cap (server.js)"
+AI coach: output tokens per review,700,700,700,700,700,700,A upper bound = max_tokens 700 in server.js
+AI reviews per active month,40,40,40,40,40,40,"A 2 recordings × 20 practice days; server cap 3 per day, so worst case 90 reviews = $0.10 a month"
+Buy the Scenario pack after paying,8%,15%,15%,15%,15%,15%,A no benchmark found for take rate
+Upgrade to Pro (removed),0%,0%,0%,0%,0%,0%,0% in all scenarios: Pro removed
+Plan mix: 3 months (remainder),=ARRAYFORMULA(1-B37:G37-B38:G38),,,,,,Remainder to 100%
+Paywall → pays (incl. failed payments),=ARRAYFORMULA(ROUND(B25:G25*B26:G26*B27:G27*B28:G28;6)),,,,,,Checkout × authorization × 3DS × capture
+,,,,,,,
+3. Funnel: what each step costs,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,More best + retention (US): calendar keeps payers,How it is calculated
+"Cost per click (CPC), $",=ARRAYFORMULA(ROUND(B17:G17*(1+B18:G18)/(1000*B19:G19);4)),,,,,,CPM × (1 + location fee) / (1000 × CTR)
+"Cost per started quiz, $",=ARRAYFORMULA(ROUND(B64:G64/B20:G20;4)),,,,,,Previous step ÷ step conversion
+"Cost per finished quiz, $",=ARRAYFORMULA(ROUND(B65:G65/B21:G21;4)),,,,,,Previous step ÷ step conversion
+"Cost per voice test, $",=ARRAYFORMULA(ROUND(B66:G66/B22:G22;4)),,,,,,Previous step ÷ step conversion
+"Cost per email, $",=ARRAYFORMULA(ROUND(B67:G67/B23:G23;4)),,,,,,Previous step ÷ step conversion
+"Cost per paywall view, $",=ARRAYFORMULA(ROUND(B68:G68/B24:G24;4)),,,,,,Previous step ÷ step conversion
+"CAC — cost per payer, $",=ARRAYFORMULA(ROUND(B69:G69/B61:G61;4)),,,,,,Previous step ÷ step conversion
+Click → payer conversion,=ARRAYFORMULA(ROUND(B20:G20*B21:G21*B22:G22*B23:G23*B24:G24*B61:G61;6)),,,,,,Product of step conversions; web2app benchmark ≈ 3% (FunnelFox)
+,,,,,,,
+4. Prices after VAT and costs per active month,Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,More best + retention (US): calendar keeps payers,
+Price factor: local → USD after VAT,=ARRAYFORMULA(ROUND(B36:G36/(1+B35:G35);6)),,,,,,FX / (1 + VAT)
+"Trial week, $ net",=ARRAYFORMULA(ROUND(B29:G29*B74:G74;4)),,,,,,
+"Monthly, $ net",=ARRAYFORMULA(ROUND(B30:G30*B74:G74;4)),,,,,,
+"First 3 months, $ net",=ARRAYFORMULA(ROUND(B31:G31*B74:G74;4)),,,,,,
+"Next 3 months, $ net",=ARRAYFORMULA(ROUND(B32:G32*B74:G74;4)),,,,,,
+"Pack, $ net",=ARRAYFORMULA(ROUND(B33:G33*B74:G74;4)),,,,,,
+"Pro add-on, $ net",=ARRAYFORMULA(ROUND(B34:G34*B74:G74;4)),,,,,,
+Payment fee on net price (fee is charged on price incl. VAT),=ARRAYFORMULA(ROUND(B45:G45*(1+B35:G35);6)),,,,,,
+"AI coach cost per active month, $",=ARRAYFORMULA(ROUND(B57:G57*(B55:G55*B53:G53+B56:G56*B54:G54)/1000000;4)),,,,,,Reviews × (input tokens × price + output tokens × price)
+"Speech-to-text cost per active month, $",=ARRAYFORMULA(ROUND(B50:G50*B51:G51;4)),,,,,,Minutes × Soniox price
+"All running costs per active month, $",=ARRAYFORMULA(B52:G52+B83:G83+B82:G82),,,,,,Hosting + speech-to-text + AI coach
+,,,,,,,
+5. Retention: share of payers still paying in month m,,,,,,,"Monthly: month 1 = all, month 2 = first renewal, then constant share q; 3-month plan renews in months 4, 7, 10…"
+q — monthly renewal after month 2,=ARRAYFORMULA(ROUND((B41:G41/B40:G40)^(1/10);6)),,,,,,q chosen so month 12 = input
+"Monthly plan, month 1",1,1,1,1,1,1,
+"Monthly plan, month 2",=ARRAYFORMULA(B40:G40),,,,,,
+"Monthly plan, month 3",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^1;6)),,,,,,
+"Monthly plan, month 4",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^2;6)),,,,,,
+"Monthly plan, month 5",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^3;6)),,,,,,
+"Monthly plan, month 6",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^4;6)),,,,,,
+"Monthly plan, month 7",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^5;6)),,,,,,
+"Monthly plan, month 8",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^6;6)),,,,,,
+"Monthly plan, month 9",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^7;6)),,,,,,
+"Monthly plan, month 10",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^8;6)),,,,,,
+"Monthly plan, month 11",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^9;6)),,,,,,
+"Monthly plan, month 12",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^10;6)),,,,,,
+"Monthly plan, month 13",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^11;6)),,,,,,
+"Monthly plan, month 14",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^12;6)),,,,,,
+"Monthly plan, month 15",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^13;6)),,,,,,
+"Monthly plan, month 16",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^14;6)),,,,,,
+"Monthly plan, month 17",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^15;6)),,,,,,
+"Monthly plan, month 18",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^16;6)),,,,,,
+"Monthly plan, month 19",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^17;6)),,,,,,
+"Monthly plan, month 20",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^18;6)),,,,,,
+"Monthly plan, month 21",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^19;6)),,,,,,
+"Monthly plan, month 22",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^20;6)),,,,,,
+"Monthly plan, month 23",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^21;6)),,,,,,
+"Monthly plan, month 24",=ARRAYFORMULA(ROUND(B40:G40*B87:G87^22;6)),,,,,,
+"3-month plan, month 1",1,1,1,1,1,1,
+"3-month plan, month 2",1,1,1,1,1,1,
+"3-month plan, month 3",1,1,1,1,1,1,
+"3-month plan, month 4",=ARRAYFORMULA(B42:G42),,,,,,
+"3-month plan, month 5",=ARRAYFORMULA(B42:G42),,,,,,
+"3-month plan, month 6",=ARRAYFORMULA(B42:G42),,,,,,
+"3-month plan, month 7",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^1;6)),,,,,,
+"3-month plan, month 8",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^1;6)),,,,,,
+"3-month plan, month 9",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^1;6)),,,,,,
+"3-month plan, month 10",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^2;6)),,,,,,
+"3-month plan, month 11",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^2;6)),,,,,,
+"3-month plan, month 12",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^2;6)),,,,,,
+"3-month plan, month 13",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^3;6)),,,,,,
+"3-month plan, month 14",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^3;6)),,,,,,
+"3-month plan, month 15",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^3;6)),,,,,,
+"3-month plan, month 16",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^4;6)),,,,,,
+"3-month plan, month 17",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^4;6)),,,,,,
+"3-month plan, month 18",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^4;6)),,,,,,
+"3-month plan, month 19",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^5;6)),,,,,,
+"3-month plan, month 20",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^5;6)),,,,,,
+"3-month plan, month 21",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^5;6)),,,,,,
+"3-month plan, month 22",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^6;6)),,,,,,
+"3-month plan, month 23",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^6;6)),,,,,,
+"3-month plan, month 24",=ARRAYFORMULA(ROUND(B42:G42*B43:G43^6;6)),,,,,,
+,,,,,,,
+"6. One payer by month: active months, payments, revenue",,,,,,,
+"Active, month 1","=ARRAYFORMULA(ROUND(B37:G37*(0,25+0,75*B39:G39)+B38:G38*B88:G88+B60:G60*B112:G112;6))",,,,,,A trial week = 0.25 of a month
+"Active, month 2",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B89:G89+B38:G38*B89:G89+B60:G60*B113:G113;6)),,,,,,
+"Active, month 3",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B90:G90+B38:G38*B90:G90+B60:G60*B114:G114;6)),,,,,,
+"Active, month 4",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B91:G91+B38:G38*B91:G91+B60:G60*B115:G115;6)),,,,,,
+"Active, month 5",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B92:G92+B38:G38*B92:G92+B60:G60*B116:G116;6)),,,,,,
+"Active, month 6",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B93:G93+B38:G38*B93:G93+B60:G60*B117:G117;6)),,,,,,
+"Active, month 7",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B94:G94+B38:G38*B94:G94+B60:G60*B118:G118;6)),,,,,,
+"Active, month 8",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B95:G95+B38:G38*B95:G95+B60:G60*B119:G119;6)),,,,,,
+"Active, month 9",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B96:G96+B38:G38*B96:G96+B60:G60*B120:G120;6)),,,,,,
+"Active, month 10",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B97:G97+B38:G38*B97:G97+B60:G60*B121:G121;6)),,,,,,
+"Active, month 11",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B98:G98+B38:G38*B98:G98+B60:G60*B122:G122;6)),,,,,,
+"Active, month 12",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B99:G99+B38:G38*B99:G99+B60:G60*B123:G123;6)),,,,,,
+"Active, month 13",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B100:G100+B38:G38*B100:G100+B60:G60*B124:G124;6)),,,,,,
+"Active, month 14",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B101:G101+B38:G38*B101:G101+B60:G60*B125:G125;6)),,,,,,
+"Active, month 15",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B102:G102+B38:G38*B102:G102+B60:G60*B126:G126;6)),,,,,,
+"Active, month 16",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B103:G103+B38:G38*B103:G103+B60:G60*B127:G127;6)),,,,,,
+"Active, month 17",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B104:G104+B38:G38*B104:G104+B60:G60*B128:G128;6)),,,,,,
+"Active, month 18",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B105:G105+B38:G38*B105:G105+B60:G60*B129:G129;6)),,,,,,
+"Active, month 19",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B106:G106+B38:G38*B106:G106+B60:G60*B130:G130;6)),,,,,,
+"Active, month 20",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B107:G107+B38:G38*B107:G107+B60:G60*B131:G131;6)),,,,,,
+"Active, month 21",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B108:G108+B38:G38*B108:G108+B60:G60*B132:G132;6)),,,,,,
+"Active, month 22",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B109:G109+B38:G38*B109:G109+B60:G60*B133:G133;6)),,,,,,
+"Active, month 23",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B110:G110+B38:G38*B110:G110+B60:G60*B134:G134;6)),,,,,,
+"Active, month 24",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B111:G111+B38:G38*B111:G111+B60:G60*B135:G135;6)),,,,,,
+"Payments, month 1",=ARRAYFORMULA(ROUND(B37:G37*(1+B39:G39)+B38:G38+B60:G60+B58:G58;6)),,,,,,Each payment pays Paddle $0.50 + dispute cost
+"Payments, month 2",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B89:G89+B38:G38*B89:G89;6)),,,,,,
+"Payments, month 3",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B90:G90+B38:G38*B90:G90;6)),,,,,,
+"Payments, month 4",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B91:G91+B38:G38*B91:G91+B60:G60*B115:G115;6)),,,,,,
+"Payments, month 5",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B92:G92+B38:G38*B92:G92;6)),,,,,,
+"Payments, month 6",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B93:G93+B38:G38*B93:G93;6)),,,,,,
+"Payments, month 7",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B94:G94+B38:G38*B94:G94+B60:G60*B118:G118;6)),,,,,,
+"Payments, month 8",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B95:G95+B38:G38*B95:G95;6)),,,,,,
+"Payments, month 9",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B96:G96+B38:G38*B96:G96;6)),,,,,,
+"Payments, month 10",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B97:G97+B38:G38*B97:G97+B60:G60*B121:G121;6)),,,,,,
+"Payments, month 11",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B98:G98+B38:G38*B98:G98;6)),,,,,,
+"Payments, month 12",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B99:G99+B38:G38*B99:G99;6)),,,,,,
+"Payments, month 13",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B100:G100+B38:G38*B100:G100+B60:G60*B124:G124;6)),,,,,,
+"Payments, month 14",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B101:G101+B38:G38*B101:G101;6)),,,,,,
+"Payments, month 15",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B102:G102+B38:G38*B102:G102;6)),,,,,,
+"Payments, month 16",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B103:G103+B38:G38*B103:G103+B60:G60*B127:G127;6)),,,,,,
+"Payments, month 17",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B104:G104+B38:G38*B104:G104;6)),,,,,,
+"Payments, month 18",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B105:G105+B38:G38*B105:G105;6)),,,,,,
+"Payments, month 19",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B106:G106+B38:G38*B106:G106+B60:G60*B130:G130;6)),,,,,,
+"Payments, month 20",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B107:G107+B38:G38*B107:G107;6)),,,,,,
+"Payments, month 21",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B108:G108+B38:G38*B108:G108;6)),,,,,,
+"Payments, month 22",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B109:G109+B38:G38*B109:G109+B60:G60*B133:G133;6)),,,,,,
+"Payments, month 23",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B110:G110+B38:G38*B110:G110;6)),,,,,,
+"Payments, month 24",=ARRAYFORMULA(ROUND(B37:G37*B39:G39*B111:G111+B38:G38*B111:G111;6)),,,,,,
+"Revenue, month 1, $",=ARRAYFORMULA(ROUND(B37:G37*(B75:G75+B39:G39*B76:G76)+B38:G38*B76:G76+B60:G60*B77:G77+B58:G58*B79:G79+B59:G59*B80:G80*B138:G138;6)),,,,,,Plans + pack (month 1) + Pro
+"Revenue, month 2, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B89:G89+B59:G59*B80:G80*B139:G139;6)),,,,,,
+"Revenue, month 3, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B90:G90+B59:G59*B80:G80*B140:G140;6)),,,,,,
+"Revenue, month 4, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B91:G91+B60:G60*B78:G78*B115:G115+B59:G59*B80:G80*B141:G141;6)),,,,,,
+"Revenue, month 5, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B92:G92+B59:G59*B80:G80*B142:G142;6)),,,,,,
+"Revenue, month 6, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B93:G93+B59:G59*B80:G80*B143:G143;6)),,,,,,
+"Revenue, month 7, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B94:G94+B60:G60*B78:G78*B118:G118+B59:G59*B80:G80*B144:G144;6)),,,,,,
+"Revenue, month 8, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B95:G95+B59:G59*B80:G80*B145:G145;6)),,,,,,
+"Revenue, month 9, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B96:G96+B59:G59*B80:G80*B146:G146;6)),,,,,,
+"Revenue, month 10, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B97:G97+B60:G60*B78:G78*B121:G121+B59:G59*B80:G80*B147:G147;6)),,,,,,
+"Revenue, month 11, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B98:G98+B59:G59*B80:G80*B148:G148;6)),,,,,,
+"Revenue, month 12, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B99:G99+B59:G59*B80:G80*B149:G149;6)),,,,,,
+"Revenue, month 13, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B100:G100+B60:G60*B78:G78*B124:G124+B59:G59*B80:G80*B150:G150;6)),,,,,,
+"Revenue, month 14, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B101:G101+B59:G59*B80:G80*B151:G151;6)),,,,,,
+"Revenue, month 15, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B102:G102+B59:G59*B80:G80*B152:G152;6)),,,,,,
+"Revenue, month 16, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B103:G103+B60:G60*B78:G78*B127:G127+B59:G59*B80:G80*B153:G153;6)),,,,,,
+"Revenue, month 17, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B104:G104+B59:G59*B80:G80*B154:G154;6)),,,,,,
+"Revenue, month 18, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B105:G105+B59:G59*B80:G80*B155:G155;6)),,,,,,
+"Revenue, month 19, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B106:G106+B60:G60*B78:G78*B130:G130+B59:G59*B80:G80*B156:G156;6)),,,,,,
+"Revenue, month 20, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B107:G107+B59:G59*B80:G80*B157:G157;6)),,,,,,
+"Revenue, month 21, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B108:G108+B59:G59*B80:G80*B158:G158;6)),,,,,,
+"Revenue, month 22, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B109:G109+B60:G60*B78:G78*B133:G133+B59:G59*B80:G80*B159:G159;6)),,,,,,
+"Revenue, month 23, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B110:G110+B59:G59*B80:G80*B160:G160;6)),,,,,,
+"Revenue, month 24, $",=ARRAYFORMULA(ROUND((B37:G37*B39:G39+B38:G38)*B76:G76*B111:G111+B59:G59*B80:G80*B161:G161;6)),,,,,,
+,,,,,,,
+"7. One payer: cumulative net money by month, $",,,,,,,Net = revenue × (1 − refunds − fee − disputes − RDR) − ($0.50 + disputes × $15) × payments − running costs × active months
+"Cumulative net, month 1",=ARRAYFORMULA(ROUND(B186:G186*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B162:G162-B84:G84*B138:G138;4)),,,,,,
+"Cumulative net, month 2",=ARRAYFORMULA(ROUND(B212:G212+B187:G187*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B163:G163-B84:G84*B139:G139;4)),,,,,,
+"Cumulative net, month 3",=ARRAYFORMULA(ROUND(B213:G213+B188:G188*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B164:G164-B84:G84*B140:G140;4)),,,,,,
+"Cumulative net, month 4",=ARRAYFORMULA(ROUND(B214:G214+B189:G189*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B165:G165-B84:G84*B141:G141;4)),,,,,,
+"Cumulative net, month 5",=ARRAYFORMULA(ROUND(B215:G215+B190:G190*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B166:G166-B84:G84*B142:G142;4)),,,,,,
+"Cumulative net, month 6",=ARRAYFORMULA(ROUND(B216:G216+B191:G191*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B167:G167-B84:G84*B143:G143;4)),,,,,,
+"Cumulative net, month 7",=ARRAYFORMULA(ROUND(B217:G217+B192:G192*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B168:G168-B84:G84*B144:G144;4)),,,,,,
+"Cumulative net, month 8",=ARRAYFORMULA(ROUND(B218:G218+B193:G193*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B169:G169-B84:G84*B145:G145;4)),,,,,,
+"Cumulative net, month 9",=ARRAYFORMULA(ROUND(B219:G219+B194:G194*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B170:G170-B84:G84*B146:G146;4)),,,,,,
+"Cumulative net, month 10",=ARRAYFORMULA(ROUND(B220:G220+B195:G195*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B171:G171-B84:G84*B147:G147;4)),,,,,,
+"Cumulative net, month 11",=ARRAYFORMULA(ROUND(B221:G221+B196:G196*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B172:G172-B84:G84*B148:G148;4)),,,,,,
+"Cumulative net, month 12",=ARRAYFORMULA(ROUND(B222:G222+B197:G197*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B173:G173-B84:G84*B149:G149;4)),,,,,,
+"Cumulative net, month 13",=ARRAYFORMULA(ROUND(B223:G223+B198:G198*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B174:G174-B84:G84*B150:G150;4)),,,,,,
+"Cumulative net, month 14",=ARRAYFORMULA(ROUND(B224:G224+B199:G199*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B175:G175-B84:G84*B151:G151;4)),,,,,,
+"Cumulative net, month 15",=ARRAYFORMULA(ROUND(B225:G225+B200:G200*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B176:G176-B84:G84*B152:G152;4)),,,,,,
+"Cumulative net, month 16",=ARRAYFORMULA(ROUND(B226:G226+B201:G201*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B177:G177-B84:G84*B153:G153;4)),,,,,,
+"Cumulative net, month 17",=ARRAYFORMULA(ROUND(B227:G227+B202:G202*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B178:G178-B84:G84*B154:G154;4)),,,,,,
+"Cumulative net, month 18",=ARRAYFORMULA(ROUND(B228:G228+B203:G203*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B179:G179-B84:G84*B155:G155;4)),,,,,,
+"Cumulative net, month 19",=ARRAYFORMULA(ROUND(B229:G229+B204:G204*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B180:G180-B84:G84*B156:G156;4)),,,,,,
+"Cumulative net, month 20",=ARRAYFORMULA(ROUND(B230:G230+B205:G205*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B181:G181-B84:G84*B157:G157;4)),,,,,,
+"Cumulative net, month 21",=ARRAYFORMULA(ROUND(B231:G231+B206:G206*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B182:G182-B84:G84*B158:G158;4)),,,,,,
+"Cumulative net, month 22",=ARRAYFORMULA(ROUND(B232:G232+B207:G207*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B183:G183-B84:G84*B159:G159;4)),,,,,,
+"Cumulative net, month 23",=ARRAYFORMULA(ROUND(B233:G233+B208:G208*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B184:G184-B84:G84*B160:G160;4)),,,,,,
+"Cumulative net, month 24",=ARRAYFORMULA(ROUND(B234:G234+B209:G209*(1-B44:G44-B81:G81-B47:G47-B49:G49)-(B46:G46+B47:G47*B48:G48)*B185:G185-B84:G84*B161:G161;4)),,,,,,
+,,,,,,,
+"8. Money Map, month 6 (Base US) — Gross → Net",,,,,,,Money Map homework; one plan at $17.99 to keep the map simple
+Paying users in month 6,484,,,,,,"A 214 new ($8,670 spend ÷ CAC $40.51 in HW1) + 270 renewals"
+"Gross revenue, $","=B238*17,99",,,,,,484 × $17.99
+"Cost of revenue, share","16,25%",,,,,,Money Map: refunds 6% + chargebacks 1.47% + RDR 1% + Paddle 7.78%
+"Net revenue per month, $",=ROUND(B239*(1-B240);0),,,,,,"Money Map as submitted (HW1 CAC $40.51). Mentor fix: 214 new pay the $4.99 trial week, so Gross $5,925, CoR 17.86%, Net $4,867; capstone rows below use the real plan mix"
+"Capstone update: monthly ad spend, $",8670,,,,,,"A test budget $289 a day (CAC × 50 / 7, HW1)"
+New payers per month at Base CAC,=ROUND(B242/D70;1),,,,,,Spend ÷ Base (US) CAC from block 3 (column D)
+Payments in month 6,=ROUND(B243*SUM(D162:D167);0),,,,,,"6 monthly cohorts, Base (US) column D"
+"Gross revenue in month 6, $",=ROUND(B243*SUM(D186:D191);0),,,,,,Real plan mix instead of one $17.99 plan
+"Net in month 6 after payment and running costs, $",=ROUND(B243*D217;0),,,,,,New payers × cumulative net per payer at month 6
+"Net minus ad spend in month 6, $",=B246-B242,,,,,,Negative = still buying growth
+,,,,,,,
+9. Tests: how much traffic and money each test needs,,,,,,,"Two-proportion test, α 0.05 two-sided, power 80%. MDE = the goal set by the business"
+Test 1 · CTR (creatives): baseline,=D19,,,,,,Base (US) CTR
+Test 1 · CTR: target (MDE),=F19,,,,,,More best: strong creatives (+11%)
+Test 1 · impressions per variant,"=ROUND(((1,96*SQRT(2*((B250+B251)/2)*(1-(B250+B251)/2))+0,8416*SQRT(B250*(1-B250)+B251*(1-B251)))/(B251-B250))^2;0)",,,,,,
+"Test 1 · cost in the US (2 variants), $",=ROUND(2*B252*D17/1000;0),,,,,,2 × impressions × US CPM
+Test 2 · paywall → pays: baseline,=D61,,,,,,Base (US). Variant: your result + plan on top of the paywall
+Test 2 · paywall: target (MDE),"=ROUND(B254*1,2;6)",,,,,,A ×1.2: the smallest lift worth building
+Test 2 · paywall views per variant,"=ROUND(((1,96*SQRT(2*((B254+B255)/2)*(1-(B254+B255)/2))+0,8416*SQRT(B254*(1-B254)+B255*(1-B255)))/(B255-B254))^2;0)",,,,,,
+"Test 2 · cost in the US (2 variants), $",=ROUND(2*B256*D69;0),,,,,,2 × views × US cost per paywall view (block 3)
+"Test 3 · retention: monthly first renewal, baseline",=D40,,,,,,Base (US). Variant: calendar + reminder before each meeting
+Test 3 · retention: target (MDE),=G40,,,,,,Column G goal
+Test 3 · monthly subscribers per variant,"=ROUND(((1,96*SQRT(2*((B258+B259)/2)*(1-(B258+B259)/2))+0,8416*SQRT(B258*(1-B258)+B259*(1-B259)))/(B259-B258))^2;0)",,,,,,"Subscribers who reach their first renewal (monthly plan, or trial week → month)"
+"Daily test budget, $",289,,,,,,A HW1 budget
+Test 3 · new monthly subscribers per day at this budget,=ROUND(B261/D70*(D37*D39+D38);2),,,,,,Payers per day × (trial share × trial → month + monthly share)
+Test 1 · days in the US,=ROUND(B253/B261;0),,,,,,
+Test 2 · days in the US,=ROUND(B257/B261;0),,,,,,Too long at $289 a day: needs a bigger daily budget
+Test 3 · days in the US,=ROUND(2*B260/B262;0),,,,,,"Far too long for an A/B at this budget: track retention by monthly cohorts, run the A/B at scale"
+,,,,,,,
+"10. Cash at a steady ad budget — ads and variable costs only, no salaries",Worst (US): all bad at once,Worst CTR only (US): weak static ads,Base (US),Best (US): CTR at market median,More best (US): strong creatives,More best + retention (US): calendar keeps payers,Cash after M months = new payers × (K1 + … + KM) − spend × M; same cohort logic as block 8
+"Ad spend per month, $",8670,8670,8670,8670,8670,8670,"A Money Map budget, $289 a day"
+New payers per month,=ARRAYFORMULA(ROUND(B268:G268/B70:G70;1)),,,,,,Spend ÷ CAC
+"Cash after month 1, $",=ARRAYFORMULA(ROUND(B269:G269*B212:G212-B268:G268;0)),,,,,,
+"Cash after month 2, $",=ARRAYFORMULA(ROUND(B270:G270+B269:G269*B213:G213-B268:G268;0)),,,,,,
+"Cash after month 3, $",=ARRAYFORMULA(ROUND(B271:G271+B269:G269*B214:G214-B268:G268;0)),,,,,,
+"Cash after month 4, $",=ARRAYFORMULA(ROUND(B272:G272+B269:G269*B215:G215-B268:G268;0)),,,,,,
+"Cash after month 5, $",=ARRAYFORMULA(ROUND(B273:G273+B269:G269*B216:G216-B268:G268;0)),,,,,,
+"Cash after month 6, $",=ARRAYFORMULA(ROUND(B274:G274+B269:G269*B217:G217-B268:G268;0)),,,,,,
+"Cash after month 7, $",=ARRAYFORMULA(ROUND(B275:G275+B269:G269*B218:G218-B268:G268;0)),,,,,,
+"Cash after month 8, $",=ARRAYFORMULA(ROUND(B276:G276+B269:G269*B219:G219-B268:G268;0)),,,,,,
+"Cash after month 9, $",=ARRAYFORMULA(ROUND(B277:G277+B269:G269*B220:G220-B268:G268;0)),,,,,,
+"Cash after month 10, $",=ARRAYFORMULA(ROUND(B278:G278+B269:G269*B221:G221-B268:G268;0)),,,,,,
+"Cash after month 11, $",=ARRAYFORMULA(ROUND(B279:G279+B269:G269*B222:G222-B268:G268;0)),,,,,,
+"Cash after month 12, $",=ARRAYFORMULA(ROUND(B280:G280+B269:G269*B223:G223-B268:G268;0)),,,,,,
+"Cash after month 13, $",=ARRAYFORMULA(ROUND(B281:G281+B269:G269*B224:G224-B268:G268;0)),,,,,,
+"Cash after month 14, $",=ARRAYFORMULA(ROUND(B282:G282+B269:G269*B225:G225-B268:G268;0)),,,,,,
+"Cash after month 15, $",=ARRAYFORMULA(ROUND(B283:G283+B269:G269*B226:G226-B268:G268;0)),,,,,,
+"Cash after month 16, $",=ARRAYFORMULA(ROUND(B284:G284+B269:G269*B227:G227-B268:G268;0)),,,,,,
+"Cash after month 17, $",=ARRAYFORMULA(ROUND(B285:G285+B269:G269*B228:G228-B268:G268;0)),,,,,,
+"Cash after month 18, $",=ARRAYFORMULA(ROUND(B286:G286+B269:G269*B229:G229-B268:G268;0)),,,,,,
+"Cash after month 19, $",=ARRAYFORMULA(ROUND(B287:G287+B269:G269*B230:G230-B268:G268;0)),,,,,,
+"Cash after month 20, $",=ARRAYFORMULA(ROUND(B288:G288+B269:G269*B231:G231-B268:G268;0)),,,,,,
+"Cash after month 21, $",=ARRAYFORMULA(ROUND(B289:G289+B269:G269*B232:G232-B268:G268;0)),,,,,,
+"Cash after month 22, $",=ARRAYFORMULA(ROUND(B290:G290+B269:G269*B233:G233-B268:G268;0)),,,,,,
+"Cash after month 23, $",=ARRAYFORMULA(ROUND(B291:G291+B269:G269*B234:G234-B268:G268;0)),,,,,,
+"Cash after month 24, $",=ARRAYFORMULA(ROUND(B292:G292+B269:G269*B235:G235-B268:G268;0)),,,,,,
+"Most cash needed (lowest point), $",=-MIN(B270:B293),=-MIN(C270:C293),=-MIN(D270:D293),=-MIN(E270:E293),=-MIN(F270:F293),=-MIN(G270:G293),
+Cash break-even month,"=IFERROR(MATCH(TRUE;INDEX(B270:B293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(C270:C293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(D270:D293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(E270:E293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(F270:F293>=0;0);0);""none"")","=IFERROR(MATCH(TRUE;INDEX(G270:G293>=0;0);0);""none"")","""none"" = not within 24 months"
+,,,,,,,
+11. Market size check,,,,,,,"S BLS: 62,972,000 hires in the US in 2025 (hires, not unique people interviewed)"
+US hires per year,62972000,,,,,,"S BLS TED, 2026"
+"Target annual revenue, $",100000000,,,,,,Mentor question
+"LTV per payer used for sizing, $",150,,,,,,Mentor figure; our 24-month net LTV is in block 1
+Payers needed per year,=ROUND(B299/B300;0),,,,,,Revenue ÷ LTV
+Share of US hires,=ROUND(B301/B298;4),,,,,,"≈1%, not 2%"
+"Revenue per person at 2% share, $","=ROUND(B299/(0,02*B298);2)",,,,,,2% × hires → $ each must bring
+"Ad spend per year at Base (US) CAC, $",=ROUND(B301*D70;0),,,,,,Payers × Base CAC
+,,,,,,,
+"Sources: Affect Group (US Meta CPM by objective, Q4 2025 / Q1 2026), Superads (US Meta CPM median Jul 2025–Jul 2026), Lebesgue (CPM by country 2026), BLS (US hires 2025), Adamigo (Meta CPM by country 2026), Soniox pricing (2 Nov 2026), Aimerce (Meta location fees), Databox (Meta CTR medians 2026), WordStream (Facebook ads benchmarks 2025), Lebesgue and ATTN (CTR by format), FunnelFox State of Web2App 2026, RevenueCat State of Subscription Apps 2026, Adapty (refunds), Paddle pricing, DeepSeek API pricing (deepseek-flash, 4 Nov 2026), Pound Sterling Live (USD/CNY 22 Oct 2026), Pound Sterling Live (FX 27 Oct 2026), Vocal Image funnel (19 Oct 2026).",,,,,,,
