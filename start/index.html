@@ -562,8 +562,8 @@ function realCheckout(k, title, sub, price, onPaid){
   api('POST', '/api/auth/quick', {email:A.email, lang:A.ui, anon_id:anonId}).then(function(v){
     store.set('token', v.token); store.set('account', {email:v.me.email, uid:v.me.uid}); card();
   }).catch(function(e){
-    if(e.message === 'exists') codeStep();
-    else sb.innerHTML = head+'<p class="small" style="color:var(--bad)">'+t(e.message === 'too_many' ? 'err_wait' : 'err_net')+'</p>';
+    if(e.message === 'too_many') sb.innerHTML = head+'<p class="small" style="color:var(--bad)">'+t('err_wait')+'</p>';
+    else codeStep();   // known email (409) or an older server without quick sign-up → confirm with a code
   });
   function codeStep(){
   api('POST', '/api/auth/start', {email:A.email, lang:A.ui}).then(function(r){
