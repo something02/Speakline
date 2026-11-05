@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="stage.js"></script>
 <style>
 /* Layout: one centred phone-width column. Light, Apple-like surface by default, dark when the system asks for it.
    Palette: deep "trust" blue as the only action colour, gold only for rewards and levels, red only for fillers. */
@@ -341,6 +342,7 @@ body.has-tabs .app{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 
 <script>
 (function(){
+if(window.SL_STAGE) return;   // wide screen: stage.js shows this page inside a phone frame instead
 'use strict';
 
 /* ================= storage (per device) ================= */
@@ -1710,9 +1712,11 @@ function api(method, p, body){
 }
 function applyMe(m){
   account = {email:m.email, uid:m.uid}; store.set('account', account);
-  plan = m.plan ? {id:m.plan.id, status:m.plan.status, trial_ends_at:m.plan.trial_ends_at, next_billed_at:m.plan.next_billed_at, cancel_scheduled:m.plan.cancel_scheduled, server:true} : null;
+  // just paid: Paddle's webhook may land a few seconds after the browser, so keep the local plan for 10 minutes
+  var fresh = plan && plan.pending && Date.now() - (plan.ts||0) < 600e3;
+  plan = m.plan ? {id:m.plan.id, status:m.plan.status, trial_ends_at:m.plan.trial_ends_at, next_billed_at:m.plan.next_billed_at, cancel_scheduled:m.plan.cancel_scheduled, server:true} : (fresh ? plan : null);
   store.set('plan', plan);
-  addons = {pack:!!m.addons.pack}; store.set('addons', addons);
+  addons = {pack:!!m.addons.pack || !!(fresh && addons && addons.pack)}; store.set('addons', addons);
   return m;
 }
 function syncMe(){
@@ -1728,6 +1732,7 @@ var consent = store.get('consent', null);   // 'all' | 'essential' | null
 var PIXEL_MAP = {paywall_view:'ViewContent', account_done:'CompleteRegistration', checkout_open:'InitiateCheckout'};
 function track(name, props){
   try{
+    if(window.SL_POST) SL_POST({name:name});
     if(PAY.api) fetch(PAY.api.replace(/\/$/, '') + '/api/events', {method:'POST', keepalive:true, headers:Object.assign({'Content-Type':'application/json'}, API.token ? {Authorization:'Bearer '+API.token} : {}), body:JSON.stringify({anon_id:anonId, name:name, props:props||{}})}).catch(function(){});
     if(window.fbq && consent === 'all'){
       if(name === 'checkout_done') fbq('track', props && props.plan === 'week' ? 'StartTrial' : 'Subscribe', {value:props && props.value || 0, currency:'USD'});

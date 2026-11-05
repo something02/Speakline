@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="../stage.js"></script>
 <style>
 /* Web funnel (web2app): quiz → voice test → plan → email → paywall → demo payment → the app opens with the plan already active.
    Same tokens as the app (../index.html), so the hand-off feels like one product. */
@@ -113,6 +114,7 @@ h1,h2,p{margin:0}
 .stat b.bad{color:var(--bad)}.stat b.good{color:var(--good)}
 .chart svg{display:block;width:100%;height:auto}
 .input{width:100%;min-height:54px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);padding:0 16px;font-size:17px}
+.input.code{font:700 26px/1 var(--display);letter-spacing:.3em;text-align:center}
 .input:focus{border-color:var(--a);outline:0;box-shadow:0 0 0 4px var(--ring)}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft);cursor:pointer}
 .check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--a);flex:none}
@@ -139,7 +141,7 @@ h1,h2,p{margin:0}
 .demo{background:var(--gold-tint);color:var(--gold-ink);border-radius:14px;padding:10px 14px;font-size:13px}
 .sheet-wrap{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;transition:background .3s}
 .sheet-wrap.on{background:rgba(0,0,0,.4)}
-.sheet{width:100%;max-width:520px;background:var(--card);border-radius:26px 26px 0 0;padding:12px 18px calc(22px + env(safe-area-inset-bottom,0px));display:grid;gap:12px;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.sheet{width:100%;max-width:520px;max-height:94vh;overflow:auto;background:var(--card);border-radius:26px 26px 0 0;padding:12px 18px calc(22px + env(safe-area-inset-bottom,0px));display:grid;gap:12px;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .sheet-wrap.on .sheet{transform:none}
 .grab{width:40px;height:5px;border-radius:3px;background:var(--line2);justify-self:center}
 .payrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px 14px}
@@ -166,9 +168,11 @@ h1,h2,p{margin:0}
 <main class="app" id="app" aria-live="polite"></main>
 <script>
 (function(){
+if(window.SL_STAGE) return;   // wide screen: stage.js shows this page inside a phone frame instead
 'use strict';
-/* Everything stays in this browser (localStorage, same keys as the app). Nothing is sent anywhere and no card is ever asked for:
-   the payment step is a labelled demo. On "payment" the funnel writes speakline.profile / .plan / .account and opens ../ */
+/* Quiz answers stay in this browser (localStorage, same keys as the app). At checkout, when PAY.token is set, the email is
+   confirmed with a code from our server and the card form is Paddle's own inline frame (card data never touches our code);
+   without a token the payment step is a labelled demo. On payment the funnel writes speakline.profile / .plan / .account and opens ../ */
 var store = {
   get: function(k, d){ try{ var v = localStorage.getItem('speakline.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set: function(k, v){ try{ localStorage.setItem('speakline.'+k, JSON.stringify(v)); }catch(e){} }
@@ -208,6 +212,9 @@ var T = {
   em:'Where should we send your plan?', emp:'Your progress will be saved to this email.', emph:'name@example.com', em_bad:'Please enter a valid email',
   agree:'I agree to the <a href="../terms-en.html" target="_blank" rel="noopener">Terms</a> and <a href="../privacy-en.html" target="_blank" rel="noopener">Privacy Policy</a>',
   demo_note:'Demo: the email stays in this browser and is not sent anywhere.',
+  srv_note:'We will send a 6-digit code to this email to save your plan and purchases.',
+  code_t:'Enter the code', code_p:function(e){ return 'We sent a 6-digit code to '+e+'.'; }, code_ok:'Confirm and pay', err_code:'Wrong code, try again', err_net:'No connection to the server. Try again.', err_wait:'Too many tries. Wait a minute.',
+  pay_test:'Test mode: card 4242 4242 4242 4242, any future date, CVC 100. No money is charged.',
   pw:'Your personal plan is ready', pws:function(n, t){ return 'You are at '+n+'% now. With 10 minutes a day you can reach '+t+'% for your goal.'; }, now:'Now', after:'After the plan',
   feats:[['10 minutes a day','Daily missions built for your goal'],['Real meeting prep','Add your meeting date — get a plan and a reminder'],['Instant feedback','Pace, pauses, intonation, fillers in red'],['5 levels of texts','From a short phrase to great speeches']],
   plans:{week:['1-week trial','7 days, then $29.99 a month',''],month:['1 month','Cancel any time',''],quarter:['3 months','Every 3 months, same price','Most popular']},
@@ -241,6 +248,9 @@ var T = {
   em:'Куда отправить твой план?', emp:'Прогресс сохранится на эту почту.', emph:'name@example.com', em_bad:'Введи правильный email',
   agree:'Я согласен с <a href="../terms.html" target="_blank" rel="noopener">условиями</a> и <a href="../privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a>',
   demo_note:'Демо: почта остаётся в этом браузере и никуда не отправляется.',
+  srv_note:'Пришлём на эту почту код из 6 цифр, чтобы сохранить план и покупки.',
+  code_t:'Введи код', code_p:function(e){ return 'Мы отправили код из 6 цифр на '+e+'.'; }, code_ok:'Подтвердить и оплатить', err_code:'Неверный код, попробуй ещё раз', err_net:'Нет связи с сервером. Попробуй ещё раз.', err_wait:'Слишком много попыток. Подожди минуту.',
+  pay_test:'Тестовый режим: карта 4242 4242 4242 4242, любая будущая дата, CVC 100. Деньги не списываются.',
   pw:'Твой личный план готов', pws:function(n, t){ return 'Сейчас у тебя '+n+'%. С 10 минутами в день можно выйти на '+t+'% для твоей цели.'; }, now:'Сейчас', after:'После плана',
   feats:[['10 минут в день','Миссии под твою цель'],['Подготовка к встрече','Добавь дату — получишь план и напоминание'],['Разбор сразу','Темп, паузы, интонация, паразиты красным'],['5 уровней текстов','От короткой фразы до великих речей']],
   plans:{week:['Пробная неделя','7 дней, затем $29.99 в месяц',''],month:['1 месяц','Отмена в любой момент',''],quarter:['3 месяца','Каждые 3 месяца, та же цена','Популярный']},
@@ -274,6 +284,9 @@ var T = {
   em:'Жоспарды қайда жіберейік?', emp:'Прогресс осы поштаға сақталады.', emph:'name@example.com', em_bad:'Дұрыс email енгіз',
   agree:'<a href="../terms.html" target="_blank" rel="noopener">Шарттармен</a> және <a href="../privacy.html" target="_blank" rel="noopener">құпиялық саясатымен</a> келісемін',
   demo_note:'Демо: пошта осы браузерде қалады, ешқайда жіберілмейді.',
+  srv_note:'Жоспар мен сатып алуларды сақтау үшін осы поштаға 6 таңбалы код жібереміз.',
+  code_t:'Кодты енгіз', code_p:function(e){ return '6 таңбалы код '+e+' поштасына жіберілді.'; }, code_ok:'Растау және төлеу', err_code:'Код қате, қайтадан көр', err_net:'Сервермен байланыс жоқ. Қайтадан көр.', err_wait:'Тым көп әрекет. Бір минут күт.',
+  pay_test:'Тест режимі: карта 4242 4242 4242 4242, кез келген болашақ күн, CVC 100. Ақша алынбайды.',
   pw:'Жеке жоспарың дайын', pws:function(n, t){ return 'Қазір сенде '+n+'%. Күніне 10 минутпен мақсатыңа '+t+'%-ға жетуге болады.'; }, now:'Қазір', after:'Жоспардан кейін',
   feats:[['Күніне 10 минут','Мақсатыңа арналған миссиялар'],['Кездесуге дайындық','Күнін қос — жоспар мен еске салу аласың'],['Бірден талдау','Қарқын, үзіліс, интонация, арам сөздер қызылмен'],['Мәтіннің 5 деңгейі','Қысқа фразадан ұлы сөздерге дейін']],
   plans:{week:['Сынақ аптасы','7 күн, кейін айына $29.99',''],month:['1 ай','Кез келген уақытта тоқтатуға болады',''],quarter:['3 ай','Әр 3 ай сайын, сол баға','Танымал']},
@@ -303,7 +316,7 @@ var STEPS = ['goal','age','probs','when','train','mins','fact','voice','analyse'
 var step = Math.max(0, Math.min(STEPS.indexOf(store.get('qstep', 'goal')), STEPS.length-1));
 function go(i){ step = i; store.set('qstep', STEPS[i]); render(); window.scrollTo(0,0); }
 function next(){ go(step+1); }
-function track(n, p){ if(/[?&]debug=1/.test(location.search)) console.log('[funnel]', n, p||{}); }
+function track(n, p){ if(window.SL_POST) SL_POST({name:n}); if(/[?&]debug=1/.test(location.search)) console.log('[funnel]', n, p||{}); }
 
 function frame(inner, opts){
   opts = opts || {};
@@ -329,6 +342,7 @@ function optH(i, on, em, b, s, radio){ return '<button class="opt'+(radio?' radi
 function render(){
   document.documentElement.lang = A.ui;
   var s = STEPS[step];
+  if(window.SL_POST) SL_POST({step:s});
   if(s === 'goal'){
     app.innerHTML = frame('<div class="hero"><p class="label" style="color:#F2B53A">'+t('min2')+'</p><h1 class="h1 big">'+t('q0')+'</h1>'+
       '<p class="bubble">'+markF({en:'So, um, I’d like to, like, show you three ideas…', ru:'Ну, э-э, я хотел, типа, показать три идеи…', kk:'Енді, мен, ээ, әлгі үш идеяны көрсеткім…'}[A.ui])+'</p></div>'+
@@ -366,6 +380,13 @@ function markF(s){ return esc(s).replace(/(Ну|э-э|типа|um|like|Енді|
 /* ---------- voice test: Web Speech API counts words and fillers for 10 s ---------- */
 /* Speakline server for speech-to-text (Soniox). Public address, safe to commit; empty = the browser's own recogniser only. */
 var API_BASE = 'https://34-9-203-156.sslip.io';
+/* Paddle (public values, safe to commit; secrets stay in server/.env). Empty token = labelled demo payment sheet. */
+var PAY = {
+  env: 'sandbox',
+  token: 'test_eeee763fc7f0df103491054e407',
+  prices: { week:'pri_01m6n20f37cvxr4sp3ahhb8dre', month:'pri_01m6n1xg7jj2449r9j83b5ck1a', quarter:'pri_01m6n22c5944s6f69yvje05bfg', pack:'pri_01m6n26k4tab54sb7ams8ega1z' }
+};
+function paddleOn(){ return !!(API_BASE && PAY.token); }
 /* ---------- Soniox real-time speech-to-text ----------
    Our server hands out a 60-second key (the real key never reaches the browser); the audio then goes straight
    to Soniox over a WebSocket. Works wherever the microphone works — also Safari, Firefox and in-app browsers,
@@ -545,7 +566,7 @@ function email(){
     '<input class="input" id="em" type="email" inputmode="email" autocomplete="email" placeholder="'+t('emph')+'" value="'+esc(A.email||'')+'" aria-label="Email">'+
     '<p class="small" id="eerr" style="color:var(--bad)" hidden>'+t('em_bad')+'</p>'+
     '<label class="check"><input type="checkbox" id="ag"'+(A.agree?' checked':'')+'><span>'+t('agree')+'</span></label>'+
-    '<p class="demo">'+t('demo_note')+'</p><div class="spacer"></div><button class="btn" type="button" id="nx">'+t('next')+'</button>');
+    '<p class="'+(paddleOn()?'small':'demo')+'">'+t(paddleOn()?'srv_note':'demo_note')+'</p><div class="spacer"></div><button class="btn" type="button" id="nx">'+t('next')+'</button>');
   bind();
   var em = document.getElementById('em'), ag = document.getElementById('ag'), nx = document.getElementById('nx');
   function ok(){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value.trim()) && ag.checked; }
@@ -579,7 +600,67 @@ function sheet(inner){
   w.onclick = function(e){ if(e.target === w) w.close(); };
   return w;
 }
+/* ---------- real checkout: email code (our server) → Paddle inline form inside the sheet ---------- */
+var anonId = store.get('anon', '');
+if(!anonId){ anonId = 'a_' + Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('anon', anonId); }
+function api(method, p, body){
+  var tok = store.get('token', '');
+  return fetch(API_BASE + p, {method:method, headers:Object.assign({'Content-Type':'application/json'}, tok ? {Authorization:'Bearer '+tok} : {}), body: body ? JSON.stringify(body) : undefined})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok){ var e = new Error(j.error || ('http_'+r.status)); throw e; } return j; }); });
+}
+var paddleBoot = null, paddleCb = null;
+function loadPaddle(){
+  if(paddleBoot) return paddleBoot;
+  paddleBoot = new Promise(function(res, rej){
+    var sc = document.createElement('script'); sc.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    sc.onload = function(){ try{ if(PAY.env === 'sandbox') Paddle.Environment.set('sandbox'); Paddle.Initialize({token:PAY.token, eventCallback:function(ev){ if(paddleCb) paddleCb(ev); }}); res(); }catch(e){ rej(e); } };
+    sc.onerror = function(){ paddleBoot = null; rej(new Error('paddle.js')); };
+    document.head.appendChild(sc);
+  });
+  return paddleBoot;
+}
+/* signed in already (token for this email)? → straight to the card form; otherwise the code step first */
+function realCheckout(k, title, sub, price, onPaid){
+  var head = '<b class="h2">'+t('pay_t')+'</b><div class="payrow"><span><b>Speakline Premium · '+title+'</b><small>'+sub+'</small></span><strong>'+price+'</strong></div>';
+  var w = sheet('<div id="sb">'+head+'</div><button class="link" type="button" id="pc">'+t('cancel')+'</button>');
+  var sb = w.querySelector('#sb');
+  w.querySelector('#pc').onclick = function(){ paddleCb = null; try{ Paddle.Checkout.close(); }catch(e){} w.close(); };
+  track('checkout_open', {plan:k});
+  function card(){
+    var acc = store.get('account', {}) || {};
+    sb.innerHTML = head+'<p class="demo">'+t('pay_test')+'</p><div class="checkout-frame" style="min-height:120px"></div><p class="small center" id="pst"><span class="spin dark"></span></p>';
+    paddleCb = function(ev){
+      if(ev.name === 'checkout.loaded'){ var ps = sb.querySelector('#pst'); if(ps) ps.remove(); }
+      if(ev.name === 'checkout.completed'){ paddleCb = null; setTimeout(function(){ try{ Paddle.Checkout.close(); }catch(e){} w.close(); onPaid((ev.data||{}).transaction_id || ''); }, 900); }
+    };
+    loadPaddle().then(function(){
+      var cd = {app:'speakline', plan:k}; if(acc.uid) cd.uid = acc.uid;
+      Paddle.Checkout.open({items:[{priceId:PAY.prices[k], quantity:1}], customer:{email:A.email}, customData:cd,
+        settings:{displayMode:'inline', frameTarget:'checkout-frame', frameInitialHeight:450, frameStyle:'width:100%;min-width:280px;background-color:transparent;border:none;', locale:{ru:'ru', en:'en', kk:'ru'}[A.ui], allowLogout:false}});
+    }).catch(function(){ var ps = sb.querySelector('#pst'); if(ps) ps.textContent = t('err_net'); });
+  }
+  var acc0 = store.get('account', null);
+  if(store.get('token', '') && acc0 && acc0.uid && acc0.email === A.email){ card(); return; }
+  sb.innerHTML = head+'<p class="small center"><span class="spin dark"></span></p>';
+  api('POST', '/api/auth/start', {email:A.email, lang:A.ui}).then(function(r){
+    sb.innerHTML = head+'<b>'+t('code_t')+'</b><p class="small">'+esc(t('code_p')(A.email))+'</p>'+
+      '<input class="input code" id="cd" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="'+esc(t('code_t'))+'">'+
+      (r.dev_code ? '<p class="small">dev: '+r.dev_code+'</p>' : '')+'<p class="small" id="cerr" style="color:var(--bad)"></p>'+
+      '<button class="btn" type="button" id="cok">'+t('code_ok')+'</button>';
+    var cd = sb.querySelector('#cd'), ok = sb.querySelector('#cok');
+    cd.oninput = function(){ cd.value = cd.value.replace(/\D/g, '').slice(0,6); sb.querySelector('#cerr').textContent = ''; if(cd.value.length === 6) ok.click(); };
+    ok.onclick = function(){
+      if(cd.value.length !== 6){ cd.focus(); return; }
+      ok.disabled = true; ok.innerHTML = '<span class="spin"></span>';
+      api('POST', '/api/auth/verify', {email:A.email, code:cd.value, lang:A.ui, anon_id:anonId}).then(function(v){
+        store.set('token', v.token); store.set('account', {email:v.me.email, uid:v.me.uid}); card();
+      }).catch(function(e){ ok.disabled = false; ok.textContent = t('code_ok'); sb.querySelector('#cerr').textContent = t(e.message === 'wrong_code' ? 'err_code' : e.message === 'too_many' ? 'err_wait' : 'err_net'); cd.select(); });
+    };
+    cd.focus();
+  }).catch(function(e){ sb.innerHTML = head+'<p class="small" style="color:var(--bad)">'+t(e.message === 'wait' || e.message === 'too_many' ? 'err_wait' : 'err_net')+'</p>'; });
+}
 function checkout(k){
+  if(paddleOn()){ var pp = t('plans')[k]; realCheckout(k, pp[0], pp[1], '$'+PLANS[k].usd, function(){ activate(k, true); success(k); }); return; }
   var p = t('plans')[k], price = '$'+PLANS[k].usd;
   var w = sheet('<b class="h2">'+t('pay_t')+'</b><div class="payrow"><span><b>Speakline Premium · '+p[0]+'</b><small>'+p[1]+'</small></span><strong>'+price+'</strong></div>'+
     '<p class="small">'+esc(A.email)+'</p><p class="demo">'+t('pay_demo')+'</p>'+
@@ -596,11 +677,11 @@ function checkout(k){
   };
 }
 /* hand-off: write exactly what the app reads on boot */
-function activate(k){
+function activate(k, real){
   var now = Date.now(), ui = A.ui, train = TRAIN_CODES[A.train || 0];
   store.set('profile', {ui:ui, train:train, goal:A.goal || 0, pathStart:now});
-  store.set('plan', {id:k, ts:now, until:now + PLANS[k].days*864e5, email:A.email, src:'web', demo:true});
-  store.set('account', {email:A.email});
+  store.set('plan', real ? {id:k, ts:now, until:now + PLANS[k].days*864e5, email:A.email, src:'web', pending:true} : {id:k, ts:now, until:now + PLANS[k].days*864e5, email:A.email, src:'web', demo:true});
+  if(!real) store.set('account', {email:A.email});
   store.set('funnel', {age:A.age, probs:A.probs, when:A.when, mins:A.mins, score:A.score, fillers:A.fillers, wpm:A.wpm, ts:now});
   store.set('welcome', true);
   var tours = store.get('tours', {}); tours.prem = 1; store.set('tours', tours);
@@ -608,17 +689,18 @@ function activate(k){
   track('checkout_done', {plan:k, value:PLANS[k].usd});
 }
 function success(k){
+  if(window.SL_POST) SL_POST({step:'done'});
   var until = new Date(store.get('plan', {}).until || Date.now()).toLocaleDateString(t('loc'), {day:'numeric', month:'long'});
   var addons = store.get('addons', {});
   app.innerHTML = '<div class="top">'+LOGO+'<span></span></div><div class="done fade"><div class="medal" aria-hidden="true"><svg width="48" height="48" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3A2600" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
     '<h1 class="h1 big">'+t('ok')+'</h1><p class="p">'+esc(t('okp')(t('planNames')[k], until))+'</p>'+
-    (!addons.pack ? '<div class="upsell" id="up"><b class="h2">'+t('up_t')+'</b><p class="p">'+t('up_p')+'</p><div class="row"><button class="btn ghost" type="button" id="uno">'+t('up_no')+'</button><button class="btn" type="button" id="uyes">'+t('up_yes')+'</button></div></div>' : '')+
+    (!addons.pack ? '<div class="upsell" id="up"><b class="h2">'+t('up_t')+'</b><p class="p">'+t('up_p')+'</p><div class="row"><button class="btn ghost" type="button" id="uno">'+t('up_no')+'</button><button class="btn" type="button" id="uyes">'+(paddleOn() ? t('up_yes').replace(/ \((demo|демо)\)/, '') : t('up_yes'))+'</button></div></div>' : '')+
     '<div class="steps">'+t('how').map(function(x, i){ return '<div class="step"><b>'+(i+1)+'</b><span>'+x+'</span></div>'; }).join('')+'</div>'+
     '<a class="btn" href="../" id="open" style="text-decoration:none">'+t('open')+'</a></div>';
   var u = document.getElementById('up');
   if(u){
     document.getElementById('uno').onclick = function(){ u.remove(); };
-    document.getElementById('uyes').onclick = function(){ var a = store.get('addons', {}); a.pack = true; store.set('addons', a); u.innerHTML = '<p class="h2" style="color:var(--good)">✓ '+t('up_ok')+'</p>'; track('upsell_done'); };
+    document.getElementById('uyes').onclick = function(){ function done(){ var a = store.get('addons', {}); a.pack = true; store.set('addons', a); u.innerHTML = '<p class="h2" style="color:var(--good)">✓ '+t('up_ok')+'</p>'; track('upsell_done'); } if(paddleOn()) realCheckout('pack', t('up_t').replace(/\?$/, ''), '', '$9.99', done); else done(); };
   }
   window.scrollTo(0,0);
 }
