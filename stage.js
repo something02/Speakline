@@ -42,7 +42,7 @@
   var START_MAP = {goal:'quiz', age:'quiz', probs:'quiz', when:'quiz', train:'quiz', mins:'quiz', fact:'voice', voice:'voice', analyse:'plan', result:'plan', email:'pay', paywall:'pay', done:'handoff'};
   var TRACK_MAP = {quiz_start:'quiz', voice_start:'voice', voice_done:'plan', voice_skip:'plan', plan_ready:'plan', result_view:'plan', email_done:'pay',
     paywall_view:'pay', plan_select:'pay', account_start:'checkout', checkout_open:'checkout', checkout_done:'handoff', upsell_done:'handoff',
-    welcome_web:'app', app_open:'app', session_start:'app', session_done:'app', mission_done:'app', ai_coach_view:'app', tab:'app', intro_done:'app', onboarding_done:'app'};
+    welcome_web:'handoff', app_open:'handoff', session_start:'app', session_done:'app', mission_done:'app', ai_coach_view:'app', tab:'app', intro_done:'app', onboarding_done:'app'};
 
   var css = ''+
   'html,body{margin:0;height:100%;background:#071226;overflow:hidden}'+
